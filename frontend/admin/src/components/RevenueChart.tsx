@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   AreaChart,
   Area,
@@ -14,7 +15,15 @@ import {
 } from 'recharts';
 
 export default function RevenueChart({ data }: { data: any[] }) {
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className="w-full h-full min-h-[300px] bg-gray-50/50 rounded-2xl animate-pulse" />;
+  }
 
   return (
     <ResponsiveContainer width="100%" height="100%">
