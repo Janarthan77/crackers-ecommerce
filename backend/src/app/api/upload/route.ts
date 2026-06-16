@@ -1,11 +1,20 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
+
+const s3Client = new S3Client({
+  region: 'auto',
+  endpoint: (process.env.R2_PUBLIC_URL || '').trim(),
+  credentials: {
+    accessKeyId: (process.env.R2_ACCESS_KEY_ID || '').trim(),
+    secretAccessKey: (process.env.R2_SECRET_ACCESS_KEY || '').trim(),
+  },
+});
 
 export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
@@ -22,25 +31,30 @@ export async function POST(request: Request) {
 
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
-    const { data, error } = await supabase.storage
-      .from('images')
-      .upload(fileName, file, {
-        cacheControl: '3600',
-        upsert: false
-      });
+    const bucketName = (process.env.R2_BUCKET_NAME || 'crackers-images').trim();
 
-    if (error) {
-      console.error('Supabase upload error:', error);
-      throw error;
+    const command = new PutObjectCommand({
+      Bucket: bucketName,
+      Key: fileName,
+      Body: buffer,
+      ContentType: file.type,
+    });
+
+    await s3Client.send(command);
+
+    let publicDevUrl = (process.env.CLOUDFLARE_ACCOUNT_ID || '').trim();
+    if (publicDevUrl.endsWith('/')) {
+        publicDevUrl = publicDevUrl.slice(0, -1);
     }
-
-    const { data: publicUrlData } = supabase.storage
-      .from('images')
-      .getPublicUrl(fileName);
+    
+    const publicUrl = `${publicDevUrl}/${fileName}`;
 
     return NextResponse.json({ 
-      url: publicUrlData.publicUrl,
+      url: publicUrl,
       fileName: fileName
     }, { status: 200, headers: corsHeaders });
 

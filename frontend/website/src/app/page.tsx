@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 
 const FEATURES = [
@@ -12,14 +12,15 @@ const FEATURES = [
 ];
 
 const SLIDER_IMAGES = [
-  `${process.env.NEXT_PUBLIC_SUPABASE_IMAGE_URL}/slider_image/banner_image_1.gif`, // Diwali Diya Festival image
-  `${process.env.NEXT_PUBLIC_SUPABASE_IMAGE_URL}/slider_image/banner_image_2.gif`, // Static image 2 (User liked)
-  `${process.env.NEXT_PUBLIC_SUPABASE_IMAGE_URL}/slider_image/banner_image_3.jpg` // Diwali sparkler celebration
+  `${process.env.NEXT_PUBLIC_CLOUDFLARE_IMAGE_URL}/slider_images/banner_image_1.gif`, // Diwali Diya Festival image
+  `${process.env.NEXT_PUBLIC_CLOUDFLARE_IMAGE_URL}/slider_images/banner_image_2.gif`, // Static image 2 (User liked)
+  `${process.env.NEXT_PUBLIC_CLOUDFLARE_IMAGE_URL}/slider_images/banner_image_3.jpg` // Diwali sparkler celebration
 ];
 
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [blogs, setBlogs] = useState<any[]>([]);
+  const [comboOffers, setComboOffers] = useState<any[]>([]);
 
   // Quick Order State
   const [products, setProducts] = useState<any[]>([]);
@@ -27,6 +28,33 @@ export default function HomePage() {
   const [quantities, setQuantities] = useState<Record<number, number>>({});
   const [customer, setCustomer] = useState({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  // Combo Offer Order State
+  const [selectedComboOffer, setSelectedComboOffer] = useState<any>(null);
+  const [comboCustomer, setComboCustomer] = useState({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
+  const [isComboSubmitting, setIsComboSubmitting] = useState(false);
+  const comboScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (comboOffers.length >= 3) {
+      const interval = setInterval(() => {
+        if (comboScrollRef.current) {
+          const el = comboScrollRef.current;
+          const maxScroll = el.scrollWidth - el.clientWidth;
+          if (maxScroll <= 0) return;
+
+          if (el.scrollLeft >= maxScroll - 10) {
+            el.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+            el.scrollTo({ left: el.scrollLeft + 350, behavior: 'smooth' });
+          }
+        }
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [comboOffers]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -48,10 +76,15 @@ export default function HomePage() {
     // Fetch products and categories for Quick Order
     Promise.all([
       fetch('http://localhost:5000/api/products'),
-      fetch('http://localhost:5000/api/categories')
-    ]).then(async ([pr, cr]) => {
+      fetch('http://localhost:5000/api/categories'),
+      fetch('http://localhost:5000/api/combo-offers')
+    ]).then(async ([pr, cr, co]) => {
       if (pr.ok) setProducts(await pr.json());
       if (cr.ok) setCategories(await cr.json());
+      if (co.ok) {
+        const offers = await co.json();
+        setComboOffers(offers.filter((o: any) => o.is_active));
+      }
     }).catch(console.error);
   }, []);
 
@@ -102,6 +135,48 @@ export default function HomePage() {
       toast.error('Network error. Try again.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleComboCustomerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setComboCustomer(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleComboSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedComboOffer) return;
+
+    setIsComboSubmitting(true);
+    try {
+      const orderData = {
+        name: comboCustomer.name, mobile: comboCustomer.mobile, email: comboCustomer.email,
+        address: comboCustomer.address, city: comboCustomer.city, state: comboCustomer.state,
+        netTotal: selectedComboOffer.original_price,
+        discountTotal: selectedComboOffer.original_price - selectedComboOffer.discounted_price,
+        overallTotal: selectedComboOffer.discounted_price,
+        items: [{
+          productId: `combo-${selectedComboOffer.id}`,
+          name: `🎁 Combo Offer: ${selectedComboOffer.title}`,
+          price: selectedComboOffer.discounted_price,
+          originalPrice: selectedComboOffer.original_price,
+          quantity: 1
+        }]
+      };
+      const res = await fetch('http://localhost:5000/api/orders', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData),
+      });
+      if (res.ok) {
+        toast.success('Combo Offer claimed successfully! We will contact you soon.');
+        setComboCustomer({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
+        setSelectedComboOffer(null);
+      } else {
+        toast.error('Failed to submit combo order.');
+      }
+    } catch (err) {
+      toast.error('Network error. Try again.');
+    } finally {
+      setIsComboSubmitting(false);
     }
   };
 
@@ -181,19 +256,35 @@ export default function HomePage() {
       </section>
 
       {/* ═══════ PROMO BANNER ═══════ */}
-      <section className="py-14 px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-red-600 via-orange-500 to-yellow-500">
-        <div className="max-w-2xl mx-auto text-center relative z-10 text-white">
-          <h2 className="font-display font-black mb-3 text-4xl">Special Combo Offer!</h2>
-          <p className="text-base text-white/90 mb-7 leading-relaxed">
-            Order above <span className="font-black text-yellow-200">₹2,000</span> and get{' '}
-            <span className="font-black text-yellow-200">FREE Delivery</span> +{' '}
-            <span className="font-black text-yellow-200">5% Extra Discount</span> on your cart!
-          </p>
-          <a href="#quick-order" className="inline-block bg-white text-red-600 px-8 py-3.5 rounded-full font-black text-sm hover:scale-105 shadow-xl transition-transform">
-            Shop & Save Now
-          </a>
-        </div>
-      </section>
+      {comboOffers.length > 0 && (
+        <section className="py-14 px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-red-600 via-orange-500 to-yellow-500">
+          <div ref={comboScrollRef} className="max-w-7xl mx-auto flex flex-row gap-8 overflow-x-auto snap-x pb-4 hide-scrollbar">
+            {comboOffers.map(offer => (
+              <div key={offer.id} className="min-w-[300px] md:min-w-[400px] flex-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-6 snap-center shrink-0">
+                {offer.image_url && (
+                  <div className="w-32 h-32 shrink-0 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/30">
+                    <img src={offer.image_url} alt={offer.title} className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <div className="text-white text-center md:text-left flex-1">
+                  <h2 className="font-display font-black mb-2 text-3xl">{offer.title}</h2>
+                  <p className="text-sm text-white/90 mb-4">{offer.description}</p>
+                  <div className="flex items-center gap-4 justify-center md:justify-start mb-6">
+                    <span className="line-through text-white/60 text-lg">₹{offer.original_price}</span>
+                    <span className="font-black text-yellow-200 text-3xl">₹{offer.discounted_price}</span>
+                  </div>
+                  <button
+                    onClick={() => setSelectedComboOffer(offer)}
+                    className="inline-block bg-white text-red-600 px-6 py-2.5 rounded-full font-black text-sm hover:scale-105 shadow-xl transition-transform"
+                  >
+                    Claim Offer
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ═══════ QUICK ORDER SECTION ═══════ */}
       <section id="quick-order" className="py-16 px-2 md:px-6 bg-[#FFF8F0]">
@@ -216,12 +307,26 @@ export default function HomePage() {
                   <div className="text-right">Overall Total : ₹{overallTotal.toFixed(2)}</div>
                 </div>
 
+                {/* Search Filter */}
+                <div className="p-4 bg-orange-50 border-b-2 border-orange-200">
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full max-w-md border border-orange-200 rounded-xl p-3 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                  />
+                </div>
+
                 {/* Categories & Products */}
                 <div className="w-full overflow-x-auto">
                   <table className="w-full min-w-[600px] border-collapse text-sm text-center text-gray-800">
                     <tbody>
                       {categories.map((category) => {
-                        const catProducts = products.filter(p => String(p.categoryId) === String(category.id));
+                        const catProducts = products.filter(p =>
+                          String(p.categoryId) === String(category.id) &&
+                          p.name.toLowerCase().includes(searchQuery.toLowerCase())
+                        );
                         if (catProducts.length === 0) return null;
 
                         return (
@@ -242,7 +347,10 @@ export default function HomePage() {
                               return (
                                 <tr key={product.id} className={`border-b border-orange-100 ${rowBg}`}>
                                   <td className="w-16 p-2 border-r border-orange-100">
-                                    <div className="w-10 h-10 mx-auto flex items-center justify-center text-xl bg-white border border-orange-100 shadow-sm rounded overflow-hidden">
+                                    <div
+                                      className="w-10 h-10 mx-auto flex items-center justify-center text-xl bg-white border border-orange-100 shadow-sm rounded overflow-hidden cursor-pointer hover:border-orange-400 hover:shadow-md transition-all"
+                                      onClick={() => product.image && setPreviewImage(product.image.startsWith('http') ? product.image : `/images/${product.image}`)}
+                                    >
                                       {product.image ? (
                                         <img src={product.image.startsWith('http') ? product.image : `/images/${product.image}`} alt={product.name} className="w-full h-full object-cover" />
                                       ) : (
@@ -382,6 +490,95 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Image Preview Modal */}
+      {previewImage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4" onClick={() => setPreviewImage(null)}>
+          <div className="relative max-w-3xl w-full flex items-center justify-center animate-fade-up">
+            <button
+              className="absolute -top-12 right-0 text-white hover:text-orange-400 text-3xl font-black bg-black/20 w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+              onClick={(e) => { e.stopPropagation(); setPreviewImage(null); }}
+            >
+              &times;
+            </button>
+            <img src={previewImage} alt="Product Preview" className="max-h-[80vh] max-w-full rounded-xl shadow-2xl object-contain border-4 border-white/10" />
+          </div>
+        </div>
+      )}
+
+      {/* Combo Offer Order Modal */}
+      {selectedComboOffer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-[0_20px_50px_rgba(0,0,0,0.2)] relative animate-in fade-in zoom-in-95 duration-200 border border-gray-100">
+            <button
+              onClick={() => setSelectedComboOffer(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-red-500 hover:bg-red-50 p-2.5 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-red-200"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <div className="p-6 md:p-10">
+              <div className="text-center mb-8">
+                <span className="text-orange-600 font-bold tracking-widest uppercase text-xs mb-2 inline-block px-3 py-1 bg-orange-50 rounded-full border border-orange-100">Exclusive Deal</span>
+                <h2 className="text-3xl font-black text-gray-900 tracking-tight">Claim Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500">Offer</span></h2>
+              </div>
+
+              <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-5 mb-8 flex flex-col md:flex-row items-center gap-5 border border-orange-100/50 shadow-inner">
+                {selectedComboOffer.image_url && (
+                  <img src={selectedComboOffer.image_url} alt={selectedComboOffer.title} className="w-24 h-24 object-cover rounded-xl shadow-md border-2 border-white" />
+                )}
+                <div className="text-center md:text-left flex-1">
+                  <h3 className="font-black text-xl text-gray-800 leading-tight mb-1">{selectedComboOffer.title}</h3>
+                  <div className="flex items-center justify-center md:justify-start gap-3 mt-2 bg-white/60 inline-flex px-3 py-1.5 rounded-lg border border-orange-200/50">
+                    <span className="line-through text-gray-400 text-sm font-semibold">₹{selectedComboOffer.original_price}</span>
+                    <span className="font-black text-green-600 text-2xl">₹{selectedComboOffer.discounted_price}</span>
+                  </div>
+                </div>
+              </div>
+
+              <form onSubmit={handleComboSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Name <span className="text-red-500">*</span></label>
+                  <input required type="text" name="name" value={comboCustomer.name} onChange={handleComboCustomerChange} placeholder="Full name" className="border border-gray-200 bg-gray-50/50 p-3.5 rounded-xl focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900" />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Mobile <span className="text-red-500">*</span></label>
+                  <input required type="tel" name="mobile" value={comboCustomer.mobile} onChange={handleComboCustomerChange} placeholder="10-digit number" className="border border-gray-200 bg-gray-50/50 p-3.5 rounded-xl focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900" />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Email</label>
+                  <input type="email" name="email" value={comboCustomer.email} onChange={handleComboCustomerChange} placeholder="Optional email" className="border border-gray-200 bg-gray-50/50 p-3.5 rounded-xl focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900" />
+                </div>
+                <div className="flex flex-col gap-1.5 md:col-span-2">
+                  <label className="text-xs font-bold text-gray-600 uppercase tracking-wide">Address <span className="text-red-500">*</span></label>
+                  <input required type="text" name="address" value={comboCustomer.address} onChange={handleComboCustomerChange} placeholder="Full delivery address" className="border border-gray-200 bg-gray-50/50 p-3.5 rounded-xl focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900" />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-gray-600 uppercase tracking-wide">City <span className="text-red-500">*</span></label>
+                  <input required type="text" name="city" value={comboCustomer.city} onChange={handleComboCustomerChange} placeholder="City name" className="border border-gray-200 bg-gray-50/50 p-3.5 rounded-xl focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900" />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-gray-600 uppercase tracking-wide">State</label>
+                  <input type="text" name="state" value={comboCustomer.state} onChange={handleComboCustomerChange} placeholder="State name" className="border border-gray-200 bg-gray-50/50 p-3.5 rounded-xl focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 outline-none transition-all font-medium text-gray-900" />
+                </div>
+
+                <div className="md:col-span-2 mt-6">
+                  <button
+                    type="submit"
+                    disabled={isComboSubmitting}
+                    className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-black text-lg py-4 rounded-xl shadow-[0_8px_20px_-6px_rgba(232,25,44,0.5)] hover:shadow-[0_12px_25px_-6px_rgba(232,25,44,0.6)] hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-4 focus:ring-orange-500/30 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                  >
+                    {isComboSubmitting ? 'Processing...' : 'Confirm Order & Claim Now'}
+                  </button>
+                  <p className="text-center text-xs text-gray-500 font-medium mt-4 flex items-center justify-center gap-1">
+                    <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Cash on Delivery Available • Secure Checkout
+                  </p>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

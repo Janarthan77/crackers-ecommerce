@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { FaFacebook, FaInstagram, FaYoutube, FaClock, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -50,13 +51,19 @@ export default function Header() {
       {/* Info bar */}
       <div className="hidden md:flex w-full bg-white border-b border-orange-100 px-8 py-1 justify-between items-center text-xs text-gray-600">
         <div className="flex items-center gap-6">
-          <span className="flex items-center gap-1.5"><span className="text-orange-500 font-bold">&#9201;</span> Mon–Sun, 24 Hours Open</span>
-          <span className="flex items-center gap-1.5"><span className="text-orange-500 font-bold">&#9742;</span> {settings.phone}</span>
-          <span className="flex items-center gap-1.5"><span className="text-orange-500 font-bold">&#9993;</span> {settings.email}</span>
+          <span className="flex items-center gap-1.5"><FaClock className="text-orange-500" /> Mon–Sun, 24 Hours Open</span>
+          <span className="flex items-center gap-1.5"><FaPhoneAlt className="text-orange-500" /> {settings.phone}</span>
+          <span className="flex items-center gap-1.5"><FaEnvelope className="text-orange-500" /> {settings.email}</span>
         </div>
         <div className="flex items-center gap-2">
-          {['fb', 'ig', 'yt'].map((s) => (
-            <button key={s} className="w-6 h-6 rounded-full bg-orange-50 hover:bg-orange-100 flex items-center justify-center transition-colors text-[9px] font-black text-orange-600">{s.toUpperCase()}</button>
+          {[
+            { id: 'fb', icon: <FaFacebook size={12} /> },
+            { id: 'ig', icon: <FaInstagram size={12} /> },
+            { id: 'yt', icon: <FaYoutube size={12} /> }
+          ].map((s) => (
+            <button key={s.id} className="w-6 h-6 rounded-full bg-orange-50 hover:bg-orange-100 flex items-center justify-center transition-colors text-orange-600">
+              {s.icon}
+            </button>
           ))}
         </div>
       </div>

@@ -2,19 +2,19 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
 export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
+    return NextResponse.json({}, { headers: corsHeaders });
 }
 
 async function sendTelegramNotification(orderData: any, orderId: number) {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
-    
+
     if (!botToken || !chatId) {
         console.warn('Telegram notifications are not configured (missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID).');
         return;
@@ -69,9 +69,9 @@ export async function GET() {
             .from('orders')
             .select('*')
             .order('id', { ascending: false });
-            
+
         if (error) throw error;
-        
+
         // Format to match old structure
         const formattedOrders = orders.map((o: any) => ({
             id: o.id,
@@ -86,7 +86,7 @@ export async function GET() {
             status: o.status,
             items: o.items || []
         }));
-        
+
         return NextResponse.json(formattedOrders, { headers: corsHeaders });
     } catch (e: any) {
         console.error("GET Orders Error:", e);
@@ -99,7 +99,7 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        
+
         // Fetch the max ID currently in the table to fix any sequence synchronization issues
         const { data: maxOrderData } = await supabase
             .from('orders')
@@ -107,9 +107,9 @@ export async function POST(request: Request) {
             .order('id', { ascending: false })
             .limit(1)
             .maybeSingle();
-            
+
         const nextId = (maxOrderData?.id || 0) + 1;
-        
+
         const newOrderData = {
             id: nextId,
             name: body.name,
@@ -123,15 +123,15 @@ export async function POST(request: Request) {
             status: 'pending',
             items: body.items || []
         };
-        
+
         const { data: newOrder, error } = await supabase
             .from('orders')
             .insert([newOrderData])
             .select()
             .single();
-            
+
         if (error) throw error;
-        
+
         // Send a Telegram notification in the background
         sendTelegramNotification(newOrderData, newOrder.id).catch(console.error);
 

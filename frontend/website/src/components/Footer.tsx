@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
 
 export default async function Footer() {
   let settings = { phone: '9994090969, 99430', email: 'rupikacrackers@gmail.com', address: 'Sivakasi, Tamil Nadu — 626123' };
@@ -37,14 +38,14 @@ export default async function Footer() {
           </p>
           <div className="flex gap-3 mt-5">
             {[
-              { icon: '📘', bg: '#E8F0FE', color: '#1877F2', label: 'Facebook' },
-              { icon: '📷', bg: '#FCE4EC', color: '#E4405F', label: 'Instagram' },
-              { icon: '▶️', bg: '#FFEBEE', color: '#FF0000', label: 'YouTube' },
+              { icon: <FaFacebook size={18} className="text-[#1877F2]" />, bg: '#E8F0FE', label: 'Facebook' },
+              { icon: <FaInstagram size={18} className="text-[#E4405F]" />, bg: '#FCE4EC', label: 'Instagram' },
+              { icon: <FaYoutube size={18} className="text-[#FF0000]" />, bg: '#FFEBEE', label: 'YouTube' },
             ].map((s) => (
               <button
                 key={s.label}
                 title={s.label}
-                className="w-9 h-9 rounded-full text-sm flex items-center justify-center transition-transform hover:scale-110"
+                className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-110"
                 style={{ background: s.bg }}
               >{s.icon}</button>
             ))}

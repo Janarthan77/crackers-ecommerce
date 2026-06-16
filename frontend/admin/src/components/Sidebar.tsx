@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 const menuItems = [
   { name: 'Dashboard',          path: '/',               icon: '📊', color: '#E8192C' },
   { name: 'Analytics',          path: '/analytics',      icon: '📈', color: '#DB2777' },
+  { name: 'Combo Offers',        path: '/combo-offers',   icon: '🎁', color: '#F59E0B' },
   { name: 'Category Management', path: '/categories',    icon: '📂', color: '#FF6B00' },
   { name: 'Product Management',  path: '/products',      icon: '📦', color: '#7C3AED' },
   { name: 'Orders Management',   path: '/orders',        icon: '🛒', color: '#16A34A' },

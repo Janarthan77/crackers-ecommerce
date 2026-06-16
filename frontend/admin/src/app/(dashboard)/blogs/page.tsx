@@ -20,6 +20,7 @@ export default function BlogsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
   const [formData, setFormData] = useState({ title: '', content: '', image_url: '', is_published: true });
+  const [isUploading, setIsUploading] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,6 +47,34 @@ export default function BlogsPage() {
   useEffect(() => {
     fetchBlogs();
   }, []);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formDataUpload = new FormData();
+    formDataUpload.append('file', file);
+
+    try {
+      const res = await fetch('http://localhost:5000/api/upload', {
+        method: 'POST',
+        body: formDataUpload,
+      });
+
+      if (!res.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const data = await res.json();
+      setFormData({ ...formData, image_url: data.url });
+      toast.success('Image uploaded successfully');
+    } catch (error) {
+      toast.error('Failed to upload image');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -340,14 +369,26 @@ export default function BlogsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold mb-2 text-gray-600">Image URL</label>
-                <input 
-                  type="url" 
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl p-3 bg-gray-50/50 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-800 font-medium"
-                  placeholder="https://example.com/image.jpg"
-                />
+                <label className="block text-sm font-bold mb-2 text-gray-600">Image</label>
+                <div className="flex gap-3">
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={isUploading}
+                    className="w-full border border-gray-200 rounded-xl p-2 bg-gray-50/50 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-800 font-medium file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                  {isUploading && (
+                    <div className="flex items-center justify-center px-4">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                    </div>
+                  )}
+                </div>
+                {formData.image_url && (
+                  <div className="mt-3 relative w-32 h-32 rounded-xl overflow-hidden border border-gray-200">
+                    <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
               </div>
 
               <div>
