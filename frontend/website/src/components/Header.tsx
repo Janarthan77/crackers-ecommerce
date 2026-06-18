@@ -16,7 +16,7 @@ export default function Header() {
       .then(res => res.json())
       .then(data => {
         if (data && !data.error) {
-          setSettings({ phone: data.phone || '9994090969, 99430', email: data.email || 'rupikacrackers@gmail.com' });
+          setSettings({ phone: data.phone || '9994090969, 99430', email: data.email || 'rrvcrackers@gmail.com' });
         }
       })
       .catch(console.error);
@@ -70,9 +70,8 @@ export default function Header() {
 
       {/* Main Navbar */}
       <header
-        className={`w-full sticky top-0 z-50 transition-all duration-400 ${
-          scrolled ? 'shadow-lg' : 'shadow-sm'
-        }`}
+        className={`w-full sticky top-0 z-50 transition-all duration-400 ${scrolled ? 'shadow-lg' : 'shadow-sm'
+          }`}
         style={{
           background: scrolled
             ? 'rgba(255,255,255,0.97)'
@@ -81,24 +80,23 @@ export default function Header() {
           borderBottom: '1px solid rgba(255,107,0,0.12)',
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-white text-lg transition-transform group-hover:scale-110 select-none"
-              style={{ background: 'linear-gradient(135deg, #E8192C, #FF6B00)', boxShadow: '0 4px 15px rgba(232,25,44,0.3)' }}
-            >
-              &#10022;
-            </div>
-            <div className="flex flex-col leading-tight">
+            <img
+              src="https://pub-c9de055708fa4822887d1db91f66e351.r2.dev/brand_logo.png"
+              alt="RRV Crackers Logo"
+              className="w-auto h-16 object-contain transition-transform group-hover:scale-110 select-none"
+            />
+            {/* <div className="flex flex-col leading-tight">
               <span
                 className="text-lg font-black tracking-tight"
                 style={{ fontFamily: "'Playfair Display', serif", background: 'linear-gradient(135deg, #E8192C, #FF6B00)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
               >
-                Rupika Crackers
+                RRV Crackers
               </span>
               <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-orange-400">Premium Fireworks</span>
-            </div>
+            </div> */}
           </Link>
 
           {/* Desktop Nav */}
@@ -109,11 +107,10 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                    active
-                      ? 'text-orange-600'
-                      : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50'
-                  }`}
+                  className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${active
+                    ? 'text-orange-600'
+                    : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50'
+                    }`}
                 >
                   {active && (
                     <span
@@ -140,16 +137,16 @@ export default function Header() {
             onClick={() => setMenuOpen(!menuOpen)}
           >
             <div className="flex flex-col gap-1.5 w-5">
-              <span className={`h-0.5 rounded-full bg-gray-700 transition-all ${ menuOpen ? 'rotate-45 translate-y-2' : '' }`} />
-              <span className={`h-0.5 rounded-full bg-gray-700 transition-all ${ menuOpen ? 'opacity-0' : '' }`} />
-              <span className={`h-0.5 rounded-full bg-gray-700 transition-all ${ menuOpen ? '-rotate-45 -translate-y-2' : '' }`} />
+              <span className={`h-0.5 rounded-full bg-gray-700 transition-all ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+              <span className={`h-0.5 rounded-full bg-gray-700 transition-all ${menuOpen ? 'opacity-0' : ''}`} />
+              <span className={`h-0.5 rounded-full bg-gray-700 transition-all ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
             </div>
           </button>
         </div>
 
         {/* Mobile menu */}
         <div
-          className={`md:hidden overflow-hidden transition-all duration-300 border-t border-orange-100 ${ menuOpen ? 'max-h-80' : 'max-h-0' }`}
+          className={`md:hidden overflow-hidden transition-all duration-300 border-t border-orange-100 ${menuOpen ? 'max-h-80' : 'max-h-0'}`}
           style={{ background: '#fff' }}
         >
           <nav className="flex flex-col p-4 gap-1">

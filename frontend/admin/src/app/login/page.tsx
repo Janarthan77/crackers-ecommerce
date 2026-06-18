@@ -46,12 +46,11 @@ export default function LoginPage() {
 
       <div className="stat-card w-full max-w-md p-8 z-10">
         <div className="flex flex-col items-center mb-8">
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-[#E8192C]/20 mb-4"
-            style={{ background: 'linear-gradient(135deg, #E8192C, #FF6B00)' }}
-          >
-            🎇
-          </div>
+          <img
+            src="https://pub-c9de055708fa4822887d1db91f66e351.r2.dev/brand_logo.png"
+            alt="Rupika Crackers Logo"
+            className="w-16 h-16 object-contain mb-4 select-none"
+          />
           <h1 className="page-title !mb-1 text-center">Welcome Back</h1>
           <p className="text-sm text-center" style={{ color: 'var(--text-m)' }}>
             Sign in to Rupika Crackers Admin Panel

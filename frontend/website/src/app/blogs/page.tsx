@@ -24,7 +24,7 @@ export default function BlogsPage() {
       {/* Header */}
       <section className="pt-20 pb-12 px-4 text-center">
         <h1 className="text-5xl font-black text-gray-900 mb-4 font-display">Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500">Blogs</span></h1>
-        <p className="text-gray-600 max-w-lg mx-auto">Stay up to date with the latest news, festival tips, and announcements from Rupika Crackers.</p>
+        <p className="text-gray-600 max-w-lg mx-auto">Stay up to date with the latest news, festival tips, and announcements from RRV Crackers.</p>
       </section>
 
       {/* Blogs Grid */}

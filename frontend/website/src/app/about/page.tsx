@@ -29,7 +29,7 @@ export default function About() {
           className="font-display font-black mb-4"
           style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: 'var(--text-heading)' }}
         >
-          About <span className="heading-gradient">Rupika Crackers</span>
+          About <span className="heading-gradient">RRV Crackers</span>
         </h1>
         <p className="max-w-xl mx-auto text-base" style={{ color: 'var(--text-body)' }}>
           Two decades of bringing joy, light and sparkle to millions of families across India.
@@ -47,7 +47,7 @@ export default function About() {
           <div>
             <h2 className="font-display font-bold text-2xl mb-4" style={{ color: 'var(--text-heading)' }}>Our Story</h2>
             <p className="leading-loose mb-4" style={{ color: 'var(--text-body)' }}>
-              Welcome to <strong style={{ color: 'var(--brand-orange)' }}>Rupika Crackers</strong> — one of Tamil Nadu&apos;s most trusted wholesale and retail fireworks dealers. For over two decades, we&apos;ve been lighting up celebrations with premium, safe, and spectacular fireworks for families across India.
+              Welcome to <strong style={{ color: 'var(--brand-orange)' }}>RRV Crackers</strong> — one of Tamil Nadu&apos;s most trusted wholesale and retail fireworks dealers. For over two decades, we&apos;ve been lighting up celebrations with premium, safe, and spectacular fireworks for families across India.
             </p>
             <p className="leading-loose" style={{ color: 'var(--text-muted)' }}>
               Based in <strong style={{ color: 'var(--brand-red)' }}>Sivakasi</strong> — India&apos;s fireworks capital — we source directly from certified manufacturers, cutting out middlemen to give you factory-fresh quality at wholesale prices.

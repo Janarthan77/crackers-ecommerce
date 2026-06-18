@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import React, { useEffect, useState, useRef } from 'react';
 import toast from 'react-hot-toast';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const FEATURES = [
   { icon: '🛡️', title: 'ISI Certified', desc: 'All products meet India safety standards' },
@@ -103,6 +105,50 @@ export default function HomePage() {
   const totalOriginalPrice = products.reduce((sum, p) => sum + (p.price * (quantities[p.id] || 0)), 0);
   const overallTotal = products.reduce((sum, p) => sum + (getSellingPrice(p) * (quantities[p.id] || 0)), 0);
 
+  const generatePDF = (orderData: any) => {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(20);
+    doc.setTextColor(220, 38, 38);
+    doc.text('Invoice / Order Details', 14, 22);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.text(`Customer Name: ${orderData.name}`, 14, 36);
+    doc.text(`Mobile: ${orderData.mobile}`, 14, 42);
+    doc.text(`Address: ${orderData.address}, ${orderData.city}`, 14, 48);
+    
+    const tableColumn = ["Item", "Qty", "Original Price", "Discounted Price", "Total"];
+    const tableRows = orderData.items.map((item: any) => [
+      item.name,
+      item.quantity,
+      `Rs. ${item.originalPrice.toFixed(2)}`,
+      `Rs. ${item.price.toFixed(2)}`,
+      `Rs. ${(item.price * item.quantity).toFixed(2)}`
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 55,
+      theme: 'grid',
+      headStyles: { fillColor: [220, 38, 38] }
+    });
+
+    const finalY = (doc as any).lastAutoTable?.finalY || 55;
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    doc.text(`Net Total: Rs. ${orderData.netTotal.toFixed(2)}`, 14, finalY + 10);
+    doc.text(`Total Savings: Rs. ${orderData.discountTotal.toFixed(2)}`, 14, finalY + 18);
+    
+    doc.setFontSize(14);
+    doc.setTextColor(220, 38, 38);
+    doc.text(`Overall Total: Rs. ${orderData.overallTotal.toFixed(2)}`, 14, finalY + 28);
+
+    doc.save(`Order_${orderData.mobile}.pdf`);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (totalProductsCount === 0) {
@@ -126,6 +172,7 @@ export default function HomePage() {
       });
       if (res.ok) {
         toast.success('Order placed successfully! We will contact you soon.');
+        generatePDF(orderData);
         setQuantities({});
         setCustomer({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
       } else {
@@ -168,6 +215,7 @@ export default function HomePage() {
       });
       if (res.ok) {
         toast.success('Combo Offer claimed successfully! We will contact you soon.');
+        generatePDF(orderData);
         setComboCustomer({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
         setSelectedComboOffer(null);
       } else {
@@ -258,9 +306,9 @@ export default function HomePage() {
       {/* ═══════ PROMO BANNER ═══════ */}
       {comboOffers.length > 0 && (
         <section className="py-14 px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-red-600 via-orange-500 to-yellow-500">
-          <div ref={comboScrollRef} className="max-w-7xl mx-auto flex flex-row gap-8 overflow-x-auto snap-x pb-4 hide-scrollbar">
+          <div ref={comboScrollRef} className={`max-w-7xl mx-auto flex flex-row gap-8 overflow-x-auto snap-x pb-4 hide-scrollbar ${comboOffers.length === 1 ? 'justify-center' : ''}`}>
             {comboOffers.map(offer => (
-              <div key={offer.id} className="min-w-[300px] md:min-w-[400px] flex-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-6 snap-center shrink-0">
+              <div key={offer.id} className={`min-w-[300px] md:min-w-[400px] ${comboOffers.length === 1 ? 'max-w-2xl w-full' : 'flex-1'} bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-6 snap-center shrink-0`}>
                 {offer.image_url && (
                   <div className="w-32 h-32 shrink-0 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/30">
                     <img src={offer.image_url} alt={offer.title} className="w-full h-full object-cover" />

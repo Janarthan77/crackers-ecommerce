@@ -47,10 +47,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         className="p-5 flex items-center gap-3"
         style={{ borderBottom: '1px solid rgba(255,107,0,0.1)' }}
       >
-        <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-xl text-white flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg, #E8192C, #FF6B00)', boxShadow: '0 4px 12px rgba(232,25,44,0.3)' }}
-        >🎇</div>
+        <img
+          src="https://pub-c9de055708fa4822887d1db91f66e351.r2.dev/brand_logo.png"
+          alt="Rupika Crackers Logo"
+          className="w-10 h-10 object-contain flex-shrink-0 select-none"
+        />
         <div className="flex flex-col leading-tight">
           <span
             className="font-black text-sm"
