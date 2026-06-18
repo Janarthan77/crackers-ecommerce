@@ -24,8 +24,8 @@ export default function ProductsPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch('http://localhost:5000/api/products').then(res => res.json()),
-      fetch('http://localhost:5000/api/categories').then(res => res.json())
+      fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/products`).then(res => res.json()),
+      fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/categories`).then(res => res.json())
     ])
       .then(([prodData, catData]) => {
         if (Array.isArray(prodData)) {

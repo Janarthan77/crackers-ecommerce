@@ -17,7 +17,7 @@ export default function AnalyticsPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/stats');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/stats`);
         if (!res.ok) throw new Error('Failed to fetch stats');
         const data = await res.json();
         setStats(data);
@@ -27,7 +27,7 @@ export default function AnalyticsPage() {
         setLoading(false);
       }
     };
-    
+
     fetchStats();
   }, []);
 
@@ -38,7 +38,7 @@ export default function AnalyticsPage() {
       <h1 className="page-title">Analytics Overview</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        
+
         <div className="stat-card p-6 flex flex-col gap-2 relative overflow-hidden group hover:scale-[1.02] transition-transform">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-orange-500/10 rounded-full group-hover:scale-150 transition-transform duration-500" />
           <span className="text-sm font-semibold" style={{ color: 'var(--text-m)' }}>Total Revenue</span>

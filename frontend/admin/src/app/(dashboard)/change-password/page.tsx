@@ -17,7 +17,7 @@ export default function ChangePasswordPage() {
     
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/change-password', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/change-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ currentPassword, newPassword }),

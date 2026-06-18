@@ -27,7 +27,7 @@ export default function ComboOffersPage() {
 
   const fetchData = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/combo-offers');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/combo-offers`);
       if (!res.ok) throw new Error('Failed to fetch combo offers');
       const data = await res.json();
       setOffers(data);
@@ -56,7 +56,7 @@ export default function ComboOffersPage() {
         const uploadData = new FormData();
         uploadData.append('file', imageFile);
 
-        const uploadRes = await fetch('http://localhost:5000/api/upload', {
+        const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/upload`, {
           method: 'POST',
           body: uploadData,
         });
@@ -76,7 +76,7 @@ export default function ComboOffersPage() {
         is_active: formData.is_active
       };
 
-      const res = await fetch('http://localhost:5000/api/combo-offers', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/combo-offers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -101,7 +101,7 @@ export default function ComboOffersPage() {
     if (!confirm('Are you sure you want to delete this combo offer?')) return;
     
     try {
-      const res = await fetch(`http://localhost:5000/api/combo-offers?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/combo-offers?id=${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete');
       toast.success('Combo offer deleted');
       fetchData();

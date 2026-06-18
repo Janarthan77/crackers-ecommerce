@@ -16,7 +16,7 @@ interface Blog {
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
   const [formData, setFormData] = useState({ title: '', content: '', image_url: '', is_published: true });
@@ -25,15 +25,15 @@ export default function BlogsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  
+
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const fetchBlogs = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/blogs');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/blogs`);
       if (!res.ok) {
-         const err = await res.json();
-         throw new Error(err.error || 'Failed to fetch');
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to fetch');
       }
       const data = await res.json();
       setBlogs(data);
@@ -57,7 +57,7 @@ export default function BlogsPage() {
     formDataUpload.append('file', file);
 
     try {
-      const res = await fetch('http://localhost:5000/api/upload', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/upload`, {
         method: 'POST',
         body: formDataUpload,
       });
@@ -81,10 +81,10 @@ export default function BlogsPage() {
     if (!formData.title) return toast.error('Title is required');
 
     try {
-      const url = editingBlog 
-        ? `http://localhost:5000/api/blogs/${editingBlog.id}` 
-        : `http://localhost:5000/api/blogs`;
-      
+      const url = editingBlog
+        ? `${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/blogs/${editingBlog.id}`
+        : `${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/blogs`;
+
       const method = editingBlog ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -94,10 +94,10 @@ export default function BlogsPage() {
       });
 
       if (!res.ok) {
-         const err = await res.json();
-         throw new Error(err.error || 'Failed to save');
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to save');
       }
-      
+
       toast.success(editingBlog ? 'Blog updated' : 'Blog published');
       setIsModalOpen(false);
       setEditingBlog(null);
@@ -110,12 +110,12 @@ export default function BlogsPage() {
 
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this blog?')) return;
-    
+
     try {
-      const res = await fetch(`http://localhost:5000/api/blogs/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/blogs/${id}`, { method: 'DELETE' });
       if (!res.ok) {
-         const err = await res.json();
-         throw new Error(err.error || 'Failed to delete');
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to delete');
       }
       toast.success('Blog deleted');
       fetchBlogs();
@@ -127,7 +127,7 @@ export default function BlogsPage() {
   const handleBulkDelete = async () => {
     if (!confirm(`Are you sure you want to delete ${selectedIds.length} blogs?`)) return;
     try {
-      const res = await fetch('http://localhost:5000/api/blogs/bulk', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/blogs/bulk`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: selectedIds }),
@@ -157,11 +157,11 @@ export default function BlogsPage() {
 
   const openEditModal = (blog: Blog) => {
     setEditingBlog(blog);
-    setFormData({ 
-      title: blog.title, 
-      content: blog.content || '', 
-      image_url: blog.image_url || '', 
-      is_published: blog.is_published 
+    setFormData({
+      title: blog.title,
+      content: blog.content || '',
+      image_url: blog.image_url || '',
+      is_published: blog.is_published
     });
     setIsModalOpen(true);
   };
@@ -177,8 +177,8 @@ export default function BlogsPage() {
       <div className="flex flex-col gap-6 animate-fade-up">
         <h1 className="page-title">Blogs Management</h1>
         <div className="stat-card p-12 text-center animate-pulse">
-           <div className="h-6 bg-gray-200 rounded w-1/4 mx-auto mb-4"></div>
-           <div className="h-4 bg-gray-100 rounded w-1/2 mx-auto"></div>
+          <div className="h-6 bg-gray-200 rounded w-1/4 mx-auto mb-4"></div>
+          <div className="h-4 bg-gray-100 rounded w-1/2 mx-auto"></div>
         </div>
       </div>
     );
@@ -189,10 +189,10 @@ export default function BlogsPage() {
       <div className="flex flex-col gap-6 animate-fade-up pb-10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
           <div>
-             <h1 className="page-title text-xl md:text-2xl mb-0">Blogs Management</h1>
-             <p className="text-sm text-gray-500 mt-1">Create and manage your articles.</p>
+            <h1 className="page-title text-xl md:text-2xl mb-0">Blogs Management</h1>
+            <p className="text-sm text-gray-500 mt-1">Create and manage your articles.</p>
           </div>
-          <button 
+          <button
             onClick={openAddModal}
             className="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
             style={{ background: 'linear-gradient(135deg, #0EA5E9, #2563EB)' }}
@@ -204,9 +204,9 @@ export default function BlogsPage() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <span className="text-gray-500">🔍</span>
-            <input 
-              type="text" 
-              placeholder="Search blogs..." 
+            <input
+              type="text"
+              placeholder="Search blogs..."
               className="w-full sm:w-64 outline-none text-sm"
               value={searchQuery}
               onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
@@ -214,7 +214,7 @@ export default function BlogsPage() {
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-500 w-full sm:w-auto justify-between sm:justify-end">
             <span>Show:</span>
-            <select 
+            <select
               className="border border-gray-200 rounded-lg px-2 py-1 outline-none"
               value={itemsPerPage}
               onChange={e => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
@@ -226,14 +226,14 @@ export default function BlogsPage() {
           </div>
         </div>
 
-      {selectedIds.length > 0 && (
-        <div className="bg-red-50 border border-red-200 p-3 rounded-xl flex justify-between items-center animate-fade-up mt-4">
-          <span className="text-red-700 font-semibold">{selectedIds.length} items selected</span>
-          <button onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-bold transition-colors">
-            Delete Selected
-          </button>
-        </div>
-      )}
+        {selectedIds.length > 0 && (
+          <div className="bg-red-50 border border-red-200 p-3 rounded-xl flex justify-between items-center animate-fade-up mt-4">
+            <span className="text-red-700 font-semibold">{selectedIds.length} items selected</span>
+            <button onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-bold transition-colors">
+              Delete Selected
+            </button>
+          </div>
+        )}
 
         <div className="stat-card overflow-hidden mt-4">
           <div className="overflow-x-auto">
@@ -250,8 +250,8 @@ export default function BlogsPage() {
               </thead>
               <tbody>
                 {(() => {
-                  const filteredBlogs = blogs.filter(b => 
-                    b.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                  const filteredBlogs = blogs.filter(b =>
+                    b.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     b.id.toString().includes(searchQuery)
                   );
                   const totalPages = Math.ceil(filteredBlogs.length / itemsPerPage);
@@ -264,66 +264,67 @@ export default function BlogsPage() {
                     <>
                       <tr className="bg-gray-50/50 border-b border-gray-100">
                         <td className="p-2 pl-4 border-r border-gray-100 text-center">
-                          <input type="checkbox" 
+                          <input type="checkbox"
                             className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary cursor-pointer"
-                            onChange={(e) => handleSelectAll(e, paginatedBlogs)} 
-                            checked={paginatedBlogs.length > 0 && paginatedBlogs.every(b => selectedIds.includes(b.id))} 
+                            onChange={(e) => handleSelectAll(e, paginatedBlogs)}
+                            checked={paginatedBlogs.length > 0 && paginatedBlogs.every(b => selectedIds.includes(b.id))}
                           />
                         </td>
                         <td colSpan={5} className="p-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">Select All on this page</td>
                       </tr>
                       {paginatedBlogs.map((blog) => (
                         <tr key={blog.id} className={`border-b border-gray-50 transition-colors ${selectedIds.includes(blog.id) ? 'bg-orange-50/50' : 'hover:bg-blue-50/30'}`}>
-                    <td className="p-4 border-r border-gray-50 text-center">
-                      <input type="checkbox"
-                        className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary cursor-pointer"
-                        checked={selectedIds.includes(blog.id)}
-                        onChange={() => handleSelectItem(blog.id)}
-                      />
-                    </td>
-                    <td className="p-4 text-sm font-medium text-gray-500">#{blog.id}</td>
-                    <td className="p-4">
-                       <div className="flex items-center gap-3">
-                          {blog.image_url ? (
-                             <img src={blog.image_url} alt={blog.title} className="w-12 h-12 rounded-lg object-cover border border-gray-100" />
-                          ) : (
-                             <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 text-xs">No img</div>
-                          )}
-                          <span className="text-sm font-bold text-gray-800">{blog.title}</span>
-                       </div>
-                    </td>
-                    <td className="p-4 text-center">
-                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${blog.is_published ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
-                          {blog.is_published ? 'Published' : 'Draft'}
-                       </span>
-                    </td>
-                    <td className="p-4 text-sm text-gray-500">
-                       {new Date(blog.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="p-4 text-sm text-right space-x-2">
-                    <button onClick={() => openEditModal(blog)} className="inline-flex p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors" title="Edit">
-                      <Edit size={16} strokeWidth={2.5} />
-                    </button>
-                    <button onClick={() => handleDelete(blog.id)} className="inline-flex p-2 bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors" title="Delete">
-                      <Trash2 size={16} strokeWidth={2.5} />
-                    </button>
-                  </td>
-                    </tr>
-                  ))}
-                  {paginatedBlogs.length === 0 && (
-                    <tr>
-                      <td colSpan={6} className="p-12 text-center text-gray-400">
-                         <div className="text-4xl mb-3">📝</div>
-                         <p>No blogs found.</p>
-                      </td>
-                    </tr>
-                  )}
-                  </>
-                );})()}
+                          <td className="p-4 border-r border-gray-50 text-center">
+                            <input type="checkbox"
+                              className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary cursor-pointer"
+                              checked={selectedIds.includes(blog.id)}
+                              onChange={() => handleSelectItem(blog.id)}
+                            />
+                          </td>
+                          <td className="p-4 text-sm font-medium text-gray-500">#{blog.id}</td>
+                          <td className="p-4">
+                            <div className="flex items-center gap-3">
+                              {blog.image_url ? (
+                                <img src={blog.image_url} alt={blog.title} className="w-12 h-12 rounded-lg object-cover border border-gray-100" />
+                              ) : (
+                                <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 text-xs">No img</div>
+                              )}
+                              <span className="text-sm font-bold text-gray-800">{blog.title}</span>
+                            </div>
+                          </td>
+                          <td className="p-4 text-center">
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${blog.is_published ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
+                              {blog.is_published ? 'Published' : 'Draft'}
+                            </span>
+                          </td>
+                          <td className="p-4 text-sm text-gray-500">
+                            {new Date(blog.created_at).toLocaleDateString()}
+                          </td>
+                          <td className="p-4 text-sm text-right space-x-2">
+                            <button onClick={() => openEditModal(blog)} className="inline-flex p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors" title="Edit">
+                              <Edit size={16} strokeWidth={2.5} />
+                            </button>
+                            <button onClick={() => handleDelete(blog.id)} className="inline-flex p-2 bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors" title="Delete">
+                              <Trash2 size={16} strokeWidth={2.5} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      {paginatedBlogs.length === 0 && (
+                        <tr>
+                          <td colSpan={6} className="p-12 text-center text-gray-400">
+                            <div className="text-4xl mb-3">📝</div>
+                            <p>No blogs found.</p>
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  );
+                })()}
               </tbody>
             </table>
           </div>
-          
+
           {/* Pagination controls inside stat-card footer */}
           {(() => {
             const filteredCount = blogs.filter(b => b.title.toLowerCase().includes(searchQuery.toLowerCase()) || b.id.toString().includes(searchQuery)).length;
@@ -349,17 +350,17 @@ export default function BlogsPage() {
         <div className="fixed inset-0 z-50 flex justify-center bg-black/40 backdrop-blur-sm px-4 py-8 overflow-y-auto">
           <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl p-8 animate-fade-up my-auto h-max">
             <div className="flex justify-between items-center mb-6">
-               <h2 className="text-2xl font-bold text-gray-800">
-                 {editingBlog ? 'Edit Blog' : 'Create New Blog'}
-               </h2>
-               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+              <h2 className="text-2xl font-bold text-gray-800">
+                {editingBlog ? 'Edit Blog' : 'Create New Blog'}
+              </h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
             </div>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div>
                 <label className="block text-sm font-bold mb-2 text-gray-600">Blog Title</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -371,8 +372,8 @@ export default function BlogsPage() {
               <div>
                 <label className="block text-sm font-bold mb-2 text-gray-600">Image</label>
                 <div className="flex gap-3">
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
                     disabled={isUploading}
@@ -393,7 +394,7 @@ export default function BlogsPage() {
 
               <div>
                 <label className="block text-sm font-bold mb-2 text-gray-600">Content</label>
-                <textarea 
+                <textarea
                   required
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
@@ -403,28 +404,28 @@ export default function BlogsPage() {
               </div>
 
               <div className="flex items-center gap-3 mt-2">
-                 <input 
-                    type="checkbox" 
-                    id="is_published" 
-                    checked={formData.is_published}
-                    onChange={(e) => setFormData({ ...formData, is_published: e.target.checked })}
-                    className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                 />
-                 <label htmlFor="is_published" className="text-sm font-bold text-gray-700 cursor-pointer">
-                    Publish immediately?
-                 </label>
+                <input
+                  type="checkbox"
+                  id="is_published"
+                  checked={formData.is_published}
+                  onChange={(e) => setFormData({ ...formData, is_published: e.target.checked })}
+                  className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor="is_published" className="text-sm font-bold text-gray-700 cursor-pointer">
+                  Publish immediately?
+                </label>
               </div>
 
               <div className="flex justify-end gap-4 mt-6 pt-6 border-t border-gray-100">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setIsModalOpen(false)}
                   className="px-6 py-3 rounded-xl text-gray-500 hover:bg-gray-100 font-bold transition-colors"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="px-8 py-3 rounded-xl text-white font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
                   style={{ background: 'linear-gradient(135deg, #0EA5E9, #2563EB)' }}
                 >

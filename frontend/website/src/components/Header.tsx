@@ -12,7 +12,7 @@ export default function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/settings')
+    fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings`)
       .then(res => res.json())
       .then(data => {
         if (data && !data.error) {

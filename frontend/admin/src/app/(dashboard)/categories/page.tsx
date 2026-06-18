@@ -25,7 +25,7 @@ export default function CategoriesPage() {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/categories');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/categories`);
       if (!res.ok) throw new Error('Failed to fetch');
       const data = await res.json();
       setCategories(data);
@@ -46,8 +46,8 @@ export default function CategoriesPage() {
 
     try {
       const url = editingCategory 
-        ? `http://localhost:5000/api/categories/${editingCategory.id}` 
-        : `http://localhost:5000/api/categories`;
+        ? `${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/categories/${editingCategory.id}` 
+        : `${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/categories`;
       
       const method = editingCategory ? 'PUT' : 'POST';
 
@@ -73,7 +73,7 @@ export default function CategoriesPage() {
     if (!confirm('Are you sure you want to delete this category?')) return;
     
     try {
-      const res = await fetch(`http://localhost:5000/api/categories/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/categories/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete');
       toast.success('Category deleted');
       fetchCategories();
@@ -85,7 +85,7 @@ export default function CategoriesPage() {
   const handleBulkDelete = async () => {
     if (!confirm(`Are you sure you want to delete ${selectedIds.length} categories?`)) return;
     try {
-      const res = await fetch('http://localhost:5000/api/categories/bulk', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/categories/bulk`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: selectedIds }),

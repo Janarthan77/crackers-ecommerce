@@ -4,7 +4,7 @@ import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
 export default async function Footer() {
   let settings = { phone: '9994090969, 99430', email: 'rrvcrackers@gmail.com', address: 'Sivakasi, Tamil Nadu — 626123' };
   try {
-    const res = await fetch('http://localhost:5000/api/settings', { cache: 'no-store' });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings`, { cache: 'no-store' });
     if (res.ok) {
       const data = await res.json();
       if (data && !data.error) {

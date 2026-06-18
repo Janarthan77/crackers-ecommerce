@@ -39,8 +39,8 @@ export default function ProductsPage() {
   const fetchData = async () => {
     try {
       const [prodRes, catRes] = await Promise.all([
-        fetch('http://localhost:5000/api/products'),
-        fetch('http://localhost:5000/api/categories')
+        fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/products`),
+        fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/categories`)
       ]);
       
       if (!prodRes.ok || !catRes.ok) throw new Error('Failed to fetch data');
@@ -75,7 +75,7 @@ export default function ProductsPage() {
         const uploadData = new FormData();
         uploadData.append('file', imageFile);
 
-        const uploadRes = await fetch('http://localhost:5000/api/upload', {
+        const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/upload`, {
           method: 'POST',
           body: uploadData,
         });
@@ -86,8 +86,8 @@ export default function ProductsPage() {
       }
 
       const url = editingProduct 
-        ? `http://localhost:5000/api/products/${editingProduct.id}` 
-        : `http://localhost:5000/api/products`;
+        ? `${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/products/${editingProduct.id}` 
+        : `${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/products`;
       
       const method = editingProduct ? 'PUT' : 'POST';
 
@@ -125,7 +125,7 @@ export default function ProductsPage() {
     if (!confirm('Are you sure you want to delete this product?')) return;
     
     try {
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/products/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete');
       toast.success('Product deleted');
       fetchData();
@@ -137,7 +137,7 @@ export default function ProductsPage() {
   const handleBulkDelete = async () => {
     if (!confirm(`Are you sure you want to delete ${selectedIds.length} products?`)) return;
     try {
-      const res = await fetch('http://localhost:5000/api/products/bulk', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/products/bulk`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: selectedIds }),

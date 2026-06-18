@@ -7,7 +7,7 @@ export default function BlogsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/blogs')
+    fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/blogs`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {

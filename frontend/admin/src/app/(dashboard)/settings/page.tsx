@@ -21,7 +21,7 @@ export default function SettingsPage() {
 
   const fetchSettings = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/settings');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings`);
       if (!res.ok) {
         const err = await res.json();
         if (res.status === 403) {
@@ -62,7 +62,7 @@ export default function SettingsPage() {
     setSaving(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/settings', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

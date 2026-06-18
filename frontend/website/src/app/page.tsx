@@ -66,7 +66,7 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/blogs')
+    fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/blogs`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -77,9 +77,9 @@ export default function HomePage() {
 
     // Fetch products and categories for Quick Order
     Promise.all([
-      fetch('http://localhost:5000/api/products'),
-      fetch('http://localhost:5000/api/categories'),
-      fetch('http://localhost:5000/api/combo-offers')
+      fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/products`),
+      fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/categories`),
+      fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/combo-offers`)
     ]).then(async ([pr, cr, co]) => {
       if (pr.ok) setProducts(await pr.json());
       if (cr.ok) setCategories(await cr.json());
@@ -167,7 +167,7 @@ export default function HomePage() {
           productId: p.id, name: p.name, price: getSellingPrice(p), originalPrice: p.price, quantity: quantities[p.id]
         }))
       };
-      const res = await fetch('http://localhost:5000/api/orders', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/orders`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData),
       });
       if (res.ok) {
@@ -210,7 +210,7 @@ export default function HomePage() {
           quantity: 1
         }]
       };
-      const res = await fetch('http://localhost:5000/api/orders', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/orders`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData),
       });
       if (res.ok) {

@@ -113,7 +113,7 @@ export default function OrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/orders');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/orders`);
       if (!res.ok) throw new Error('Failed to fetch');
       const data = await res.json();
       setOrders(data);
@@ -130,7 +130,7 @@ export default function OrdersPage() {
 
   const handleStatusChange = async (id: number, newStatus: string) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/orders/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -148,7 +148,7 @@ export default function OrdersPage() {
   const handleBulkDelete = async () => {
     if (!confirm(`Are you sure you want to delete ${selectedIds.length} orders?`)) return;
     try {
-      const res = await fetch('http://localhost:5000/api/orders/bulk', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/orders/bulk`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: selectedIds }),

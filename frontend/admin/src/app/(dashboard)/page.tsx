@@ -19,20 +19,20 @@ export default async function Dashboard() {
   };
 
   let recentOrders = [
-    { id: 1, name: 'Ganesan',  mobile: '9944696046', city: 'Kuduvancheri', overallTotal: 8806,  status: 'completed' },
-    { id: 2, name: 'Prabhu',   mobile: '9952727788', city: 'Ramnadu',      overallTotal: 5064,  status: 'completed' },
-    { id: 3, name: 'Sathish',  mobile: '9655443328', city: 'Ramnadu',      overallTotal: 6605,  status: 'completed' },
-    { id: 4, name: 'Karthik',  mobile: '9942311555', city: 'Tamilnadu',    overallTotal: 9364,  status: 'pending'   },
+    { id: 1, name: 'Ganesan', mobile: '9944696046', city: 'Kuduvancheri', overallTotal: 8806, status: 'completed' },
+    { id: 2, name: 'Prabhu', mobile: '9952727788', city: 'Ramnadu', overallTotal: 5064, status: 'completed' },
+    { id: 3, name: 'Sathish', mobile: '9655443328', city: 'Ramnadu', overallTotal: 6605, status: 'completed' },
+    { id: 4, name: 'Karthik', mobile: '9942311555', city: 'Tamilnadu', overallTotal: 9364, status: 'pending' },
   ];
 
   try {
-    const statsRes = await fetch('http://localhost:5000/api/stats', { cache: 'no-store' });
+    const statsRes = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/stats`, { cache: 'no-store' });
     if (statsRes.ok) {
       const data = await statsRes.json();
       if (!data.error) statsData = data;
     }
-    
-    const ordersRes = await fetch('http://localhost:5000/api/orders', { cache: 'no-store' });
+
+    const ordersRes = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/orders`, { cache: 'no-store' });
     if (ordersRes.ok) {
       const data = await ordersRes.json();
       if (!data.error && Array.isArray(data)) recentOrders = data.slice(0, 4);
@@ -42,10 +42,10 @@ export default async function Dashboard() {
   }
 
   const stats = [
-    { label: 'Total Orders',    value: statsData.totalOrders?.toString() || '0',        icon: '🛒', color: '#E8192C', bg: '#FFE4E6', trend: 'Live' },
-    { label: 'Total Revenue',   value: `₹${(statsData.revenue || 0).toLocaleString()}`, icon: '💰', color: '#16A34A', bg: '#DCFCE7', trend: 'Live' },
-    { label: 'Active Products', value: statsData.totalProducts?.toString() || '0',      icon: '📦', color: '#7C3AED', bg: '#F5F3FF', trend: 'Live' },
-    { label: 'Categories',      value: statsData.totalCategories?.toString() || '0',    icon: '📁', color: '#1D4ED8', bg: '#DBEAFE', trend: 'Live' },
+    { label: 'Total Orders', value: statsData.totalOrders?.toString() || '0', icon: '🛒', color: '#E8192C', bg: '#FFE4E6', trend: 'Live' },
+    { label: 'Total Revenue', value: `₹${(statsData.revenue || 0).toLocaleString()}`, icon: '💰', color: '#16A34A', bg: '#DCFCE7', trend: 'Live' },
+    { label: 'Active Products', value: statsData.totalProducts?.toString() || '0', icon: '📦', color: '#7C3AED', bg: '#F5F3FF', trend: 'Live' },
+    { label: 'Categories', value: statsData.totalCategories?.toString() || '0', icon: '📁', color: '#1D4ED8', bg: '#DBEAFE', trend: 'Live' },
   ];
 
   return (
@@ -93,7 +93,7 @@ export default async function Dashboard() {
       </div>
 
       {/* Chart Section */}
-      <div 
+      <div
         className="rounded-3xl p-6 bg-white overflow-hidden relative"
         style={{ border: '1px solid rgba(255,107,0,0.08)', boxShadow: '0 2px 12px rgba(232,25,44,0.06)' }}
       >
@@ -102,7 +102,7 @@ export default async function Dashboard() {
           <p className="text-xs font-semibold" style={{ color: 'var(--text-m)' }}>Monthly order details and total revenue</p>
         </div>
         <div className="h-[300px] w-full">
-           <RevenueChart data={statsData.monthlyStats || []} />
+          <RevenueChart data={statsData.monthlyStats || []} />
         </div>
       </div>
 
