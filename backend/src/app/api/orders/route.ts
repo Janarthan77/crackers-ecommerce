@@ -82,7 +82,7 @@ export async function GET() {
         console.error("GET Orders Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
         const message = e?.code === '42501' ? 'Supabase Permission Denied (RLS). Please check your service role key.' : 'Server error';
-        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status, headers: corsHeaders });
+        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status });
     }
 }
 
@@ -125,11 +125,11 @@ export async function POST(request: Request) {
         // Send a Telegram notification in the background
         sendTelegramNotification(newOrderData, newOrder.id).catch(console.error);
 
-        return NextResponse.json(newOrder, { status:  });
+        return NextResponse.json(newOrder, { status: 201 });
     } catch (e: any) {
         console.error("POST Orders Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
         const message = e?.code === '42501' ? 'Supabase Permission Denied (RLS)' : 'Server error';
-        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status, headers: corsHeaders });
+        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status });
     }
 }

@@ -19,7 +19,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         return NextResponse.json(data);
     } catch (e: any) {
         console.error("PUT Error:", e);
-        return NextResponse.json({ error: 'Server error', details: e?.message || e }, { status:  });
+        return NextResponse.json({ error: 'Server error', details: e?.message || e }, { status: 500 });
     }
 }
 
@@ -36,6 +36,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         return NextResponse.json({ success: true });
     } catch (e: any) {
         console.error("DELETE Error:", e);
-        return NextResponse.json({ error: 'Server error', details: e?.message || e }, { status:  });
+        return NextResponse.json({ error: 'Server error', details: e?.message || e }, { status: 500 });
     }
 }

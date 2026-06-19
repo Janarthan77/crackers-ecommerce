@@ -5,7 +5,7 @@ export async function DELETE(request: Request) {
     try {
         const { ids } = await request.json();
         if (!Array.isArray(ids) || ids.length === 0) {
-            return NextResponse.json({ error: 'No IDs provided' }, { status:  });
+            return NextResponse.json({ error: 'No IDs provided' }, { status: 400 });
         }
 
         const { error } = await supabase
@@ -20,6 +20,6 @@ export async function DELETE(request: Request) {
         console.error("Bulk Delete Products Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
         const message = e?.code === '42501' ? 'Supabase Permission Denied (RLS)' : 'Server error';
-        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status, headers: corsHeaders });
+        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status });
     }
 }

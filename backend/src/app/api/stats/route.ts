@@ -66,6 +66,6 @@ export async function GET() {
         console.error("Stats API Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
         const message = e?.code === '42501' ? 'Supabase Permission Denied (RLS). Please check your service role key.' : 'Server error';
-        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status, headers: corsHeaders });
+        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status });
     }
 }

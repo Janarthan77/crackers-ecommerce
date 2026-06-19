@@ -21,7 +21,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         console.error("PUT Blogs Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
         const message = e?.code === '42501' ? 'Supabase Permission Denied (RLS)' : 'Server error';
-        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status, headers: corsHeaders });
+        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status });
     }
 }
 
@@ -41,6 +41,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         console.error("DELETE Blogs Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
         const message = e?.code === '42501' ? 'Supabase Permission Denied (RLS)' : 'Server error';
-        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status, headers: corsHeaders });
+        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status });
     }
 }

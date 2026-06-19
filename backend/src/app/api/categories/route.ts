@@ -15,7 +15,7 @@ export async function GET() {
         console.error("GET Categories Error:", e.message);
         const status = e?.code === '42501' ? 403 : 500;
         const message = e?.code === '42501' ? 'Supabase Permission Denied (RLS). Please check your service role key.' : 'Server error';
-        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status, headers: corsHeaders });
+        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status });
     }
 }
 
@@ -32,11 +32,11 @@ export async function POST(request: Request) {
 
         if (error) throw error;
 
-        return NextResponse.json(newCategory, { status:  });
+        return NextResponse.json(newCategory, { status: 201 });
     } catch (e: any) {
         console.error("POST Categories Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
         const message = e?.code === '42501' ? 'Supabase Permission Denied (RLS)' : 'Server error';
-        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status, headers: corsHeaders });
+        return NextResponse.json({ error: message, details: e?.message || String(e) }, { status });
     }
 }

@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const file = formData.get('file') as File;
     
     if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status:  });
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
     const fileExt = file.name.split('.').pop();
@@ -46,10 +46,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ 
       url: publicUrl,
       fileName: fileName
-    }, { status:  });
+    }, { status: 200 });
 
   } catch (e: any) {
     console.error("Upload Error:", e);
-    return NextResponse.json({ error: 'Server error', details: e?.message || String(e) }, { status:  });
+    return NextResponse.json({ error: 'Server error', details: e?.message || String(e) }, { status: 500 });
   }
 }

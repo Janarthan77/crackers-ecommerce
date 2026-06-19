@@ -19,6 +19,6 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         return NextResponse.json(data);
     } catch (e: any) {
         console.error("PUT Orders Error:", e);
-        return NextResponse.json({ error: 'Server error', details: e?.message || e }, { status:  });
+        return NextResponse.json({ error: 'Server error', details: e?.message || e }, { status: 500 });
     }
 }

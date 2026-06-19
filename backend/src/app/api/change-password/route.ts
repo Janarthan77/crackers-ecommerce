@@ -24,12 +24,12 @@ export async function POST(request: Request) {
              // Fallback for demo/testing purposes
              return NextResponse.json({ success: true, message: 'Password changed successfully (mocked)' });
         } else {
-            return NextResponse.json({ success: false, message: 'Incorrect current password' }, { status:  });
+            return NextResponse.json({ success: false, message: 'Incorrect current password' }, { status: 401 });
         }
     } catch (e: any) {
         console.error("Change Password Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
         const message = e?.code === '42501' ? 'Supabase Permission Denied (RLS). Please check your service role key.' : 'Server error';
-        return NextResponse.json({ success: false, message }, { status, headers: corsHeaders });
+        return NextResponse.json({ success: false, message }, { status });
     }
 }
