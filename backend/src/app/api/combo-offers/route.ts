@@ -1,16 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
-}
-
 export async function GET() {
     try {
         const { data: offers, error } = await supabase
@@ -20,7 +10,7 @@ export async function GET() {
             
         if (error) throw error;
         
-        return NextResponse.json(offers, { headers: corsHeaders });
+        return NextResponse.json(offers);
     } catch (e: any) {
         console.error("GET Combo Offers Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
@@ -61,14 +51,14 @@ export async function DELETE(request: Request) {
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
         
-        if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400, headers: corsHeaders });
+        if (!id) return NextResponse.json({ error: 'Missing ID' }, { status:  });
         
         const { error } = await supabase.from('combo_offers').delete().eq('id', id);
         if (error) throw error;
         
-        return NextResponse.json({ success: true }, { headers: corsHeaders });
+        return NextResponse.json({ success: true });
     } catch (e: any) {
         console.error("DELETE Combo Offers Error:", e);
-        return NextResponse.json({ error: 'Server error', details: e?.message }, { status: 500, headers: corsHeaders });
+        return NextResponse.json({ error: 'Server error', details: e?.message }, { status:  });
     }
 }

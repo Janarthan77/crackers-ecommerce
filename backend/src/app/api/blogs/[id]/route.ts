@@ -1,16 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
-}
-
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
@@ -26,7 +16,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
             
         if (error) throw error;
         
-        return NextResponse.json(updatedBlog, { headers: corsHeaders });
+        return NextResponse.json(updatedBlog);
     } catch (e: any) {
         console.error("PUT Blogs Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
@@ -46,7 +36,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
             
         if (error) throw error;
         
-        return NextResponse.json({ success: true }, { headers: corsHeaders });
+        return NextResponse.json({ success: true });
     } catch (e: any) {
         console.error("DELETE Blogs Error:", e);
         const status = e?.code === '42501' ? 403 : 500;

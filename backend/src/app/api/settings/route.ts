@@ -1,16 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
-}
-
 export async function GET() {
     try {
         const { data: settings, error } = await supabase
@@ -23,7 +13,7 @@ export async function GET() {
             throw error;
         }
         
-        return NextResponse.json(settings || {}, { headers: corsHeaders });
+        return NextResponse.json(settings || {});
     } catch (e: any) {
         console.error("GET Settings Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
@@ -57,7 +47,7 @@ export async function POST(request: Request) {
             
         if (error) throw error;
         
-        return NextResponse.json(data, { status: 200, headers: corsHeaders });
+        return NextResponse.json(data, { status:  });
     } catch (e: any) {
         console.error("POST Settings Error:", e);
         const status = e?.code === '42501' ? 403 : 500;

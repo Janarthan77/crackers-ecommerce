@@ -1,16 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
-}
-
 export async function GET() {
     try {
         const [ordersRes, productsRes, categoriesRes, revenueRes] = await Promise.all([
@@ -71,7 +61,7 @@ export async function GET() {
             totalCategories: categoriesCount || 0,
             revenue: revenue,
             monthlyStats: monthlyStats
-        }, { headers: corsHeaders });
+        });
     } catch (e: any) {
         console.error("Stats API Error:", e);
         const status = e?.code === '42501' ? 403 : 500;

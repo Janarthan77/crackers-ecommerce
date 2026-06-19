@@ -1,12 +1,6 @@
 import { NextResponse } from 'next/server';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
 const s3Client = new S3Client({
   region: 'auto',
   endpoint: (process.env.R2_PUBLIC_URL || '').trim(),
@@ -16,17 +10,13 @@ const s3Client = new S3Client({
   },
 });
 
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
-}
-
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     
     if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400, headers: corsHeaders });
+      return NextResponse.json({ error: 'No file provided' }, { status:  });
     }
 
     const fileExt = file.name.split('.').pop();
@@ -56,10 +46,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ 
       url: publicUrl,
       fileName: fileName
-    }, { status: 200, headers: corsHeaders });
+    }, { status:  });
 
   } catch (e: any) {
     console.error("Upload Error:", e);
-    return NextResponse.json({ error: 'Server error', details: e?.message || String(e) }, { status: 500, headers: corsHeaders });
+    return NextResponse.json({ error: 'Server error', details: e?.message || String(e) }, { status:  });
   }
 }

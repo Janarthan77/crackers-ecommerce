@@ -1,16 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
-}
-
 export async function GET() {
     try {
         const { data: blogs, error } = await supabase
@@ -20,7 +10,7 @@ export async function GET() {
             
         if (error) throw error;
         
-        return NextResponse.json(blogs || [], { headers: corsHeaders });
+        return NextResponse.json(blogs || []);
     } catch (e: any) {
         console.error("GET Blogs Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
@@ -48,7 +38,7 @@ export async function POST(request: Request) {
             
         if (error) throw error;
         
-        return NextResponse.json(newBlog, { status: 201, headers: corsHeaders });
+        return NextResponse.json(newBlog, { status:  });
     } catch (e: any) {
         console.error("POST Blogs Error:", e);
         const status = e?.code === '42501' ? 403 : 500;

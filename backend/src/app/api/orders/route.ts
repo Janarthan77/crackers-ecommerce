@@ -1,16 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
-export async function OPTIONS() {
-    return NextResponse.json({}, { headers: corsHeaders });
-}
-
 async function sendTelegramNotification(orderData: any, orderId: number) {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
@@ -87,7 +77,7 @@ export async function GET() {
             items: o.items || []
         }));
 
-        return NextResponse.json(formattedOrders, { headers: corsHeaders });
+        return NextResponse.json(formattedOrders);
     } catch (e: any) {
         console.error("GET Orders Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
@@ -135,7 +125,7 @@ export async function POST(request: Request) {
         // Send a Telegram notification in the background
         sendTelegramNotification(newOrderData, newOrder.id).catch(console.error);
 
-        return NextResponse.json(newOrder, { status: 201, headers: corsHeaders });
+        return NextResponse.json(newOrder, { status:  });
     } catch (e: any) {
         console.error("POST Orders Error:", e);
         const status = e?.code === '42501' ? 403 : 500;

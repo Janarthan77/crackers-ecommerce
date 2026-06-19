@@ -1,16 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
-}
-
 export async function GET() {
     try {
         const { data: products, error } = await supabase
@@ -31,7 +21,7 @@ export async function GET() {
             stock: p.stock || 0
         }));
         
-        return NextResponse.json(formattedProducts, { headers: corsHeaders });
+        return NextResponse.json(formattedProducts);
     } catch (e: any) {
         console.error("GET Products Error:", e);
         const status = e?.code === '42501' ? 403 : 500;
@@ -54,7 +44,7 @@ export async function POST(request: Request) {
             
         if (error) throw error;
         
-        return NextResponse.json(newProduct, { status: 201, headers: corsHeaders });
+        return NextResponse.json(newProduct, { status:  });
     } catch (e: any) {
         console.error("POST Products Error:", e);
         const status = e?.code === '42501' ? 403 : 500;

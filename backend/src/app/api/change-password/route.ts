@@ -1,16 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
-}
-
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -29,12 +19,12 @@ export async function POST(request: Request) {
                 .update({ password: newPassword })
                 .eq('username', 'admin');
                 
-            return NextResponse.json({ success: true, message: 'Password changed successfully' }, { headers: corsHeaders });
+            return NextResponse.json({ success: true, message: 'Password changed successfully' });
         } else if (currentPassword === 'admin' || currentPassword === 'admin123' || currentPassword === 'password' || currentPassword === '........') {
              // Fallback for demo/testing purposes
-             return NextResponse.json({ success: true, message: 'Password changed successfully (mocked)' }, { headers: corsHeaders });
+             return NextResponse.json({ success: true, message: 'Password changed successfully (mocked)' });
         } else {
-            return NextResponse.json({ success: false, message: 'Incorrect current password' }, { status: 401, headers: corsHeaders });
+            return NextResponse.json({ success: false, message: 'Incorrect current password' }, { status:  });
         }
     } catch (e: any) {
         console.error("Change Password Error:", e);
