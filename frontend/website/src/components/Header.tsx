@@ -107,7 +107,7 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${active
+                  className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-1 ${active
                     ? 'text-orange-600'
                     : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50'
                     }`}

@@ -239,9 +239,15 @@ export default function HomePage() {
           </div>
 
           <h1 className="font-display font-black leading-tight mb-6 text-white drop-shadow-2xl" style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}>
-            The Biggest<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 filter drop-shadow-lg">DIWALI</span><br />
-            <span className="text-white text-5xl drop-shadow-xl">Sale Is Here!</span>
+            The Biggest <span className="text-yellow-400 drop-shadow-md">RRV Crackers</span><br />
+            <span className="inline-flex gap-1 md:gap-2 filter drop-shadow-lg py-4">
+              {['D','I','W','A','L','I','\u00A0','S','A','L','E'].map((char, i) => (
+                <span key={i} className={char === '\u00A0' ? 'w-2 md:w-6' : 'animate-bounce text-transparent bg-clip-text bg-gradient-to-br from-orange-400 to-red-500'} style={{ animationDelay: `${i * 0.1}s` }}>
+                  {char}
+                </span>
+              ))}
+            </span><br />
+            <span className="text-white text-5xl drop-shadow-xl">Is Here!</span>
           </h1>
 
           <p className="text-lg text-gray-200 mb-8 max-w-xl mx-auto drop-shadow-md">
@@ -249,11 +255,11 @@ export default function HomePage() {
             <strong className="text-orange-400">Up to 40% OFF</strong> on all premium products!
           </p>
 
-          <div className="flex flex-wrap gap-4 justify-center">
-            <a href="#quick-order" className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-8 py-3.5 rounded-full font-bold shadow-[0_0_20px_rgba(255,107,0,0.4)] hover:shadow-[0_0_30px_rgba(255,107,0,0.6)] hover:scale-105 transition-all">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up" style={{ animationDelay: '0.2s' }}>
+            <Link href="/products" className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-black px-8 py-4 rounded-full shadow-[0_0_20px_rgba(255,107,0,0.5)] hover:shadow-[0_0_30px_rgba(255,107,0,0.8)] transition-all duration-300 hover:scale-110 active:scale-95">
               Shop Now
-            </a>
-            <Link href="/contact" className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-3.5 rounded-full font-bold hover:bg-white/20 transition-all shadow-lg">
+            </Link>
+            <Link href="/contact" className="bg-white/10 hover:bg-white/20 text-white border border-white/30 backdrop-blur-md font-bold px-8 py-4 rounded-full transition-all duration-300 hover:scale-110 active:scale-95">
               Get A Quote
             </Link>
           </div>
@@ -261,14 +267,14 @@ export default function HomePage() {
       </section>
 
       {/* ═══════ FEATURES STRIP ═══════ */}
-      <section className="py-6 px-4 md:px-8 bg-white border-y border-orange-50">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-orange-50">
+      <section className="py-10 px-4 md:px-8 bg-white border-y border-orange-50">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100">
           {FEATURES.map((f) => (
-            <div key={f.title} className="flex items-center gap-3 px-6 py-4">
-              <span className="text-2xl flex-shrink-0">{f.icon}</span>
+            <div key={f.title} className="flex flex-col md:flex-row items-center text-center md:text-left gap-4 md:gap-5 px-6 py-6 md:py-4">
+              <span className="text-4xl md:text-5xl flex-shrink-0 drop-shadow-sm">{f.icon}</span>
               <div>
-                <div className="font-bold text-sm text-gray-800">{f.title}</div>
-                <div className="text-xs text-gray-500 mt-0.5">{f.desc}</div>
+                <div className="font-bold text-base md:text-lg text-gray-800">{f.title}</div>
+                <div className="text-sm text-gray-500 mt-1">{f.desc}</div>
               </div>
             </div>
           ))}
@@ -279,8 +285,9 @@ export default function HomePage() {
       {comboOffers.length > 0 && (
         <section className="py-14 px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-red-600 via-orange-500 to-yellow-500">
           <div ref={comboScrollRef} className={`max-w-7xl mx-auto flex flex-row gap-8 overflow-x-auto snap-x pb-4 hide-scrollbar ${comboOffers.length === 1 ? 'justify-center' : ''}`}>
-            {comboOffers.map(offer => (
-              <div key={offer.id} className={`min-w-[300px] md:min-w-[400px] ${comboOffers.length === 1 ? 'max-w-2xl w-full' : 'flex-1'} bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-6 snap-center shrink-0`}>
+            {comboOffers.map((offer) => (
+              <div key={offer.id} className={`min-w-[300px] md:min-w-[400px] ${comboOffers.length === 1 ? 'max-w-2xl w-full' : 'flex-1'} bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-6 snap-center shrink-0 hover:bg-white/20 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(255,107,0,0.3)] transition-all duration-500 cursor-pointer group`}>
+                <div className="absolute top-4 left-4 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg group-hover:scale-110 transition-transform">Limited</div>
                 {offer.image_url && (
                   <div className="w-32 h-32 shrink-0 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/30">
                     <img src={offer.image_url} alt={offer.title} className="w-full h-full object-cover" />
@@ -365,7 +372,7 @@ export default function HomePage() {
                               const rowTotal = (quantities[product.id] || 0) * getSellingPrice(product);
 
                               return (
-                                <tr key={product.id} className={`border-b border-orange-100 ${rowBg}`}>
+                                <tr key={product.id} className="border-b border-orange-50 last:border-0 hover:bg-orange-50/50 transition-colors duration-300">
                                   <td className="w-16 p-2 border-r border-orange-100">
                                     <div
                                       className="w-10 h-10 mx-auto flex items-center justify-center text-xl bg-white border border-orange-100 shadow-sm rounded overflow-hidden cursor-pointer hover:border-orange-400 hover:shadow-md transition-all"
@@ -421,40 +428,40 @@ export default function HomePage() {
               </div>
 
               {/* Customer Booking Form */}
-              <div className="mt-8 bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-gray-100">
-                <h2 className="text-2xl font-bold mb-8 border-b pb-4 text-center uppercase tracking-widest text-[#1E3A8A]">Customer Details</h2>
+              <div className="mt-8 bg-gradient-to-br from-orange-50 to-amber-50 p-6 md:p-10 rounded-2xl shadow-xl border border-orange-200">
+                <h2 className="text-3xl font-black mb-8 border-b pb-4 text-center uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500">Customer Details</h2>
 
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-semibold text-gray-700">Name (*)</label>
-                    <input required type="text" name="name" value={customer.name} onChange={handleCustomerChange} placeholder="Enter your full name" className="border border-gray-300 p-3 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" />
+                    <input required type="text" name="name" value={customer.name} onChange={handleCustomerChange} placeholder="Enter your full name" className="border border-gray-300 p-3 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all" />
                   </div>
                   <div className="flex flex-col gap-1.5 md:col-start-1">
                     <label className="text-sm font-semibold text-gray-700">Mobile Number (*)</label>
-                    <input required type="tel" name="mobile" value={customer.mobile} onChange={handleCustomerChange} placeholder="10-digit mobile number" className="border border-gray-300 p-3 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" />
+                    <input required type="tel" name="mobile" value={customer.mobile} onChange={handleCustomerChange} placeholder="10-digit mobile number" className="border border-gray-300 p-3 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all" />
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-semibold text-gray-700">Email</label>
-                    <input type="email" name="email" value={customer.email} onChange={handleCustomerChange} placeholder="Optional email address" className="border border-gray-300 p-3 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" />
+                    <input type="email" name="email" value={customer.email} onChange={handleCustomerChange} placeholder="Optional email address" className="border border-gray-300 p-3 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all" />
                   </div>
                   <div className="flex flex-col gap-1.5 md:col-span-2">
                     <label className="text-sm font-semibold text-gray-700">Delivery Address (*)</label>
-                    <input required type="text" name="address" value={customer.address} onChange={handleCustomerChange} placeholder="Full street address" className="border border-gray-300 p-3 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" />
+                    <input required type="text" name="address" value={customer.address} onChange={handleCustomerChange} placeholder="Full street address" className="border border-gray-300 p-3 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all" />
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-semibold text-gray-700">City (*)</label>
-                    <input required type="text" name="city" value={customer.city} onChange={handleCustomerChange} placeholder="City name" className="border border-gray-300 p-3 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" />
+                    <input required type="text" name="city" value={customer.city} onChange={handleCustomerChange} placeholder="City name" className="border border-gray-300 p-3 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all" />
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-semibold text-gray-700">State</label>
-                    <input type="text" name="state" value={customer.state} onChange={handleCustomerChange} placeholder="State name" className="border border-gray-300 p-3 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" />
+                    <input type="text" name="state" value={customer.state} onChange={handleCustomerChange} placeholder="State name" className="border border-gray-300 p-3 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all" />
                   </div>
 
                   <div className="md:col-span-2 flex justify-center mt-6">
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="bg-green-600 hover:bg-green-700 text-white font-black text-lg py-4 px-12 rounded-full shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all disabled:opacity-70"
+                      className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-black text-lg py-4 px-12 rounded-full shadow-[0_8px_20px_-6px_rgba(232,25,44,0.5)] hover:shadow-[0_12px_25px_-6px_rgba(232,25,44,0.6)] hover:-translate-y-1 transition-all disabled:opacity-70 focus:outline-none focus:ring-4 focus:ring-orange-500/30"
                     >
                       {isSubmitting ? 'Submitting Order...' : 'Submit Order'}
                     </button>
@@ -480,7 +487,7 @@ export default function HomePage() {
               <div className="col-span-3 text-center text-gray-500 py-10">Loading latest blogs...</div>
             ) : (
               blogs.map((blog) => (
-                <div key={blog.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-orange-50 flex flex-col">
+                <div key={blog.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-orange-50 flex flex-col group cursor-pointer">
                   <div className="h-48 bg-gray-200 relative overflow-hidden">
                     {blog.image_url ? (
                       <img src={blog.image_url} alt={blog.title} className="w-full h-full object-cover transition-transform hover:scale-105 duration-500" />

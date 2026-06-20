@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
+import FireworksCanvas from '@/components/FireworksCanvas';
 
 export default function Footer() {
   const [settings, setSettings] = useState({
@@ -27,7 +28,30 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="w-full" style={{ background: 'linear-gradient(180deg, #fff8f0 0%, #FFF1E6 100%)', borderTop: '1px solid rgba(255,107,0,0.12)' }}>
+    <footer className="w-full relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #fff8f0 0%, #FFF1E6 100%)', borderTop: '1px solid rgba(255,107,0,0.12)' }}>
+
+      <FireworksCanvas className="absolute inset-0 pointer-events-none z-0 opacity-40" style={{ mixBlendMode: 'normal' }} />
+      
+      {/* Animated Sparkles Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Subtle moving radial gradient glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(255,107,0,0.05),_transparent_60%)] animate-pulse" style={{ animationDuration: '4s' }} />
+        
+        {/* Floating Sparkles */}
+        {[...Array(24)].map((_, i) => (
+          <span
+            key={i}
+            className="absolute text-orange-400/30 animate-sparkle-float"
+            style={{
+              left: `${(i * 17) % 100}%`,
+              top: `${(i * 23) % 100}%`,
+              fontSize: `${10 + (i % 5) * 4}px`,
+              animationDelay: `${(i % 3) * 0.5}s`,
+              animationDuration: `${3 + (i % 4)}s`
+            }}
+          >✦</span>
+        ))}
+      </div>
       {/* Main footer content */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Brand */}

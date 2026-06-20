@@ -123,10 +123,10 @@ export default function ProductsPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {paginatedProducts.map((product) => (
-              <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group flex flex-col relative">
+              <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 border border-orange-50 group flex flex-col relative">
                 <div className="h-48 bg-gradient-to-br from-orange-50 to-red-50 relative flex items-center justify-center overflow-hidden">
                   <LikeButton />
-                  <span className="absolute top-3 right-3 bg-red-100 text-red-600 text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-wider z-10">
+                  <span className="absolute top-3 right-3 bg-red-100 text-red-600 text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-wider z-10 animate-pulse">
                     Sale
                   </span>
                   {product.image ? (
@@ -152,7 +152,7 @@ export default function ProductsPage() {
                       80% OFF
                     </span>
                   </div>
-                  <Link href="/" className="mt-4 w-full block text-center py-2.5 rounded-xl text-sm font-bold bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white transition-colors">
+                  <Link href="/" className="mt-4 w-full block text-center py-2.5 rounded-xl text-sm font-bold bg-orange-50 text-orange-600 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 hover:text-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                     Order Now
                   </Link>
                 </div>

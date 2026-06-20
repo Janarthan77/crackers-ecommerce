@@ -21,13 +21,13 @@ interface Rocket {
   color: string;
 }
 
-export default function FireworksCanvas({ className = "fixed inset-0 pointer-events-none z-0" }: { className?: string }) {
+export default function FireworksCanvas({ className = "fixed inset-0 pointer-events-none z-0", style = { mixBlendMode: 'screen' } }: { className?: string, style?: React.CSSProperties }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
     if (!ctx) return;
 
     const updateSize = () => {
@@ -50,11 +50,11 @@ export default function FireworksCanvas({ className = "fixed inset-0 pointer-eve
     ];
 
     const createExplosion = (x: number, y: number, baseColor: string) => {
-      const numParticles = Math.floor(Math.random() * 40) + 40;
+      const numParticles = Math.floor(Math.random() * 30) + 20; 
       for (let i = 0; i < numParticles; i++) {
         const angle = (Math.PI * 2 / numParticles) * i + (Math.random() * 0.5);
         const speed = Math.random() * 6 + 2;
-        const life = Math.random() * 80 + 60;
+        const life = Math.random() * 60 + 40;
         particles.push({
           x, y,
           vx: Math.cos(angle) * speed,
@@ -67,26 +67,32 @@ export default function FireworksCanvas({ className = "fixed inset-0 pointer-eve
       }
     };
 
-    // Randomly fire rockets from the bottom
-    const launchRocketInterval = setInterval(() => {
-      const x = Math.random() * canvas.width;
-      // Target height should be in the top 70% of the screen
-      const targetY = Math.random() * (canvas.height * 0.6) + canvas.height * 0.1;
-      const baseColor = colors[Math.floor(Math.random() * colors.length)];
-      
-      rockets.push({
-        x,
-        y: canvas.height + 10,
-        targetY,
-        speed: Math.random() * 6 + 8,
-        color: baseColor,
-      });
-    }, 800);
-
     let animId: number;
+    let lastSpawnTime = 0;
 
-    const animate = () => {
-      // Clean up cleanly so no traces or dark film are left behind
+    const animate = (timestamp: number) => {
+      animId = requestAnimationFrame(animate);
+
+      // Spawn a new rocket every ~1200ms
+      if (timestamp - lastSpawnTime > 1200) {
+        lastSpawnTime = timestamp;
+        
+        // Only spawn if we don't have too many rockets (safety limit)
+        if (rockets.length < 5) {
+          const x = Math.random() * canvas.width;
+          const targetY = Math.random() * (canvas.height * 0.6) + canvas.height * 0.1;
+          const baseColor = colors[Math.floor(Math.random() * colors.length)];
+          
+          rockets.push({
+            x,
+            y: canvas.height + 10,
+            targetY,
+            speed: Math.random() * 6 + 8,
+            color: baseColor,
+          });
+        }
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Process and draw rockets
@@ -126,32 +132,33 @@ export default function FireworksCanvas({ className = "fixed inset-0 pointer-eve
 
         const alpha = Math.max(0, p.life / p.maxLife);
 
-        // Draw particle
+        // Draw particle base
         ctx.beginPath();
         ctx.arc(p.x, p.y, Math.max(0.1, p.size * alpha), 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.globalAlpha = alpha;
         ctx.fill();
-        ctx.globalAlpha = 1;
 
-        // Glow
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = p.color;
+        // Glow (Hardware optimized)
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, Math.max(0.1, p.size * 2 * alpha), 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = alpha * 0.3;
+        ctx.fill();
+        
         ctx.beginPath();
         ctx.arc(p.x, p.y, Math.max(0.1, p.size * 0.5 * alpha), 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
-        ctx.globalAlpha = alpha * 0.6;
+        ctx.globalAlpha = alpha * 0.8;
         ctx.fill();
+        
         ctx.globalAlpha = 1;
-        ctx.shadowBlur = 0;
 
         if (p.life <= 0) particles.splice(i, 1);
       }
-
-      animId = requestAnimationFrame(animate);
     };
 
-    animate();
+    animId = requestAnimationFrame(animate);
 
     const handleResize = () => {
       updateSize();
@@ -159,7 +166,6 @@ export default function FireworksCanvas({ className = "fixed inset-0 pointer-eve
     window.addEventListener('resize', handleResize);
 
     return () => {
-      clearInterval(launchRocketInterval);
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
     };
@@ -169,7 +175,7 @@ export default function FireworksCanvas({ className = "fixed inset-0 pointer-eve
     <canvas
       ref={canvasRef}
       className={className}
-      style={{ mixBlendMode: 'screen' }}
+      style={style}
     />
   );
 }
