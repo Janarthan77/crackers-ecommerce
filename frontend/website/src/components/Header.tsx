@@ -45,7 +45,7 @@ export default function Header() {
           animation: 'shimmer 4s linear infinite',
         }}
       >
-        ★ BIGGEST DIWALI SALE — Upto 40% OFF on All Crackers! Free Delivery above ₹2000 ★
+        ★ BIGGEST DIWALI SALE — Upto 40% OFF on All Crackers! ★
       </div>
 
       {/* Info bar */}

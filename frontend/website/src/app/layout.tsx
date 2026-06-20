@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import GlobalEffects from "@/components/GlobalEffects";
 import { Toaster } from "react-hot-toast";
 
 const poppins = Poppins({
@@ -44,6 +45,7 @@ export default function RootLayout({
           }}
         />
         <Toaster position="top-center" />
+        <GlobalEffects />
         <Header />
         <main className="flex-1 flex flex-col">{children}</main>
         <Footer />

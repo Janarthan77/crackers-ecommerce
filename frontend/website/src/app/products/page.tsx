@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import LikeButton from '@/components/LikeButton';
 
 type Product = { id: number; categoryId: number; name: string; price: number; image: string; };
 
@@ -122,9 +123,9 @@ export default function ProductsPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {paginatedProducts.map((product) => (
-              <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group flex flex-col">
+              <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-orange-50 group flex flex-col relative">
                 <div className="h-48 bg-gradient-to-br from-orange-50 to-red-50 relative flex items-center justify-center overflow-hidden">
-                  {/* Dummy image or badge */}
+                  <LikeButton />
                   <span className="absolute top-3 right-3 bg-red-100 text-red-600 text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-wider z-10">
                     Sale
                   </span>

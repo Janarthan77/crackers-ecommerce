@@ -1,39 +1,53 @@
+import FireworksCanvas from '@/components/FireworksCanvas';
+
 export default function About() {
   return (
     <div className="flex-1 w-full" style={{ background: 'var(--bg-page)' }}>
 
       {/* Page hero */}
       <div
-        className="relative py-20 px-4 text-center overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #FFF8F0 0%, #FFE8D0 100%)' }}
+        className="relative py-28 px-4 text-center overflow-hidden flex flex-col items-center justify-center rounded-b-[3rem] shadow-2xl mb-8"
+        style={{ 
+          backgroundImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url("https://images.unsplash.com/photo-1498864758509-f64bd08df48b?q=80&w=2000&auto=format&fit=crop")', 
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
       >
+        <FireworksCanvas className="absolute inset-0 pointer-events-none z-0" />
         <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(255,107,0,0.12), transparent 60%)' }}
+          className="absolute inset-0 pointer-events-none z-0"
+          style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(255,107,0,0.4), transparent 70%)' }}
         />
-        {[...Array(8)].map((_, i) => (
+        {[...Array(12)].map((_, i) => (
           <span
             key={i}
-            className="absolute text-orange-300 animate-sparkle-float"
+            className="absolute text-orange-400 animate-sparkle-float"
             style={{
-              left: `${i * 12 + 4}%`,
-              top: `${20 + (i % 3) * 20}%`,
-              fontSize: `${12 + (i % 3) * 6}px`,
-              animationDelay: `${i * 0.4}s`,
+              left: `${Math.random() * 90 + 5}%`,
+              top: `${Math.random() * 80 + 10}%`,
+              fontSize: `${12 + (i % 3) * 8}px`,
+              animationDelay: `${i * 0.3}s`,
+              filter: 'drop-shadow(0 0 10px rgba(255,165,0,0.8))'
             }}
           >✦</span>
         ))}
 
-        <span className="subheading-label mb-3 inline-block">Our Journey</span>
-        <h1
-          className="font-display font-black mb-4"
-          style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: 'var(--text-heading)' }}
-        >
-          About <span className="heading-gradient">RRV Crackers</span>
-        </h1>
-        <p className="max-w-xl mx-auto text-base" style={{ color: 'var(--text-body)' }}>
-          Two decades of bringing joy, light and sparkle to millions of families across India.
-        </p>
+        <div className="relative z-10 animate-fade-up">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase mb-6 bg-orange-500/20 text-orange-300 border border-orange-500/30 backdrop-blur-sm">
+            <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse inline-block" />
+            Our Journey
+          </span>
+          <h1
+            className="font-display font-black mb-4 drop-shadow-lg"
+            style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', color: '#ffffff' }}
+          >
+            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">RRV Crackers</span>
+          </h1>
+          <p className="max-w-2xl mx-auto text-lg md:text-xl font-medium text-gray-200 drop-shadow-md">
+            Two decades of bringing joy, light and sparkle to millions of families across India.
+          </p>
+        </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-16 flex flex-col gap-14">
@@ -75,11 +89,11 @@ export default function About() {
 
         {/* Stats */}
         <div
-          className="rounded-3xl p-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
+          className="rounded-3xl p-10 grid grid-cols-2 gap-8 text-center"
           style={{ background: 'linear-gradient(135deg, #E8192C, #FF6B00, #FFB300)', boxShadow: '0 16px 48px rgba(232,25,44,0.25)' }}
         >
           {[
-            ['20+', 'Years Experience'],
+            // ['20+', 'Years Experience'],
             ['100+', 'Products'],
             // ['10,000+', 'Happy Customers'],
             ['24/7', 'Support'],

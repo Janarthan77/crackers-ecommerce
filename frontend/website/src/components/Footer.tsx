@@ -1,21 +1,30 @@
+"use client";
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
 
-export default async function Footer() {
-  let settings = { phone: '9994090969, 99430', email: 'rrvcrackers@gmail.com', address: 'Sivakasi, Tamil Nadu — 626123' };
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings`, { cache: 'no-store' });
-    if (res.ok) {
-      const data = await res.json();
-      if (data && !data.error) {
-        if (data.phone) settings.phone = data.phone;
-        if (data.email) settings.email = data.email;
-        if (data.address) settings.address = data.address;
-      }
-    }
-  } catch (e) {
-    console.error("Failed to fetch settings for footer", e);
-  }
+export default function Footer() {
+  const [settings, setSettings] = useState({
+    phone: '9994090969, 99430',
+    email: 'rrvcrackers@gmail.com',
+    address: 'Sivakasi, Tamil Nadu — 626123'
+  });
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && !data.error) {
+          setSettings({
+            phone: data.phone || '9994090969, 99430',
+            email: data.email || 'rrvcrackers@gmail.com',
+            address: data.address || 'Sivakasi, Tamil Nadu — 626123'
+          });
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   return (
     <footer className="w-full" style={{ background: 'linear-gradient(180deg, #fff8f0 0%, #FFF1E6 100%)', borderTop: '1px solid rgba(255,107,0,0.12)' }}>
@@ -23,16 +32,12 @@ export default async function Footer() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Brand */}
         <div className="md:col-span-2">
-          <Link href="/" className="flex items-center gap-3 mb-4 cursor-pointer">
+          <Link href="/" className="flex items-center gap-3 mb-4 cursor-pointer w-fit">
             <img
               src="https://pub-c9de055708fa4822887d1db91f66e351.r2.dev/brand_logo.png"
               alt="RRV Crackers Logo"
               className="w-auto h-14 object-contain select-none"
             />
-            {/* <span
-              className="text-xl font-black"
-              style={{ fontFamily: "'Playfair Display', serif", background: 'linear-gradient(135deg, #E8192C, #FF6B00)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-            >RRV Crackers</span> */}
           </Link>
           <p className="text-sm leading-relaxed max-w-xs" style={{ color: 'var(--text-muted)' }}>
             India&apos;s most trusted fireworks brand. Sourced directly from Sivakasi — bringing joy, safety and sparkle to every celebration.
@@ -61,7 +66,7 @@ export default async function Footer() {
               <li key={href}>
                 <Link
                   href={href}
-                  className="text-sm flex items-center gap-2 group"
+                  className="text-sm flex items-center gap-2 group w-fit"
                   style={{ color: 'var(--text-muted)' }}
                 >
                   <span

@@ -5,6 +5,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import FireworksCanvas from '@/components/FireworksCanvas';
 
 const FEATURES = [
   { icon: '🛡️', title: 'ISI Certified', desc: 'All products meet India safety standards' },
@@ -20,7 +21,6 @@ const SLIDER_IMAGES = [
 ];
 
 export default function HomePage() {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [blogs, setBlogs] = useState<any[]>([]);
   const [comboOffers, setComboOffers] = useState<any[]>([]);
 
@@ -57,13 +57,6 @@ export default function HomePage() {
       return () => clearInterval(interval);
     }
   }, [comboOffers]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % SLIDER_IMAGES.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/blogs`)
@@ -231,60 +224,39 @@ export default function HomePage() {
   return (
     <div className="flex flex-col w-full">
 
-      {/* ═══════ HERO SLIDER ═══════ */}
-      <section className="relative w-full h-[88vh] overflow-hidden bg-black flex items-center justify-center">
-        {SLIDER_IMAGES.map((src, index) => (
-          <div
-            key={index}
-            className="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out"
-            style={{
-              opacity: currentSlide === index ? 1 : 0,
-              backgroundImage: `url(${src})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-          >
-            {/* Dark overlay for better text readability */}
-            <div className="absolute inset-0 bg-black/50" />
-          </div>
-        ))}
+      {/* ═══════ HERO SECTION ═══════ */}
+      <section className="relative w-full h-[88vh] overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#1a0500] via-[#4a1100] to-[#0a0200]">
+        <FireworksCanvas className="absolute inset-0 pointer-events-none z-10" />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(circle at 50% 50%, rgba(255,107,0,0.2), transparent 70%)' }}
+        />
 
-        <div className="relative z-10 text-center px-6 animate-fade-up">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase mb-6 bg-orange-500/20 text-orange-400 border border-orange-500/30 backdrop-blur-sm">
+        <div className="relative z-20 text-center px-6 animate-fade-up">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase mb-6 bg-orange-500/20 text-orange-400 border border-orange-500/30 backdrop-blur-sm shadow-lg">
             <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse inline-block" />
             Diwali 2025 Special Collection
           </div>
 
-          <h1 className="font-display font-black leading-tight mb-6 text-white" style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}>
+          <h1 className="font-display font-black leading-tight mb-6 text-white drop-shadow-2xl" style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}>
             The Biggest<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">DIWALI</span><br />
-            <span className="text-white text-5xl">Sale Is Here!</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 filter drop-shadow-lg">DIWALI</span><br />
+            <span className="text-white text-5xl drop-shadow-xl">Sale Is Here!</span>
           </h1>
 
-          <p className="text-lg text-gray-200 mb-8 max-w-xl mx-auto">
+          <p className="text-lg text-gray-200 mb-8 max-w-xl mx-auto drop-shadow-md">
             Light up your celebrations with India&apos;s finest crackers.{' '}
             <strong className="text-orange-400">Up to 40% OFF</strong> on all premium products!
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
-            <a href="#quick-order" className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-8 py-3.5 rounded-full font-bold shadow-xl hover:scale-105 transition-transform">
+            <a href="#quick-order" className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-8 py-3.5 rounded-full font-bold shadow-[0_0_20px_rgba(255,107,0,0.4)] hover:shadow-[0_0_30px_rgba(255,107,0,0.6)] hover:scale-105 transition-all">
               Shop Now
             </a>
-            <Link href="/contact" className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-3.5 rounded-full font-bold hover:bg-white/20 transition-all">
+            <Link href="/contact" className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-3.5 rounded-full font-bold hover:bg-white/20 transition-all shadow-lg">
               Get A Quote
             </Link>
           </div>
-        </div>
-
-        {/* Slider Controls */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20">
-          {SLIDER_IMAGES.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              className={`w-3 h-3 rounded-full transition-all ${currentSlide === idx ? 'bg-orange-500 scale-125' : 'bg-white/50 hover:bg-white'}`}
-            />
-          ))}
         </div>
       </section>
 
