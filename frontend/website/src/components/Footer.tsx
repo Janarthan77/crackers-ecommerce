@@ -28,9 +28,9 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="w-full relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #fff8f0 0%, #FFF1E6 100%)', borderTop: '1px solid rgba(255,107,0,0.12)' }}>
+    <footer className="w-full relative overflow-hidden bg-[#0A0A0A] border-t border-orange-500/20">
 
-      <FireworksCanvas className="absolute inset-0 pointer-events-none z-0 opacity-40" style={{ mixBlendMode: 'normal' }} />
+      <FireworksCanvas className="absolute inset-0 pointer-events-none z-0 opacity-40" style={{ mixBlendMode: 'screen' }} />
       
       {/* Animated Sparkles Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -63,7 +63,7 @@ export default function Footer() {
               className="w-auto h-14 object-contain select-none"
             />
           </Link>
-          <p className="text-sm leading-relaxed max-w-xs" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm leading-relaxed max-w-xs text-gray-400">
             India&apos;s most trusted fireworks brand. Sourced directly from Sivakasi — bringing joy, safety and sparkle to every celebration.
           </p>
           <div className="flex gap-3 mt-5">
@@ -84,20 +84,19 @@ export default function Footer() {
 
         {/* Quick Links */}
         <div>
-          <h4 className="font-bold text-sm tracking-widest uppercase mb-4" style={{ color: 'var(--brand-orange)' }}>Navigation</h4>
+          <h4 className="font-bold text-sm tracking-widest uppercase mb-4 text-orange-500">Navigation</h4>
           <ul className="flex flex-col gap-2.5">
             {[['/', 'Home'], ['/about', 'About Us'], ['/products', 'Products'], ['/blogs', 'Blogs'], ['/contact', 'Contact']].map(([href, label]) => (
               <li key={href}>
                 <Link
                   href={href}
-                  className="text-sm flex items-center gap-2 group w-fit"
-                  style={{ color: 'var(--text-muted)' }}
+                  className="text-sm flex items-center gap-2 group w-fit text-gray-400"
                 >
                   <span
                     className="w-3 h-px group-hover:w-5 transition-all duration-300 rounded-full"
                     style={{ background: 'var(--brand-orange)' }}
                   />
-                  <span className="group-hover:text-orange-600 transition-colors">{label}</span>
+                  <span className="group-hover:text-orange-400 transition-colors">{label}</span>
                 </Link>
               </li>
             ))}
@@ -106,7 +105,7 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h4 className="font-bold text-sm tracking-widest uppercase mb-4" style={{ color: 'var(--brand-orange)' }}>Contact</h4>
+          <h4 className="font-bold text-sm tracking-widest uppercase mb-4 text-orange-500">Contact</h4>
           <ul className="flex flex-col gap-3">
             {[
               { icon: '📍', text: settings.address },
@@ -116,18 +115,14 @@ export default function Footer() {
             ].map((item) => (
               <li key={item.text} className="flex items-start gap-2.5">
                 <span className="text-lg mt-0.5 flex-shrink-0">{item.icon}</span>
-                <span className="text-sm leading-snug" style={{ color: 'var(--text-muted)' }}>{item.text}</span>
+                <span className="text-sm leading-snug text-gray-400">{item.text}</span>
               </li>
             ))}
           </ul>
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div
-        className="border-t py-5 px-4 text-center text-xs"
-        style={{ borderColor: 'rgba(255,107,0,0.1)', color: 'var(--text-muted)' }}
-      >
+      <div className="border-t border-white/10 py-5 px-4 text-center text-xs text-gray-500">
         &copy; {new Date().getFullYear()} RRV Crackers. All rights reserved. &nbsp;|&nbsp; Made with ❤️ for a Dazzling Diwali
       </div>
     </footer>

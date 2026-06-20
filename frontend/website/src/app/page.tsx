@@ -8,7 +8,6 @@ import autoTable from 'jspdf-autotable';
 import FireworksCanvas from '@/components/FireworksCanvas';
 
 const FEATURES = [
-  { icon: '🛡️', title: 'ISI Certified', desc: 'All products meet India safety standards' },
   { icon: '🚚', title: '2-Day Delivery', desc: 'Fast, secure delivery to your door' },
   { icon: '💰', title: 'Wholesale Rates', desc: 'Up to 40% discount on bulk orders' },
   { icon: '🏭', title: 'Sivakasi Direct', desc: 'Sourced from top factories' },
@@ -100,18 +99,18 @@ export default function HomePage() {
 
   const generatePDF = (orderData: any) => {
     const doc = new jsPDF();
-    
+
     doc.setFontSize(20);
     doc.setTextColor(220, 38, 38);
     doc.text('Invoice / Order Details', 14, 22);
-    
+
     doc.setFontSize(10);
     doc.setTextColor(100);
     doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 30);
     doc.text(`Customer Name: ${orderData.name}`, 14, 36);
     doc.text(`Mobile: ${orderData.mobile}`, 14, 42);
     doc.text(`Address: ${orderData.address}, ${orderData.city}`, 14, 48);
-    
+
     const tableColumn = ["Item", "Qty", "Original Price", "Discounted Price", "Total"];
     const tableRows = orderData.items.map((item: any) => [
       item.name,
@@ -134,7 +133,7 @@ export default function HomePage() {
     doc.setTextColor(0);
     doc.text(`Net Total: Rs. ${orderData.netTotal.toFixed(2)}`, 14, finalY + 10);
     doc.text(`Total Savings: Rs. ${orderData.discountTotal.toFixed(2)}`, 14, finalY + 18);
-    
+
     doc.setFontSize(14);
     doc.setTextColor(220, 38, 38);
     doc.text(`Overall Total: Rs. ${orderData.overallTotal.toFixed(2)}`, 14, finalY + 28);
@@ -239,9 +238,9 @@ export default function HomePage() {
           </div>
 
           <h1 className="font-display font-black leading-tight mb-6 text-white drop-shadow-2xl" style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}>
-            The Biggest <span className="text-yellow-400 drop-shadow-md">RRV Crackers</span><br />
+            The Biggest <span className="text-transparent bg-clip-text drop-shadow-md" style={{ backgroundImage: 'linear-gradient(to bottom, var(--brand-yellow) 30%, var(--brand-orange) 100%)' }}>RRV Crackers</span><br />
             <span className="inline-flex gap-1 md:gap-2 filter drop-shadow-lg py-4">
-              {['D','I','W','A','L','I','\u00A0','S','A','L','E'].map((char, i) => (
+              {['D', 'I', 'W', 'A', 'L', 'I', '\u00A0', 'S', 'A', 'L', 'E'].map((char, i) => (
                 <span key={i} className={char === '\u00A0' ? 'w-2 md:w-6' : 'animate-bounce text-transparent bg-clip-text bg-gradient-to-br from-orange-400 to-red-500'} style={{ animationDelay: `${i * 0.1}s` }}>
                   {char}
                 </span>
@@ -263,21 +262,6 @@ export default function HomePage() {
               Get A Quote
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* ═══════ FEATURES STRIP ═══════ */}
-      <section className="py-10 px-4 md:px-8 bg-white border-y border-orange-50">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100">
-          {FEATURES.map((f) => (
-            <div key={f.title} className="flex flex-col md:flex-row items-center text-center md:text-left gap-4 md:gap-5 px-6 py-6 md:py-4">
-              <span className="text-4xl md:text-5xl flex-shrink-0 drop-shadow-sm">{f.icon}</span>
-              <div>
-                <div className="font-bold text-base md:text-lg text-gray-800">{f.title}</div>
-                <div className="text-sm text-gray-500 mt-1">{f.desc}</div>
-              </div>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -470,6 +454,21 @@ export default function HomePage() {
               </div>
             </>
           )}
+        </div>
+      </section>
+
+      {/* ═══════ FEATURES STRIP ═══════ */}
+      <section className="py-10 px-4 md:px-8 bg-white border-y border-orange-50">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 divide-x divide-gray-100">
+          {FEATURES.map((f) => (
+            <div key={f.title} className="flex flex-col md:flex-row items-center text-center md:text-left gap-4 md:gap-5 px-6 py-6 md:py-4">
+              <span className="text-4xl md:text-5xl flex-shrink-0 drop-shadow-sm">{f.icon}</span>
+              <div>
+                <div className="font-bold text-base md:text-lg text-gray-800">{f.title}</div>
+                <div className="text-sm text-gray-500 mt-1">{f.desc}</div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
