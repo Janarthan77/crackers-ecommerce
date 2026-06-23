@@ -59,7 +59,7 @@ export default function Contact() {
       {/* Banner */}
       <div
         className="relative py-20 px-4 text-center overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #111111 0%, #1A1A1A 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #101C40 0%, #1A2859 100%)' }}
       >
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.15), transparent 60%)' }} />
         <span className="subheading-label mb-3 inline-block">We Value Your Opinion</span>

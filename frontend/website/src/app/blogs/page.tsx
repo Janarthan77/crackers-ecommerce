@@ -20,7 +20,7 @@ export default function BlogsPage() {
   }, []);
 
   return (
-    <div className="w-full flex flex-col bg-[#111111] min-h-screen">
+    <div className="w-full flex flex-col min-h-screen">
       
       {/* Header */}
       <section className="pt-20 pb-12 px-4 text-center">
@@ -41,19 +41,19 @@ export default function BlogsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {blogs.map((blog) => (
-                <article key={blog.id} className="bg-[#1A1A1A] rounded-3xl overflow-hidden shadow-lg hover:shadow-[0_15px_35px_rgba(212,175,55,0.15)] transition-all duration-500 border border-[#D4AF37]/20 flex flex-col group hover:-translate-y-2 cursor-pointer" onClick={() => setSelectedBlog(blog)}>
-                  <div className="h-64 bg-[#0A0A0A] relative overflow-hidden border-b border-[#D4AF37]/10">
+                <article key={blog.id} className="bg-[#1A2859] rounded-3xl overflow-hidden shadow-lg hover:shadow-[0_15px_35px_rgba(212,175,55,0.15)] transition-all duration-500 border border-[#D4AF37]/20 flex flex-col group hover:-translate-y-2 cursor-pointer" onClick={() => setSelectedBlog(blog)}>
+                  <div className="h-64 bg-[#0A1128] relative overflow-hidden border-b border-[#D4AF37]/10">
                     {blog.image_url ? (
                         <img src={blog.image_url} alt={blog.title} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" />
                     ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#0A0A0A] to-[#111111] flex items-center justify-center text-5xl opacity-50 group-hover:opacity-100 transition-opacity">📝</div>
+                        <div className="w-full h-full bg-gradient-to-br from-[#0A1128] to-[#101C40] flex items-center justify-center text-5xl opacity-50 group-hover:opacity-100 transition-opacity">📝</div>
                     )}
-                    <div className="absolute top-4 right-4 bg-[#0A0A0A]/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-[#D4AF37]/30 text-[#D4AF37] text-xs font-bold tracking-widest uppercase shadow-lg">
+                    <div className="absolute top-4 right-4 bg-[#0A1128]/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-[#D4AF37]/30 text-[#D4AF37] text-xs font-bold tracking-widest uppercase shadow-lg">
                       {new Date(blog.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </div>
                   </div>
                   
-                  <div className="p-8 flex flex-col flex-1 relative bg-gradient-to-b from-[#1A1A1A] to-[#0A0A0A]">
+                  <div className="p-8 flex flex-col flex-1 relative bg-gradient-to-b from-[#1A2859] to-[#0A1128]">
                     <div className="flex items-center gap-2 mb-4 text-xs font-bold tracking-widest uppercase text-gray-500">
                       <span className="w-6 h-6 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] flex items-center justify-center">{blog.author?.charAt(0) || 'A'}</span>
                       <span>By {blog.author || 'Admin'}</span>
@@ -80,7 +80,7 @@ export default function BlogsPage() {
       {selectedBlog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto" onClick={() => setSelectedBlog(null)}>
           <div 
-            className="bg-[#111111] rounded-3xl w-full max-w-4xl min-h-[50vh] max-h-[90vh] overflow-y-auto shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-[#D4AF37]/30 relative animate-fade-up my-auto"
+            className="bg-[#101C40] rounded-3xl w-full max-w-4xl min-h-[50vh] max-h-[90vh] overflow-y-auto shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-[#D4AF37]/30 relative animate-fade-up my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button 
@@ -93,7 +93,7 @@ export default function BlogsPage() {
             {selectedBlog.image_url && (
               <div className="w-full h-80 relative border-b border-[#D4AF37]/20">
                 <img src={selectedBlog.image_url} alt={selectedBlog.title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-transparent to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#101C40] via-transparent to-transparent"></div>
               </div>
             )}
 

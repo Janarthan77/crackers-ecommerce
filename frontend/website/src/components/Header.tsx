@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FaFacebook, FaInstagram, FaYoutube, FaClock, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaYoutube, FaClock, FaPhoneAlt, FaEnvelope, FaHome, FaInfoCircle, FaBoxOpen, FaBookOpen, FaAddressBook } from 'react-icons/fa';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -27,18 +27,18 @@ export default function Header() {
   }, []);
 
   const links = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
-    { href: '/products', label: 'Products' },
-    { href: '/blogs', label: 'Blogs' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/', label: 'Home', icon: FaHome },
+    { href: '/about', label: 'About', icon: FaInfoCircle },
+    { href: '/products', label: 'Products', icon: FaBoxOpen },
+    { href: '/blogs', label: 'Blogs', icon: FaBookOpen },
+    { href: '/contact', label: 'Contact', icon: FaAddressBook },
   ];
 
   return (
     <>
       {/* Top announcement bar */}
       <div
-        className="w-full text-[#0A0A0A] text-xs font-bold text-center py-1 px-4 overflow-hidden flex items-center"
+        className="w-full text-[#0A1128] text-xs font-bold text-center py-1 px-4 overflow-hidden flex items-center"
         style={{
           background: 'linear-gradient(90deg, #D4AF37, #AA8222, #F9DF9F, #AA8222, #D4AF37)',
           backgroundSize: '300% auto',
@@ -51,7 +51,7 @@ export default function Header() {
       </div>
 
       {/* Info bar */}
-      <div className="hidden md:flex w-full px-8 py-1 justify-between items-center text-xs text-gray-300" style={{ background: '#0A0A0A', borderBottom: '1px solid rgba(212,175,55,0.2)' }}>
+      <div className="hidden md:flex w-full px-8 py-1 justify-between items-center text-xs text-gray-300" style={{ background: '#0A1128', borderBottom: '1px solid rgba(212,175,55,0.2)' }}>
         <div className="flex items-center gap-6">
           <span className="flex items-center gap-1.5"><FaClock className="text-[#D4AF37]" /> Mon–Sun, 24 Hours Open</span>
           <span className="flex items-center gap-1.5"><FaPhoneAlt className="text-[#D4AF37]" /> {settings.phone}</span>
@@ -76,8 +76,8 @@ export default function Header() {
           }`}
         style={{
           background: scrolled
-            ? 'rgba(10,10,10,0.97)'
-            : 'rgba(10,10,10,1)',
+            ? 'rgba(10,17,40,0.97)'
+            : 'rgba(10,17,40,1)',
           backdropFilter: 'blur(12px)',
           borderBottom: '1px solid rgba(212,175,55,0.12)',
         }}
@@ -109,18 +109,19 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-1 ${active
+                  className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-1 flex items-center gap-2 ${active
                     ? 'text-[#D4AF37]'
                     : 'text-[#E5E5E5] hover:text-[#D4AF37]'
                     }`}
                 >
+                  <link.icon className="text-base" />
+                  {link.label}
                   {active && (
                     <span
                       className="absolute inset-x-2 bottom-1 h-0.5 rounded-full"
                       style={{ background: 'linear-gradient(90deg, #D4AF37, #AA8222)' }}
                     />
                   )}
-                  {link.label}
                 </Link>
               );
             })}
@@ -150,16 +151,17 @@ export default function Header() {
         {/* Mobile menu */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ${menuOpen ? 'max-h-80' : 'max-h-0'}`}
-          style={{ background: '#111111', borderTop: '1px solid rgba(212,175,55,0.2)' }}
+          style={{ background: '#101C40', borderTop: '1px solid rgba(212,175,55,0.2)' }}
         >
           <nav className="flex flex-col p-4 gap-1">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-4 py-3 rounded-xl text-sm font-semibold text-[#E5E5E5] hover:bg-[#1A1A1A] hover:text-[#D4AF37] transition-colors"
+                className="px-4 py-3 rounded-xl text-sm font-semibold text-[#E5E5E5] hover:bg-[#1A2859] hover:text-[#D4AF37] transition-colors flex items-center gap-3"
                 onClick={() => setMenuOpen(false)}
               >
+                <link.icon className="text-lg text-[#D4AF37]" />
                 {link.label}
               </Link>
             ))}

@@ -28,7 +28,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="w-full relative overflow-hidden bg-[#0A0A0A] border-t border-[#D4AF37]/20">
+    <footer className="w-full relative overflow-hidden bg-[#0A1128] border-t border-[#D4AF37]/20">
 
       <FireworksCanvas className="absolute inset-0 pointer-events-none z-0 opacity-40" style={{ mixBlendMode: 'screen' }} />
       

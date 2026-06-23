@@ -257,7 +257,7 @@ export default function HomePage() {
     <div className="flex flex-col w-full">
 
       {/* ═══════ HERO SECTION ═══════ */}
-      <section className="relative w-full h-[88vh] overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a]">
+      <section className="relative w-full h-[88vh] overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#0A1128] via-[#1A2859] to-[#0A1128]">
         <FireworksCanvas className="absolute inset-0 pointer-events-none z-10" />
         <div
           className="absolute inset-0 pointer-events-none"
@@ -300,10 +300,10 @@ export default function HomePage() {
 
       {/* ═══════ PROMO BANNER ═══════ */}
       {comboOffers.length > 0 && (
-        <section className="py-16 px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-[#111111] via-[#1A1A1A] to-[#111111] border-y border-[#D4AF37]/20">
+        <section className="py-16 px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-[#101C40] via-[#1A2859] to-[#101C40] border-y border-[#D4AF37]/20">
           <div ref={comboScrollRef} className={`max-w-7xl mx-auto flex flex-row gap-8 overflow-x-auto snap-x pb-8 pt-4 hide-scrollbar ${comboOffers.length === 1 ? 'justify-center' : ''}`}>
             {comboOffers.map((offer) => (
-              <div key={offer.id} className={`min-w-[320px] md:min-w-[420px] ${comboOffers.length === 1 ? 'max-w-md w-full mx-auto' : 'flex-1'} bg-gradient-to-b from-[#1A1A1A] to-[#0A0A0A] border border-[#D4AF37]/30 rounded-3xl p-6 md:p-8 flex flex-col items-center text-center gap-6 snap-center shrink-0 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(212,175,55,0.15)] transition-all duration-500 relative overflow-hidden group`}>
+              <div key={offer.id} className={`min-w-[320px] md:min-w-[420px] ${comboOffers.length === 1 ? 'max-w-md w-full mx-auto' : 'flex-1'} bg-gradient-to-b from-[#1A2859] to-[#0A1128] border border-[#D4AF37]/30 rounded-3xl p-6 md:p-8 flex flex-col items-center text-center gap-6 snap-center shrink-0 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(212,175,55,0.15)] transition-all duration-500 relative overflow-hidden group`}>
                 
                 {/* Top Accent Line */}
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#D4AF37] to-[#AA8222]" />
@@ -315,7 +315,7 @@ export default function HomePage() {
 
                 {/* Image */}
                 {offer.image_url && (
-                  <div className="w-40 h-40 md:w-48 md:h-48 mt-6 rounded-2xl overflow-hidden shadow-2xl border-4 border-[#111111] ring-2 ring-[#D4AF37]/20 group-hover:scale-105 transition-transform duration-700">
+                  <div className="w-40 h-40 md:w-48 md:h-48 mt-6 rounded-2xl overflow-hidden shadow-2xl border-4 border-[#101C40] ring-2 ring-[#D4AF37]/20 group-hover:scale-105 transition-transform duration-700">
                     <img src={offer.image_url} alt={offer.title} className="w-full h-full object-cover" />
                   </div>
                 )}
@@ -342,7 +342,7 @@ export default function HomePage() {
 
                   <button
                     onClick={() => setSelectedComboOffer(offer)}
-                    className="mt-auto w-full max-w-[260px] bg-gradient-to-r from-[#D4AF37] to-[#AA8222] hover:from-[#AA8222] hover:to-[#D4AF37] text-[#0A0A0A] py-3.5 rounded-full font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:scale-105 transition-all active:scale-95"
+                    className="mt-auto w-full max-w-[260px] bg-gradient-to-r from-[#D4AF37] to-[#AA8222] hover:from-[#AA8222] hover:to-[#D4AF37] text-[#0A1128] py-3.5 rounded-full font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:scale-105 transition-all active:scale-95"
                   >
                     Claim Offer Now
                   </button>
@@ -354,7 +354,7 @@ export default function HomePage() {
       )}
 
       {/* ═══════ QUICK ORDER SECTION ═══════ */}
-      <section id="quick-order" className="py-16 px-2 md:px-6 bg-[#111111]">
+      <section id="quick-order" className="py-16 px-2 md:px-6 bg-[#101C40]">
         <div className="max-w-7xl mx-auto w-full">
           <div className="text-center mb-12">
             <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 inline-block">Wholesale Rates</span>
@@ -366,22 +366,22 @@ export default function HomePage() {
             <div className="text-center py-20 text-gray-500 animate-pulse">Loading wholesale catalog...</div>
           ) : (
             <>
-              <div className="bg-[#1A1A1A] border-2 overflow-hidden shadow-lg rounded-t-xl border-[#D4AF37]/20">
+              <div className="bg-[#1A2859] border-2 overflow-hidden shadow-lg rounded-t-xl border-[#D4AF37]/20">
 
                 {/* Top Header */}
-                <div className="grid grid-cols-2 p-3 font-bold text-sm md:text-base border-b-2 bg-gradient-to-r from-[#D4AF37] to-[#AA8222] text-[#0A0A0A] border-[#D4AF37]/20">
+                <div className="grid grid-cols-2 p-3 font-bold text-sm md:text-base border-b-2 bg-gradient-to-r from-[#D4AF37] to-[#AA8222] text-[#0A1128] border-[#D4AF37]/20">
                   <div>Total Products : {products.length}</div>
                   <div className="text-right">Overall Total : ₹{overallTotal.toFixed(2)}</div>
                 </div>
 
                 {/* Search Filter */}
-                <div className="p-4 bg-[#111111] border-b-2 border-[#D4AF37]/20">
+                <div className="p-4 bg-[#101C40] border-b-2 border-[#D4AF37]/20">
                   <input
                     type="text"
                     placeholder="Search products..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full max-w-md border border-[#D4AF37]/30 rounded-xl p-3 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] bg-[#1A1A1A] text-[#E5E5E5]"
+                    className="w-full max-w-md border border-[#D4AF37]/30 rounded-xl p-3 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] bg-[#1A2859] text-[#E5E5E5]"
                   />
                 </div>
 
@@ -398,7 +398,7 @@ export default function HomePage() {
 
                         return (
                           <React.Fragment key={`cat-${category.id}`}>
-                            <tr className="bg-[#111111] border-b border-[#D4AF37]/20 text-[#D4AF37]">
+                            <tr className="bg-[#101C40] border-b border-[#D4AF37]/20 text-[#D4AF37]">
                               <td colSpan={5} className="py-2.5 font-bold tracking-widest uppercase text-left pl-6">
                                 {category.name}
                               </td>
@@ -407,7 +407,7 @@ export default function HomePage() {
                             {/* Products in this category */}
                             {catProducts.map((product, idx) => {
                               const isEven = idx % 2 === 0;
-                              const rowBg = isEven ? 'bg-[#1A1A1A]' : 'bg-[#111111]';
+                              const rowBg = isEven ? 'bg-[#1A2859]' : 'bg-[#101C40]';
                               const qty = quantities[product.id] || '';
                               const rowTotal = (quantities[product.id] || 0) * getSellingPrice(product);
 
@@ -415,7 +415,7 @@ export default function HomePage() {
                                 <tr key={product.id} className={`border-b border-[#D4AF37]/10 last:border-0 hover:bg-[#D4AF37]/10 transition-colors duration-300 ${rowBg}`}>
                                   <td className="w-16 p-2 border-r border-[#D4AF37]/10">
                                     <div
-                                      className="w-10 h-10 mx-auto flex items-center justify-center text-xl bg-[#0A0A0A] border border-[#D4AF37]/20 shadow-sm rounded overflow-hidden cursor-pointer hover:border-[#D4AF37] hover:shadow-md transition-all"
+                                      className="w-10 h-10 mx-auto flex items-center justify-center text-xl bg-[#101C40] border border-[#D4AF37]/20 shadow-sm rounded overflow-hidden cursor-pointer hover:border-[#D4AF37] hover:shadow-md transition-all"
                                       onClick={() => product.image && setPreviewImage(product.image.startsWith('http') ? product.image : `/images/${product.image}`)}
                                     >
                                       {product.image ? (
@@ -437,7 +437,7 @@ export default function HomePage() {
                                       value={qty}
                                       onChange={(e) => handleQtyChange(product.id, e.target.value)}
                                       placeholder="Qty"
-                                      className="w-20 p-1.5 text-center border border-[#D4AF37]/30 rounded focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] bg-[#0A0A0A] text-[#E5E5E5]"
+                                      className="w-20 p-1.5 text-center border border-[#D4AF37]/30 rounded focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] bg-[#101C40] text-[#E5E5E5]"
                                     />
                                   </td>
                                   <td className="w-32 p-2 font-black text-[#D4AF37]">
@@ -455,11 +455,11 @@ export default function HomePage() {
 
                 {/* Bottom Totals */}
                 <div className="flex flex-col border-t-2 border-[#D4AF37]/20 text-sm md:text-base font-bold text-[#E5E5E5]">
-                  <div className="flex w-full border-b border-[#D4AF37]/10 bg-[#1A1A1A]">
+                  <div className="flex w-full border-b border-[#D4AF37]/10 bg-[#1A2859]">
                     <div className="flex-1 text-right p-3 border-r border-[#D4AF37]/10">Sub Total :</div>
                     <div className="w-32 p-3 text-center text-lg text-[#E5E5E5]">₹{overallTotal.toFixed(2)}</div>
                   </div>
-                  <div className="flex w-full border-b-2 border-[#D4AF37]/20 bg-[#111111]">
+                  <div className="flex w-full border-b-2 border-[#D4AF37]/20 bg-[#101C40]">
                     <div className="flex-1 text-right p-3 border-r border-[#D4AF37]/20 text-[#D4AF37]">Overall Total :</div>
                     <div className="w-32 p-3 text-center text-[#D4AF37] font-black text-xl">₹{overallTotal.toFixed(2)}</div>
                   </div>
@@ -468,40 +468,40 @@ export default function HomePage() {
               </div>
 
               {/* Customer Booking Form */}
-              <div className="mt-8 bg-gradient-to-br from-[#111111] to-[#1A1A1A] p-6 md:p-10 rounded-2xl shadow-xl border border-[#D4AF37]/20">
+              <div className="mt-8 bg-gradient-to-br from-[#101C40] to-[#1A2859] p-6 md:p-10 rounded-2xl shadow-xl border border-[#D4AF37]/20">
                 <h2 className="text-3xl font-black mb-8 border-b border-[#D4AF37]/20 pb-4 text-center uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#AA8222]">Customer Details</h2>
 
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-semibold text-[#E5E5E5]">Name (*)</label>
-                    <input required type="text" name="name" value={customer.name} onChange={handleCustomerChange} placeholder="Enter your full name" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#0A0A0A] text-[#E5E5E5]" />
+                    <input required type="text" name="name" value={customer.name} onChange={handleCustomerChange} placeholder="Enter your full name" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#101C40] text-[#E5E5E5]" />
                   </div>
                   <div className="flex flex-col gap-1.5 md:col-start-1">
                     <label className="text-sm font-semibold text-[#E5E5E5]">Mobile Number (*)</label>
-                    <input required type="tel" name="mobile" value={customer.mobile} onChange={handleCustomerChange} placeholder="10-digit mobile number" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#0A0A0A] text-[#E5E5E5]" />
+                    <input required type="tel" name="mobile" value={customer.mobile} onChange={handleCustomerChange} placeholder="10-digit mobile number" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#101C40] text-[#E5E5E5]" />
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-semibold text-[#E5E5E5]">Email</label>
-                    <input type="email" name="email" value={customer.email} onChange={handleCustomerChange} placeholder="Optional email address" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#0A0A0A] text-[#E5E5E5]" />
+                    <input type="email" name="email" value={customer.email} onChange={handleCustomerChange} placeholder="Optional email address" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#101C40] text-[#E5E5E5]" />
                   </div>
                   <div className="flex flex-col gap-1.5 md:col-span-2">
                     <label className="text-sm font-semibold text-[#E5E5E5]">Delivery Address (*)</label>
-                    <input required type="text" name="address" value={customer.address} onChange={handleCustomerChange} placeholder="Full street address" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#0A0A0A] text-[#E5E5E5]" />
+                    <input required type="text" name="address" value={customer.address} onChange={handleCustomerChange} placeholder="Full street address" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#101C40] text-[#E5E5E5]" />
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-semibold text-[#E5E5E5]">City (*)</label>
-                    <input required type="text" name="city" value={customer.city} onChange={handleCustomerChange} placeholder="City name" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#0A0A0A] text-[#E5E5E5]" />
+                    <input required type="text" name="city" value={customer.city} onChange={handleCustomerChange} placeholder="City name" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#101C40] text-[#E5E5E5]" />
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-semibold text-[#E5E5E5]">State</label>
-                    <input type="text" name="state" value={customer.state} onChange={handleCustomerChange} placeholder="State name" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#0A0A0A] text-[#E5E5E5]" />
+                    <input type="text" name="state" value={customer.state} onChange={handleCustomerChange} placeholder="State name" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#101C40] text-[#E5E5E5]" />
                   </div>
 
                   <div className="md:col-span-2 flex justify-center mt-6">
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="bg-gradient-to-r from-[#D4AF37] to-[#AA8222] hover:from-[#AA8222] hover:to-[#D4AF37] text-[#0A0A0A] font-black text-lg py-4 px-12 rounded-full shadow-[0_8px_20px_-6px_rgba(212,175,55,0.5)] hover:shadow-[0_12px_25px_-6px_rgba(212,175,55,0.6)] hover:-translate-y-1 transition-all disabled:opacity-70 focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/30"
+                      className="bg-gradient-to-r from-[#D4AF37] to-[#AA8222] hover:from-[#AA8222] hover:to-[#D4AF37] text-[#0A1128] font-black text-lg py-4 px-12 rounded-full shadow-[0_8px_20px_-6px_rgba(212,175,55,0.5)] hover:shadow-[0_12px_25px_-6px_rgba(212,175,55,0.6)] hover:-translate-y-1 transition-all disabled:opacity-70 focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/30"
                     >
                       {isSubmitting ? 'Submitting Order...' : 'Submit Order'}
                     </button>
@@ -514,7 +514,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══════ FEATURES STRIP ═══════ */}
-      <section className="py-10 px-4 md:px-8 bg-[#0A0A0A] border-y border-[#D4AF37]/20">
+      <section className="py-10 px-4 md:px-8 bg-[#0A1128] border-y border-[#D4AF37]/20">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 divide-x divide-[#D4AF37]/20">
           {FEATURES.map((f) => (
             <div key={f.title} className="flex flex-col md:flex-row items-center text-center md:text-left gap-4 md:gap-5 px-6 py-6 md:py-4">
@@ -530,7 +530,7 @@ export default function HomePage() {
 
       {/* ═══════ CUSTOMER FEEDBACK SLIDER ═══════ */}
       {feedbacks.length > 0 && (
-        <section className="py-16 px-4 md:px-8 bg-[#111111] border-t border-[#D4AF37]/20 relative overflow-hidden">
+        <section className="py-16 px-4 md:px-8 bg-[#101C40] border-t border-[#D4AF37]/20 relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 100%, rgba(212,175,55,0.05), transparent 60%)' }} />
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-12">
@@ -541,7 +541,7 @@ export default function HomePage() {
 
             <div ref={feedbackScrollRef} className="flex gap-6 overflow-x-auto snap-x pb-8 hide-scrollbar px-2">
               {feedbacks.map((fb, idx) => (
-                <div key={fb.id || idx} className="min-w-[300px] max-w-[350px] flex-1 bg-gradient-to-br from-[#1A1A1A] to-[#0A0A0A] rounded-2xl p-6 border border-[#D4AF37]/20 shadow-lg snap-center shrink-0 flex flex-col hover:-translate-y-2 hover:border-[#D4AF37]/50 transition-all duration-300">
+                <div key={fb.id || idx} className="min-w-[300px] max-w-[350px] flex-1 bg-gradient-to-br from-[#1A2859] to-[#0A1128] rounded-2xl p-6 border border-[#D4AF37]/20 shadow-lg snap-center shrink-0 flex flex-col hover:-translate-y-2 hover:border-[#D4AF37]/50 transition-all duration-300">
                   <div className="flex items-center gap-1 mb-4">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <FaStar key={star} className={star <= (fb.rating || 5) ? 'text-[#D4AF37]' : 'text-gray-700'} />
@@ -567,7 +567,7 @@ export default function HomePage() {
       )}
 
       {/* ═══════ LATEST BLOGS ═══════ */}
-      <section className="py-16 px-4 md:px-8 bg-[#111111] border-t border-[#D4AF37]/20">
+      <section className="py-16 px-4 md:px-8 bg-[#101C40] border-t border-[#D4AF37]/20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 inline-block">News & Updates</span>
@@ -580,12 +580,12 @@ export default function HomePage() {
               <div className="col-span-3 text-center text-gray-500 py-10">Loading latest blogs...</div>
             ) : (
               blogs.map((blog) => (
-                <div key={blog.id} className="bg-[#1A1A1A] rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-[#D4AF37]/20 flex flex-col group cursor-pointer">
-                  <div className="h-48 bg-[#0A0A0A] relative overflow-hidden">
+                <div key={blog.id} className="bg-[#1A2859] rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-[#D4AF37]/20 flex flex-col group cursor-pointer">
+                  <div className="h-48 bg-[#0A1128] relative overflow-hidden">
                     {blog.image_url ? (
                       <img src={blog.image_url} alt={blog.title} className="w-full h-full object-cover transition-transform hover:scale-105 duration-500" />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-[#1A1A1A] to-[#111111] flex items-center justify-center text-4xl">📝</div>
+                      <div className="w-full h-full bg-gradient-to-br from-[#1A2859] to-[#101C40] flex items-center justify-center text-4xl">📝</div>
                     )}
                   </div>
                   <div className="p-6 flex-1 flex flex-col">
@@ -603,7 +603,7 @@ export default function HomePage() {
             )}
           </div>
           <div className="text-center mt-12">
-            <Link href="/blogs" className="bg-[#0A0A0A] border-2 border-[#D4AF37] text-[#D4AF37] px-8 py-3 rounded-full font-bold hover:bg-[#D4AF37]/10 transition-colors">
+            <Link href="/blogs" className="bg-[#0A1128] border-2 border-[#D4AF37] text-[#D4AF37] px-8 py-3 rounded-full font-bold hover:bg-[#D4AF37]/10 transition-colors">
               View All Posts
             </Link>
           </div>
@@ -628,7 +628,7 @@ export default function HomePage() {
       {/* Combo Offer Order Modal */}
       {selectedComboOffer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-          <div className="bg-[#111111] rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative animate-in fade-in zoom-in-95 duration-200 border border-[#D4AF37]/30">
+          <div className="bg-[#101C40] rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative animate-in fade-in zoom-in-95 duration-200 border border-[#D4AF37]/30">
             <button
               onClick={() => setSelectedComboOffer(null)}
               className="absolute top-4 right-4 text-gray-400 hover:text-[#D4AF37] hover:bg-[#D4AF37]/10 p-2.5 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20"
@@ -642,13 +642,13 @@ export default function HomePage() {
                 <h2 className="text-3xl font-black text-[#E5E5E5] tracking-tight">Claim Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#AA8222]">Offer</span></h2>
               </div>
 
-              <div className="bg-gradient-to-r from-[#1A1A1A] to-[#111111] rounded-2xl p-5 mb-8 flex flex-col md:flex-row items-center gap-5 border border-[#D4AF37]/20 shadow-inner">
+              <div className="bg-gradient-to-r from-[#1A2859] to-[#101C40] rounded-2xl p-5 mb-8 flex flex-col md:flex-row items-center gap-5 border border-[#D4AF37]/20 shadow-inner">
                 {selectedComboOffer.image_url && (
                   <img src={selectedComboOffer.image_url} alt={selectedComboOffer.title} className="w-24 h-24 object-cover rounded-xl shadow-md border-2 border-[#D4AF37]/30" />
                 )}
                 <div className="text-center md:text-left flex-1">
                   <h3 className="font-black text-xl text-[#E5E5E5] leading-tight mb-1">{selectedComboOffer.title}</h3>
-                  <div className="flex items-center justify-center md:justify-start gap-3 mt-2 bg-[#0A0A0A]/60 inline-flex px-3 py-1.5 rounded-lg border border-[#D4AF37]/30">
+                  <div className="flex items-center justify-center md:justify-start gap-3 mt-2 bg-[#0A1128]/60 inline-flex px-3 py-1.5 rounded-lg border border-[#D4AF37]/30">
                     <span className="line-through text-gray-400 text-sm font-semibold">₹{selectedComboOffer.original_price}</span>
                     <span className="font-black text-[#D4AF37] text-2xl">₹{selectedComboOffer.discounted_price}</span>
                   </div>
@@ -658,34 +658,34 @@ export default function HomePage() {
               <form onSubmit={handleComboSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">Name <span className="text-[#D4AF37]">*</span></label>
-                  <input required type="text" name="name" value={comboCustomer.name} onChange={handleComboCustomerChange} placeholder="Full name" className="border border-[#D4AF37]/30 bg-[#0A0A0A] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
+                  <input required type="text" name="name" value={comboCustomer.name} onChange={handleComboCustomerChange} placeholder="Full name" className="border border-[#D4AF37]/30 bg-[#101C40] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">Mobile <span className="text-[#D4AF37]">*</span></label>
-                  <input required type="tel" name="mobile" value={comboCustomer.mobile} onChange={handleComboCustomerChange} placeholder="10-digit number" className="border border-[#D4AF37]/30 bg-[#0A0A0A] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
+                  <input required type="tel" name="mobile" value={comboCustomer.mobile} onChange={handleComboCustomerChange} placeholder="10-digit number" className="border border-[#D4AF37]/30 bg-[#101C40] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">Email</label>
-                  <input type="email" name="email" value={comboCustomer.email} onChange={handleComboCustomerChange} placeholder="Optional email" className="border border-[#D4AF37]/30 bg-[#0A0A0A] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
+                  <input type="email" name="email" value={comboCustomer.email} onChange={handleComboCustomerChange} placeholder="Optional email" className="border border-[#D4AF37]/30 bg-[#101C40] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
                 </div>
                 <div className="flex flex-col gap-1.5 md:col-span-2">
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">Address <span className="text-[#D4AF37]">*</span></label>
-                  <input required type="text" name="address" value={comboCustomer.address} onChange={handleComboCustomerChange} placeholder="Full delivery address" className="border border-[#D4AF37]/30 bg-[#0A0A0A] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
+                  <input required type="text" name="address" value={comboCustomer.address} onChange={handleComboCustomerChange} placeholder="Full delivery address" className="border border-[#D4AF37]/30 bg-[#101C40] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">City <span className="text-[#D4AF37]">*</span></label>
-                  <input required type="text" name="city" value={comboCustomer.city} onChange={handleComboCustomerChange} placeholder="City name" className="border border-[#D4AF37]/30 bg-[#0A0A0A] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
+                  <input required type="text" name="city" value={comboCustomer.city} onChange={handleComboCustomerChange} placeholder="City name" className="border border-[#D4AF37]/30 bg-[#101C40] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-wide">State</label>
-                  <input type="text" name="state" value={comboCustomer.state} onChange={handleComboCustomerChange} placeholder="State name" className="border border-[#D4AF37]/30 bg-[#0A0A0A] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
+                  <input type="text" name="state" value={comboCustomer.state} onChange={handleComboCustomerChange} placeholder="State name" className="border border-[#D4AF37]/30 bg-[#101C40] text-[#E5E5E5] p-3.5 rounded-xl focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 outline-none transition-all font-medium" />
                 </div>
 
                 <div className="md:col-span-2 mt-6">
                   <button
                     type="submit"
                     disabled={isComboSubmitting}
-                    className="w-full bg-gradient-to-r from-[#D4AF37] to-[#AA8222] hover:from-[#AA8222] hover:to-[#D4AF37] text-[#0A0A0A] font-black text-lg py-4 rounded-xl shadow-[0_8px_20px_-6px_rgba(212,175,55,0.5)] hover:shadow-[0_12px_25px_-6px_rgba(212,175,55,0.6)] hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/30 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                    className="w-full bg-gradient-to-r from-[#D4AF37] to-[#AA8222] hover:from-[#AA8222] hover:to-[#D4AF37] text-[#0A1128] font-black text-lg py-4 rounded-xl shadow-[0_8px_20px_-6px_rgba(212,175,55,0.5)] hover:shadow-[0_12px_25px_-6px_rgba(212,175,55,0.6)] hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/30 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none"
                   >
                     {isComboSubmitting ? 'Processing...' : 'Confirm Order & Claim Now'}
                   </button>

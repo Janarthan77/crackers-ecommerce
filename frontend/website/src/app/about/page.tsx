@@ -9,7 +9,7 @@ export default function About() {
       <div
         className="relative py-28 px-4 text-center overflow-hidden flex flex-col items-center justify-center rounded-b-[3rem] shadow-2xl mb-8"
         style={{
-          backgroundImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url("https://images.unsplash.com/photo-1498864758509-f64bd08df48b?q=80&w=2000&auto=format&fit=crop")',
+          backgroundImage: 'linear-gradient(to bottom, rgba(10, 17, 40, 0.5), rgba(10, 17, 40, 0.95)), url("https://images.unsplash.com/photo-1498864758509-f64bd08df48b?q=80&w=2000&auto=format&fit=crop")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'

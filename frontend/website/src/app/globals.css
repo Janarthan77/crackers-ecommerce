@@ -13,9 +13,9 @@
   --brand-yellow:   #FDE047;
 
   /* Backgrounds */
-  --bg-page:        #0A0A0A; /* Rich Black */
-  --bg-section-alt: #111111; /* Slightly lighter black */
-  --bg-card:        #1A1A1A; /* Dark card bg */
+  --bg-page:        #0A1128; /* Deep Navy */
+  --bg-section-alt: #101C40; /* Medium Navy */
+  --bg-card:        #1A2859; /* Card Navy */
 
   /* Text */
   --text-heading:   #D4AF37; /* Gold */
@@ -82,7 +82,7 @@ body {
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #111111; }
+::-webkit-scrollbar-track { background: #101C40; }
 ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #D4AF37, #AA8222); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #F9DF9F; }
 
