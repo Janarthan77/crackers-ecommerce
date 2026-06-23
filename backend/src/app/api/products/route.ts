@@ -1,12 +1,22 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
-        const { data: products, error } = await supabase
+        const { searchParams } = new URL(request.url);
+        const isAdmin = searchParams.get('admin') === 'true';
+
+        let query = supabase
             .from('products')
             .select('*')
             .order('id');
+            
+        // If not admin, only fetch products that are NOT paused
+        if (!isAdmin) {
+            query = query.not('is_paused', 'eq', true);
+        }
+
+        const { data: products, error } = await query;
             
         if (error) throw error;
         
@@ -18,7 +28,8 @@ export async function GET() {
             price: p.price,
             discount: p.discount || 0,
             image: p.image_url,
-            stock: p.stock || 0
+            stock: p.stock || 0,
+            isPaused: p.is_paused || false
         }));
         
         return NextResponse.json(formattedProducts);

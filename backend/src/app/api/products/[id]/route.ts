@@ -5,11 +5,16 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     try {
         const { id } = await params;
         const body = await request.json();
-        const { categoryId, name, price, discount, image, stock } = body;
+        const { categoryId, name, price, discount, image, stock, isPaused } = body;
         
+        const updateData: any = { category: categoryId, name, price, discount: discount || 0, image_url: image, stock: stock || 0 };
+        if (isPaused !== undefined) {
+            updateData.is_paused = isPaused;
+        }
+
         const { data, error } = await supabase
             .from('products')
-            .update({ category: categoryId, name, price, discount: discount || 0, image_url: image, stock: stock || 0 })
+            .update(updateData)
             .eq('id', id)
             .select()
             .single();

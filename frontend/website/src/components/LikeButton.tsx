@@ -19,7 +19,7 @@ export default function LikeButton() {
         particleCount: 50,
         spread: 70,
         origin: { x, y },
-        colors: ['#ff0000', '#ff69b4', '#ff1493'],
+        colors: ['#D4AF37', '#FFD700', '#AA8222'],
         startVelocity: 30,
         scalar: 0.8,
         ticks: 100,
@@ -33,24 +33,17 @@ export default function LikeButton() {
   return (
     <button
       onClick={handleLike}
-      className={`absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center bg-white shadow-md z-20 transition-transform ${
-        liked ? 'scale-110' : 'hover:scale-110'
+      className={`absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center bg-[#111111] border border-[#D4AF37]/30 shadow-md z-20 transition-all ${
+        liked ? 'scale-110 border-[#D4AF37] bg-[#1A1A1A]' : 'hover:scale-110 hover:border-[#D4AF37]/60'
       }`}
       title={liked ? "Unlike" : "Like"}
     >
       {liked ? (
         <div className="relative flex items-center justify-center w-full h-full">
-          {/* A proper GIF or animated content for the like action */}
-          <img 
-            src="https://media.giphy.com/media/LpDmM2wSt6Vk5qcCR9/giphy.gif" 
-            alt="Liked" 
-            className="w-10 h-10 object-cover absolute mix-blend-multiply"
-            style={{ pointerEvents: 'none' }}
-          />
-          <span className="text-red-500 text-lg z-10 relative">❤️</span>
+          <span className="text-red-500 text-lg z-10 relative drop-shadow-[0_0_8px_rgba(255,0,0,0.6)]">❤️</span>
         </div>
       ) : (
-        <span className="text-gray-400 text-lg">🤍</span>
+        <span className="text-gray-400 text-lg opacity-70 hover:opacity-100 transition-opacity">🤍</span>
       )}
     </button>
   );

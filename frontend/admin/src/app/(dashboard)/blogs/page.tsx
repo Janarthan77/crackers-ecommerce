@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { Edit, Trash2 } from 'lucide-react';
 
 interface Blog {
-  id: number;
+  id: string | number;
   title: string;
   content: string;
   image_url: string;
@@ -26,7 +26,7 @@ export default function BlogsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<any[]>([]);
 
   const fetchBlogs = async () => {
     try {
@@ -108,7 +108,7 @@ export default function BlogsPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: any) => {
     if (!confirm('Are you sure you want to delete this blog?')) return;
 
     try {
@@ -151,7 +151,7 @@ export default function BlogsPage() {
     }
   };
 
-  const handleSelectItem = (id: number) => {
+  const handleSelectItem = (id: any) => {
     setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   };
 
@@ -241,11 +241,11 @@ export default function BlogsPage() {
               <thead>
                 <tr className="bg-gray-50/80 border-b border-gray-100">
                   <th className="p-4 w-12 border-r border-gray-100"></th>
-                  <th className="p-4 font-bold text-xs text-gray-400 uppercase tracking-wider w-16">ID</th>
+                  <th className="p-4 font-bold text-xs text-gray-400 uppercase tracking-wider w-24">ID</th>
                   <th className="p-4 font-bold text-xs text-gray-400 uppercase tracking-wider">Title</th>
                   <th className="p-4 font-bold text-xs text-gray-400 uppercase tracking-wider w-32 text-center">Status</th>
                   <th className="p-4 font-bold text-xs text-gray-400 uppercase tracking-wider w-40">Created</th>
-                  <th className="p-4 font-bold text-xs text-gray-400 uppercase tracking-wider w-24 text-right">Actions</th>
+                  <th className="p-4 font-bold text-xs text-gray-400 uppercase tracking-wider w-32 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -281,7 +281,9 @@ export default function BlogsPage() {
                               onChange={() => handleSelectItem(blog.id)}
                             />
                           </td>
-                          <td className="p-4 text-sm font-medium text-gray-500">#{blog.id}</td>
+                          <td className="p-4 text-sm font-medium text-gray-500 uppercase" title={String(blog.id)}>
+                            #{String(blog.id).slice(0, 8)}
+                          </td>
                           <td className="p-4">
                             <div className="flex items-center gap-3">
                               {blog.image_url ? (
@@ -300,13 +302,15 @@ export default function BlogsPage() {
                           <td className="p-4 text-sm text-gray-500">
                             {new Date(blog.created_at).toLocaleDateString()}
                           </td>
-                          <td className="p-4 text-sm text-right space-x-2">
-                            <button onClick={() => openEditModal(blog)} className="inline-flex p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors" title="Edit">
-                              <Edit size={16} strokeWidth={2.5} />
-                            </button>
-                            <button onClick={() => handleDelete(blog.id)} className="inline-flex p-2 bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors" title="Delete">
-                              <Trash2 size={16} strokeWidth={2.5} />
-                            </button>
+                          <td className="p-4 text-sm">
+                            <div className="flex justify-end items-center gap-2">
+                              <button onClick={() => openEditModal(blog)} className="inline-flex p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors" title="Edit">
+                                <Edit size={16} strokeWidth={2.5} />
+                              </button>
+                              <button onClick={() => handleDelete(blog.id)} className="inline-flex p-2 bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors" title="Delete">
+                                <Trash2 size={16} strokeWidth={2.5} />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Edit, Trash2, X, PackageOpen, UploadCloud } from 'lucide-react';
+import { Edit, Trash2, X, PackageOpen, UploadCloud, Eye, EyeOff } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -12,6 +12,7 @@ interface Product {
   discount?: number;
   image: string;
   stock: number;
+  isPaused?: boolean;
 }
 
 interface Category {
@@ -39,7 +40,7 @@ export default function ProductsPage() {
   const fetchData = async () => {
     try {
       const [prodRes, catRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/products`),
+        fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/products?admin=true`),
         fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/categories`)
       ]);
       
@@ -131,6 +132,25 @@ export default function ProductsPage() {
       fetchData();
     } catch (err) {
       toast.error('Failed to delete product');
+    }
+  };
+
+  const handleTogglePause = async (product: Product) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/products/${product.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...product,
+          isPaused: !product.isPaused
+        }),
+      });
+
+      if (!res.ok) throw new Error('Failed to toggle status');
+      toast.success(product.isPaused ? 'Product resumed successfully' : 'Product paused successfully');
+      fetchData();
+    } catch (err) {
+      toast.error('Failed to change product status');
     }
   };
 
@@ -289,7 +309,7 @@ export default function ProductsPage() {
                     />
                   </td>
                   <td className="p-4">
-                    <div className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden">
+                    <div className={`w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden ${prod.isPaused ? 'opacity-50 grayscale' : ''}`}>
                       {prod.image ? (
                         <img src={prod.image.startsWith('http') ? prod.image : `/images/${prod.image}`} alt={prod.name} className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display = 'none'} />
                       ) : (
@@ -297,7 +317,12 @@ export default function ProductsPage() {
                       )}
                     </div>
                   </td>
-                  <td className="p-4 text-sm font-bold" style={{ color: 'var(--text-h)' }}>{prod.name}</td>
+                  <td className="p-4 text-sm font-bold" style={{ color: 'var(--text-h)' }}>
+                    <div className="flex items-center gap-2">
+                      <span className={prod.isPaused ? 'text-gray-400 line-through' : ''}>{prod.name}</span>
+                      {prod.isPaused && <span className="bg-gray-100 text-gray-500 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border border-gray-200">Paused</span>}
+                    </div>
+                  </td>
                   <td className="p-4 text-sm text-gray-600">
                     <span className="px-2 py-1 bg-gray-100 rounded-lg text-xs font-semibold">{getCategoryName(prod.categoryId)}</span>
                   </td>
@@ -319,7 +344,10 @@ export default function ProductsPage() {
                       {prod.stock || 0} in stock
                     </span>
                   </td>
-                  <td className="p-4 text-sm text-right space-x-2">
+                  <td className="p-4 text-sm text-right space-x-2 whitespace-nowrap">
+                    <button onClick={() => handleTogglePause(prod)} className={`inline-flex p-2 rounded-lg transition-colors ${prod.isPaused ? 'bg-green-50 text-green-600 hover:bg-green-100 hover:text-green-700' : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`} title={prod.isPaused ? "Resume Product" : "Pause Product"}>
+                      {prod.isPaused ? <Eye size={16} strokeWidth={2.5} /> : <EyeOff size={16} strokeWidth={2.5} />}
+                    </button>
                     <button onClick={() => openEditModal(prod)} className="inline-flex p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors" title="Edit">
                       <Edit size={16} strokeWidth={2.5} />
                     </button>

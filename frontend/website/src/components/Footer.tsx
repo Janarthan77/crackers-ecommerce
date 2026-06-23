@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaYoutube, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock } from 'react-icons/fa';
 import FireworksCanvas from '@/components/FireworksCanvas';
 
 export default function Footer() {
@@ -28,20 +28,20 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="w-full relative overflow-hidden bg-[#0A0A0A] border-t border-orange-500/20">
+    <footer className="w-full relative overflow-hidden bg-[#0A0A0A] border-t border-[#D4AF37]/20">
 
       <FireworksCanvas className="absolute inset-0 pointer-events-none z-0 opacity-40" style={{ mixBlendMode: 'screen' }} />
       
       {/* Animated Sparkles Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Subtle moving radial gradient glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(255,107,0,0.05),_transparent_60%)] animate-pulse" style={{ animationDuration: '4s' }} />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(212,175,55,0.05),_transparent_60%)] animate-pulse" style={{ animationDuration: '4s' }} />
         
         {/* Floating Sparkles */}
         {[...Array(24)].map((_, i) => (
           <span
             key={i}
-            className="absolute text-orange-400/30 animate-sparkle-float"
+            className="absolute text-[#D4AF37]/30 animate-sparkle-float"
             style={{
               left: `${(i * 17) % 100}%`,
               top: `${(i * 23) % 100}%`,
@@ -68,9 +68,9 @@ export default function Footer() {
           </p>
           <div className="flex gap-3 mt-5">
             {[
-              { icon: <FaFacebook size={18} className="text-[#1877F2]" />, bg: '#E8F0FE', label: 'Facebook' },
-              { icon: <FaInstagram size={18} className="text-[#E4405F]" />, bg: '#FCE4EC', label: 'Instagram' },
-              { icon: <FaYoutube size={18} className="text-[#FF0000]" />, bg: '#FFEBEE', label: 'YouTube' },
+              { icon: <FaFacebook size={18} className="text-[#D4AF37]" />, bg: 'rgba(212,175,55,0.1)', label: 'Facebook' },
+              { icon: <FaInstagram size={18} className="text-[#D4AF37]" />, bg: 'rgba(212,175,55,0.1)', label: 'Instagram' },
+              { icon: <FaYoutube size={18} className="text-[#D4AF37]" />, bg: 'rgba(212,175,55,0.1)', label: 'YouTube' },
             ].map((s) => (
               <button
                 key={s.label}
@@ -84,7 +84,7 @@ export default function Footer() {
 
         {/* Quick Links */}
         <div>
-          <h4 className="font-bold text-sm tracking-widest uppercase mb-4 text-orange-500">Navigation</h4>
+          <h4 className="font-bold text-sm tracking-widest uppercase mb-4 text-[#D4AF37]">Navigation</h4>
           <ul className="flex flex-col gap-2.5">
             {[['/', 'Home'], ['/about', 'About Us'], ['/products', 'Products'], ['/blogs', 'Blogs'], ['/contact', 'Contact']].map(([href, label]) => (
               <li key={href}>
@@ -94,9 +94,9 @@ export default function Footer() {
                 >
                   <span
                     className="w-3 h-px group-hover:w-5 transition-all duration-300 rounded-full"
-                    style={{ background: 'var(--brand-orange)' }}
+                    style={{ background: '#D4AF37' }}
                   />
-                  <span className="group-hover:text-orange-400 transition-colors">{label}</span>
+                  <span className="group-hover:text-[#D4AF37] transition-colors">{label}</span>
                 </Link>
               </li>
             ))}
@@ -105,16 +105,16 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h4 className="font-bold text-sm tracking-widest uppercase mb-4 text-orange-500">Contact</h4>
+          <h4 className="font-bold text-sm tracking-widest uppercase mb-4 text-[#D4AF37]">Contact</h4>
           <ul className="flex flex-col gap-3">
             {[
-              { icon: '📍', text: settings.address },
-              { icon: '📞', text: settings.phone },
-              { icon: '✉️', text: settings.email },
-              { icon: '🕒', text: 'Mon–Sun, Open 24 Hours' },
+              { icon: <FaMapMarkerAlt />, text: settings.address },
+              { icon: <FaPhoneAlt />, text: settings.phone },
+              { icon: <FaEnvelope />, text: settings.email },
+              { icon: <FaClock />, text: 'Mon–Sun, Open 24 Hours' },
             ].map((item) => (
               <li key={item.text} className="flex items-start gap-2.5">
-                <span className="text-lg mt-0.5 flex-shrink-0">{item.icon}</span>
+                <span className="text-lg mt-0.5 flex-shrink-0 text-[#D4AF37]">{item.icon}</span>
                 <span className="text-sm leading-snug text-gray-400">{item.text}</span>
               </li>
             ))}

@@ -1,28 +1,32 @@
 
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #D4AF37;
+}
+
 :root {
   /* Brand */
-  --admin-primary:    #E8192C;
-  --admin-orange:     #FF6B00;
-  --admin-amber:      #F59E0B;
+  --admin-primary:    #D4AF37; /* Gold */
+  --admin-orange:     #AA8222; /* Dark Gold */
+  --admin-amber:      #F9DF9F; /* Light Gold */
 
   /* Sidebar */
-  --sidebar-bg:       #FFFFFF;
-  --sidebar-border:   rgba(255, 107, 0, 0.12);
-  --sidebar-active:   linear-gradient(135deg, #E8192C, #FF6B00);
-  --sidebar-hover:    rgba(255, 107, 0, 0.07);
+  --sidebar-bg:       #0A0A0A; /* Black */
+  --sidebar-border:   rgba(212, 175, 55, 0.15); /* Gold border */
+  --sidebar-active:   linear-gradient(135deg, #111111, #D4AF37); /* Black to Gold */
+  --sidebar-hover:    rgba(212, 175, 55, 0.1);
 
   /* Content */
-  --content-bg:       #F8F4F0;
-  --card-bg:          #FFFFFF;
-  --card-border:      rgba(255, 107, 0, 0.08);
-  --card-shadow:      0 2px 12px rgba(232, 25, 44, 0.06);
+  --content-bg:       #111111; /* Dark Gray */
+  --card-bg:          #1A1A1A; /* Slightly lighter card bg */
+  --card-border:      rgba(212, 175, 55, 0.15);
+  --card-shadow:      0 2px 12px rgba(0, 0, 0, 0.5);
 
   /* Text */
-  --text-h:           #1A0A00;
-  --text-b:           #4A3728;
-  --text-m:           #9B7E6A;
+  --text-h:           #D4AF37; /* Gold headings */
+  --text-b:           #E5E5E5; /* Light grey text */
+  --text-m:           #888888; /* Medium grey text */
 
   /* Tailwind v4 Required Variables */
   --spacing: 0.25rem;
@@ -70,8 +74,8 @@ body {
 }
 
 ::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #FFF8F0; }
-::-webkit-scrollbar-thumb { background: #FF6B00; border-radius: 4px; }
+::-webkit-scrollbar-track { background: #111111; }
+::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
 
 /* ── Stat Card ── */
 .stat-card {
@@ -83,15 +87,15 @@ body {
   overflow: hidden;
   position: relative;
 }
-.stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(232,25,44,0.12); }
+.stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(212,175,55,0.12); }
 
 /* ── Data Table ── */
 .admin-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
-.admin-table thead tr { border-bottom: 2px solid rgba(255,107,0,0.12); }
+.admin-table thead tr { border-bottom: 2px solid rgba(212,175,55,0.15); }
 .admin-table thead th { padding: 14px 16px; font-weight: 700; color: var(--text-h); text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; user-select: none; }
 .admin-table thead th:hover { color: var(--admin-orange); }
 .admin-table tbody tr { border-bottom: 1px solid rgba(0,0,0,0.04); transition: background 0.2s; }
-.admin-table tbody tr:hover { background: rgba(255,107,0,0.03); }
+.admin-table tbody tr:hover { background: rgba(212,175,55,0.05); }
 .admin-table tbody td { padding: 12px 16px; color: var(--text-b); vertical-align: middle; }
 
 /* ── Badge ── */
@@ -112,8 +116,8 @@ body {
 .admin-input {
   padding: 8px 14px;
   border-radius: 10px;
-  border: 1.5px solid rgba(255,107,0,0.18);
-  background: #FFF8F0;
+  border: 1.5px solid rgba(212,175,55,0.2);
+  background: #1A1A1A;
   color: var(--text-h);
   font-family: 'Poppins', sans-serif;
   font-size: 0.82rem;
