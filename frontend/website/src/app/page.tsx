@@ -304,10 +304,10 @@ export default function HomePage() {
           <div ref={comboScrollRef} className={`max-w-7xl mx-auto flex flex-row gap-8 overflow-x-auto snap-x pb-8 pt-4 hide-scrollbar ${comboOffers.length === 1 ? 'justify-center' : ''}`}>
             {comboOffers.map((offer) => (
               <div key={offer.id} className={`min-w-[320px] md:min-w-[420px] ${comboOffers.length === 1 ? 'max-w-md w-full mx-auto' : 'flex-1'} bg-gradient-to-b from-[#1A2859] to-[#0A1128] border border-[#D4AF37]/30 rounded-3xl p-6 md:p-8 flex flex-col items-center text-center gap-6 snap-center shrink-0 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(212,175,55,0.15)] transition-all duration-500 relative overflow-hidden group`}>
-                
+
                 {/* Top Accent Line */}
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#D4AF37] to-[#AA8222]" />
-                
+
                 {/* Badge */}
                 <div className="absolute top-5 left-5 bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-black tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-sm">
                   Limited Offer
@@ -323,7 +323,7 @@ export default function HomePage() {
                 {/* Content */}
                 <div className="flex-1 flex flex-col items-center w-full">
                   <h2 className="font-display font-black text-2xl md:text-3xl text-[#E5E5E5] mb-4 leading-tight">{offer.title}</h2>
-                  
+
                   <div className="flex items-end justify-center gap-4 mb-6 py-4 border-y border-[#D4AF37]/10 w-full">
                     <div className="flex flex-col items-end">
                       <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-[-2px]">M.R.P</span>
@@ -340,12 +340,12 @@ export default function HomePage() {
                     {offer.description}
                   </p>
 
-                  <button
+                  {/* <button
                     onClick={() => setSelectedComboOffer(offer)}
                     className="mt-auto w-full max-w-[260px] bg-gradient-to-r from-[#D4AF37] to-[#AA8222] hover:from-[#AA8222] hover:to-[#D4AF37] text-[#0A1128] py-3.5 rounded-full font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:scale-105 transition-all active:scale-95"
                   >
                     Claim Offer Now
-                  </button>
+                  </button> */}
                 </div>
               </div>
             ))}
