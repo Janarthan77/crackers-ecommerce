@@ -354,7 +354,7 @@ export default function HomePage() {
       )}
 
       {/* ═══════ QUICK ORDER SECTION ═══════ */}
-      <section id="quick-order" className="py-16 px-2 md:px-6 bg-[#101C40]">
+      <section id="quick-order" className="py-16 px-2 md:px-6 bg-[#D4AF37]/20">
         <div className="max-w-7xl mx-auto w-full">
           <div className="text-center mb-12">
             <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 inline-block">Wholesale Rates</span>
@@ -387,7 +387,7 @@ export default function HomePage() {
 
                 {/* Categories & Products */}
                 <div className="w-full overflow-x-auto">
-                  <table className="w-full min-w-[600px] border-collapse text-sm text-center text-[#E5E5E5]">
+                  <table className="w-full min-w-[500px] border-collapse text-sm text-center text-[#E5E5E5]">
                     <tbody>
                       {categories.map((category) => {
                         const catProducts = products.filter(p =>

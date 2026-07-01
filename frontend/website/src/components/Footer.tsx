@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaFacebook, FaInstagram, FaYoutube, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaYoutube, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock, FaHome, FaInfoCircle, FaBoxOpen, FaBookOpen, FaAddressBook } from 'react-icons/fa';
 import FireworksCanvas from '@/components/FireworksCanvas';
 
 export default function Footer() {
@@ -31,12 +31,12 @@ export default function Footer() {
     <footer className="w-full relative overflow-hidden bg-[#0A1128] border-t border-[#D4AF37]/20">
 
       <FireworksCanvas className="absolute inset-0 pointer-events-none z-0 opacity-40" style={{ mixBlendMode: 'screen' }} />
-      
+
       {/* Animated Sparkles Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Subtle moving radial gradient glow */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(212,175,55,0.05),_transparent_60%)] animate-pulse" style={{ animationDuration: '4s' }} />
-        
+
         {/* Floating Sparkles */}
         {[...Array(24)].map((_, i) => (
           <span
@@ -85,21 +85,29 @@ export default function Footer() {
         {/* Quick Links */}
         <div>
           <h4 className="font-bold text-sm tracking-widest uppercase mb-4 text-[#D4AF37]">Navigation</h4>
-          <ul className="flex flex-col gap-2.5">
-            {[['/', 'Home'], ['/about', 'About Us'], ['/products', 'Products'], ['/blogs', 'Blogs'], ['/contact', 'Contact']].map(([href, label]) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className="text-sm flex items-center gap-2 group w-fit text-gray-400"
-                >
-                  <span
-                    className="w-3 h-px group-hover:w-5 transition-all duration-300 rounded-full"
-                    style={{ background: '#D4AF37' }}
-                  />
-                  <span className="group-hover:text-[#D4AF37] transition-colors">{label}</span>
-                </Link>
-              </li>
-            ))}
+          <ul className="flex flex-col gap-3">
+            {[
+              { href: '/', label: 'Home', icon: FaHome },
+              { href: '/about', label: 'About Us', icon: FaInfoCircle },
+              { href: '/products', label: 'Products', icon: FaBoxOpen },
+              { href: '/blogs', label: 'Blogs', icon: FaBookOpen },
+              { href: '/contact', label: 'Contact', icon: FaAddressBook }
+            ].map((link) => {
+              const Icon = link.icon;
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm flex items-center gap-2.5 group w-fit text-gray-400 hover:text-white transition-colors duration-300"
+                  >
+                    <span className="text-[#D4AF37]/80 group-hover:text-[#D4AF37] transition-colors duration-300">
+                      <Icon className="text-base transition-transform duration-300 group-hover:scale-110" />
+                    </span>
+                    <span className="group-hover:text-[#D4AF37] transition-colors duration-300">{link.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
