@@ -11,6 +11,7 @@ const menuItems = [
   { name: 'Product Management',  path: '/products',      icon: '📦', color: '#7C3AED' },
   { name: 'Orders Management',   path: '/orders',        icon: '🛒', color: '#16A34A' },
   { name: 'Blogs Management',    path: '/blogs',         icon: '📝', color: '#0EA5E9' },
+  { name: 'Customer Responses',  path: '/feedback',      icon: '💬', color: '#14B8A6' },
   { name: 'Settings',            path: '/settings',      icon: '⚙️',  color: '#1D4ED8' },
   { name: 'Change Password',     path: '/change-password', icon: '🔑', color: '#B45309' },
 ];
@@ -104,6 +105,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                   }
                   onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.background = 'rgba(255,107,0,0.07)'; }}
                   onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                  onClick={onClose}
                 >
                   <div
                     className="w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0"

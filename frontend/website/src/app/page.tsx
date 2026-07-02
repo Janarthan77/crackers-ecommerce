@@ -354,11 +354,11 @@ export default function HomePage() {
       )}
 
       {/* ═══════ QUICK ORDER SECTION ═══════ */}
-      <section id="quick-order" className="py-16 px-2 md:px-6 bg-[#D4AF37]/20">
+      <section id="quick-order" className="py-16 px-2 md:px-6 bg-[#FFF9D2]">
         <div className="max-w-7xl mx-auto w-full">
           <div className="text-center mb-12">
             <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 inline-block">Wholesale Rates</span>
-            <h2 className="text-4xl font-black text-[#E5E5E5]">Quick <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#AA8222]">Order</span></h2>
+            <h2 className="text-4xl font-black text-[#1A2859]">Quick <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#AA8222]">Order</span></h2>
             <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-4 rounded-full" />
           </div>
 
