@@ -48,7 +48,7 @@ export default function LoginPage() {
         <div className="flex flex-col items-center mb-8">
           <img
             src="https://pub-c9de055708fa4822887d1db91f66e351.r2.dev/brand_logo.png"
-            alt="Rupika Crackers Logo"
+            alt="RRV Crackers Logo"
             className="w-auto h-24 object-contain mb-4 select-none"
           />
           <h1 className="page-title !mb-1 text-center">Welcome Back</h1>

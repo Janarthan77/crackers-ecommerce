@@ -76,13 +76,13 @@ export default function OrdersPage() {
     } catch (e) {
       doc.setFontSize(22);
       doc.setTextColor(234, 88, 12);
-      doc.text('Rupika Crackers', 14, 20);
+      doc.text('RRV Crackers', 14, 20);
     }
 
     // Rightside set address detail
     doc.setFontSize(10);
     doc.setTextColor(50);
-    const companyText = "Rupika Crackers\nSivakasi, Tamil Nadu\nPh: +91 9629055163";
+    const companyText = "RRV Crackers\nSivakasi, Tamil Nadu\nPh: +91 9629055163";
     doc.text(companyText, pageWidth - 14, 15, { align: 'right' });
 
     doc.setLineWidth(0.2);

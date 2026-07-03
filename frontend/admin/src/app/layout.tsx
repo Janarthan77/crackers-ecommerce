@@ -11,7 +11,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Admin Panel — Rupika Crackers',
+  title: 'Admin Panel — RRV Crackers',
   description: 'Manage your crackers e-commerce store',
 };
 

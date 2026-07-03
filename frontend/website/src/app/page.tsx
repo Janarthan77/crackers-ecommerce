@@ -772,7 +772,7 @@ export default function HomePage() {
               <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
             </div>
             <h2 className="text-2xl font-black text-gray-800 mb-2">Order Confirmed!</h2>
-            <p className="text-gray-500 text-sm mb-8 font-medium">Thank you for shopping with Rupika Crackers. Your order has been placed successfully and we will contact you shortly.</p>
+            <p className="text-gray-500 text-sm mb-8 font-medium">Thank you for shopping with RRV Crackers. Your order has been placed successfully and we will contact you shortly.</p>
             <button
               onClick={() => setShowSuccessPopup(false)}
               className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all outline-none focus:ring-4 focus:ring-green-500/30"
