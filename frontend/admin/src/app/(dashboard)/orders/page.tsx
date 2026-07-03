@@ -138,7 +138,11 @@ export default function OrdersPage() {
 
       if (!res.ok) throw new Error('Failed to update status');
 
-      toast.success('Order status updated');
+      if (newStatus === 'completed') {
+        toast.success('Customers order confirmed');
+      } else {
+        toast.success('Order status updated');
+      }
       fetchOrders();
     } catch (err) {
       toast.error('Failed to update order');

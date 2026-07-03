@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import LikeButton from '@/components/LikeButton';
 
 type Product = { id: number; categoryId: number; name: string; price: number; image: string; discount?: number; };
@@ -9,6 +11,7 @@ type Product = { id: number; categoryId: number; name: string; price: number; im
 type Category = { id: number; name: string; };
 
 export default function ProductsPage() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -157,9 +160,23 @@ export default function ProductsPage() {
                       {product.discount || 0}% OFF
                     </span>
                   </div>
-                  <Link href="/#quick-order" className="mt-4 w-full block text-center py-2.5 rounded-xl text-sm font-bold bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#AA8222] hover:text-[#0A1128] border border-[#D4AF37]/30 hover:border-transparent hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <button 
+                    onClick={() => {
+                      try {
+                        const saved = localStorage.getItem('cart_quantities');
+                        const qtyMap = saved ? JSON.parse(saved) : {};
+                        qtyMap[product.id] = (qtyMap[product.id] || 0) + 1;
+                        localStorage.setItem('cart_quantities', JSON.stringify(qtyMap));
+                        toast.success(`${product.name} added to order!`);
+                        router.push('/#quick-order');
+                      } catch (e) {
+                        console.error('Failed to update cart', e);
+                      }
+                    }}
+                    className="mt-4 w-full block text-center py-2.5 rounded-xl text-sm font-bold bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#AA8222] hover:text-[#0A1128] border border-[#D4AF37]/30 hover:border-transparent hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                  >
                     Order Now
-                  </Link>
+                  </button>
                 </div>
               </div>
             ))}

@@ -63,14 +63,14 @@ export default function Footer() {
               className="w-auto h-14 object-contain select-none"
             />
           </Link>
-          <p className="text-sm leading-relaxed max-w-xs text-gray-400">
+          <p className="text-sm leading-relaxed max-w-xs text-white">
             India&apos;s most trusted fireworks brand. Sourced directly from Sivakasi — bringing joy, safety and sparkle to every celebration.
           </p>
           <div className="flex gap-3 mt-5">
             {[
-              { icon: <FaFacebook size={18} className="text-[#D4AF37]" />, bg: 'rgba(212,175,55,0.1)', label: 'Facebook' },
-              { icon: <FaInstagram size={18} className="text-[#D4AF37]" />, bg: 'rgba(212,175,55,0.1)', label: 'Instagram' },
-              { icon: <FaYoutube size={18} className="text-[#D4AF37]" />, bg: 'rgba(212,175,55,0.1)', label: 'YouTube' },
+              { icon: <FaFacebook size={18} className="text-white" />, bg: 'rgba(212,175,55,0.1)', label: 'Facebook' },
+              { icon: <FaInstagram size={18} className="text-white" />, bg: 'rgba(212,175,55,0.1)', label: 'Instagram' },
+              { icon: <FaYoutube size={18} className="text-white" />, bg: 'rgba(212,175,55,0.1)', label: 'YouTube' },
             ].map((s) => (
               <button
                 key={s.label}
@@ -98,7 +98,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm flex items-center gap-2.5 group w-fit text-gray-400 hover:text-white transition-colors duration-300"
+                    className="text-sm flex items-center gap-2.5 group w-fit text-white transition-colors duration-300"
                   >
                     <span className="text-[#D4AF37]/80 group-hover:text-[#D4AF37] transition-colors duration-300">
                       <Icon className="text-base transition-transform duration-300 group-hover:scale-110" />
@@ -123,14 +123,14 @@ export default function Footer() {
             ].map((item) => (
               <li key={item.text} className="flex items-start gap-2.5">
                 <span className="text-lg mt-0.5 flex-shrink-0 text-[#D4AF37]">{item.icon}</span>
-                <span className="text-sm leading-snug text-gray-400">{item.text}</span>
+                <span className="text-sm leading-snug text-white">{item.text}</span>
               </li>
             ))}
           </ul>
         </div>
       </div>
 
-      <div className="border-t border-white/10 py-5 px-4 text-center text-xs text-gray-500">
+      <div className="border-t border-white/10 py-5 px-4 text-center text-xs text-white">
         &copy; {new Date().getFullYear()} RRV Crackers. All rights reserved. &nbsp;|&nbsp; Made with ❤️ for a Dazzling Diwali
       </div>
     </footer>

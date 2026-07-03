@@ -64,7 +64,7 @@ export default function About() {
             <p className="leading-loose mb-4" style={{ color: 'var(--text-body)' }}>
               Welcome to <strong style={{ color: '#D4AF37' }}>RRV Crackers</strong> — one of Tamil Nadu&apos;s most trusted wholesale and retail fireworks dealers. For over two decades, we&apos;ve been lighting up celebrations with premium, safe, and spectacular fireworks for families across India.
             </p>
-            <p className="leading-loose" style={{ color: 'var(--text-muted)' }}>
+            <p className="leading-loose" style={{ color: 'white' }}>
               Based in <strong style={{ color: '#D4AF37' }}>Sivakasi</strong> — India&apos;s fireworks capital — we source directly from certified manufacturers, cutting out middlemen to give you factory-fresh quality at wholesale prices.
             </p>
           </div>
@@ -74,8 +74,8 @@ export default function About() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             { icon: <FaCheckCircle />, color: '#D4AF37', title: 'Quality Assured', desc: 'Every product is ISI-certified and rigorously tested for safety and brilliance.' },
-            { icon: <FaTruck />,       color: '#D4AF37', title: 'Fast Delivery', desc: 'Secure packaging with 2–4 day delivery anywhere in India.' },
-            { icon: <FaTags />,        color: '#D4AF37', title: 'Best Prices', desc: 'Wholesale pricing for everyone — bulk orders get up to 40% discount.' },
+            { icon: <FaTruck />, color: '#D4AF37', title: 'Fast Delivery', desc: 'Secure packaging with 2–4 day delivery anywhere in India.' },
+            { icon: <FaTags />, color: '#D4AF37', title: 'Best Prices', desc: 'Wholesale pricing for everyone — bulk orders get up to 40% discount.' },
           ].map((v) => (
             <div key={v.title} className="card p-8 flex flex-col items-center text-center gap-4">
               <div
@@ -83,7 +83,7 @@ export default function About() {
                 style={{ background: `${v.color}12`, border: `2px solid ${v.color}25`, color: v.color }}
               >{v.icon}</div>
               <h3 className="font-bold text-lg" style={{ color: v.color }}>{v.title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>{v.desc}</p>
+              <p className="text-sm leading-relaxed" style={{ color: 'white' }}>{v.desc}</p>
             </div>
           ))}
         </div>
@@ -91,17 +91,17 @@ export default function About() {
         {/* Stats */}
         <div
           className="rounded-3xl p-10 grid grid-cols-2 gap-8 text-center"
-          style={{ background: '#111111', border: '1px solid rgba(212,175,55,0.3)', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}
+          style={{ background: '#1a2859', border: '1px solid rgba(212,175,55,0.3)', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }}
         >
           {[
             // ['20+', 'Years Experience'],
             ['100+', 'Products'],
             // ['10,000+', 'Happy Customers'],
-            ['24/7', 'Support'],
+            ['24/7', 'Support']
           ].map(([n, l]) => (
             <div key={l} className="flex flex-col gap-1">
               <span className="text-3xl md:text-4xl font-black text-[#D4AF37]" style={{ fontFamily: "'Playfair Display', serif" }}>{n}</span>
-              <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">{l}</span>
+              <span className="text-xs font-semibold uppercase tracking-widest text-white">{l}</span>
             </div>
           ))}
         </div>

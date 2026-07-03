@@ -39,6 +39,7 @@ export default function HomePage() {
   const [selectedComboOffer, setSelectedComboOffer] = useState<any>(null);
   const [comboCustomer, setComboCustomer] = useState({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
   const [isComboSubmitting, setIsComboSubmitting] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const comboScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -115,9 +116,24 @@ export default function HomePage() {
     }).catch(console.error);
   }, []);
 
+  useEffect(() => {
+    try {
+      const savedQuantities = localStorage.getItem('cart_quantities');
+      if (savedQuantities) {
+        setQuantities(JSON.parse(savedQuantities));
+      }
+    } catch (e) {
+      console.error('Failed to parse cart quantities from local storage', e);
+    }
+  }, []);
+
   const handleQtyChange = (productId: number, qtyString: string) => {
     const val = parseInt(qtyString, 10);
-    setQuantities(prev => ({ ...prev, [productId]: isNaN(val) || val < 0 ? 0 : val }));
+    setQuantities(prev => {
+      const newQuantities = { ...prev, [productId]: isNaN(val) || val < 0 ? 0 : val };
+      localStorage.setItem('cart_quantities', JSON.stringify(newQuantities));
+      return newQuantities;
+    });
   };
 
   const handleCustomerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -197,8 +213,10 @@ export default function HomePage() {
       });
       if (res.ok) {
         toast.success('Order placed successfully! We will contact you soon.');
+        setShowSuccessPopup(true);
         generatePDF(orderData);
         setQuantities({});
+        localStorage.removeItem('cart_quantities');
         setCustomer({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
       } else {
         toast.error('Failed to submit order.');
@@ -240,6 +258,7 @@ export default function HomePage() {
       });
       if (res.ok) {
         toast.success('Combo Offer claimed successfully! We will contact you soon.');
+        setShowSuccessPopup(true);
         generatePDF(orderData);
         setComboCustomer({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
         setSelectedComboOffer(null);
@@ -354,7 +373,7 @@ export default function HomePage() {
       )}
 
       {/* ═══════ QUICK ORDER SECTION ═══════ */}
-      <section id="quick-order" className="py-16 px-2 md:px-6 bg-[#FFF9D2]">
+      <section id="quick-order" className="py-16 px-2 md:px-6 bg-[#E5E4D1]">
         <div className="max-w-7xl mx-auto w-full">
           <div className="text-center mb-12">
             <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 inline-block">Wholesale Rates</span>
@@ -366,23 +385,26 @@ export default function HomePage() {
             <div className="text-center py-20 text-gray-500 animate-pulse">Loading wholesale catalog...</div>
           ) : (
             <>
-              <div className="bg-[#1A2859] border-2 overflow-hidden shadow-lg rounded-t-xl border-[#D4AF37]/20">
+              <div className="bg-[#1A2859] border-2 shadow-lg rounded-t-xl border-[#D4AF37]/20">
 
-                {/* Top Header */}
-                <div className="grid grid-cols-2 p-3 font-bold text-sm md:text-base border-b-2 bg-gradient-to-r from-[#D4AF37] to-[#AA8222] text-[#0A1128] border-[#D4AF37]/20">
-                  <div>Total Products : {products.length}</div>
-                  <div className="text-right">Overall Total : ₹{overallTotal.toFixed(2)}</div>
-                </div>
+                {/* Sticky Header Section */}
+                <div className="sticky top-[80px] z-40 shadow-xl rounded-t-xl overflow-hidden">
+                  {/* Top Header */}
+                  <div className="grid grid-cols-2 p-3 font-bold text-sm md:text-base border-b-2 bg-gradient-to-r from-[#D4AF37] to-[#AA8222] text-[#0A1128] border-[#D4AF37]/20">
+                    <div>Total Products : {products.length}</div>
+                    <div className="text-right">Overall Total : ₹{overallTotal.toFixed(2)}</div>
+                  </div>
 
-                {/* Search Filter */}
-                <div className="p-4 bg-[#101C40] border-b-2 border-[#D4AF37]/20">
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full max-w-md border border-[#D4AF37]/30 rounded-xl p-3 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] bg-[#1A2859] text-[#E5E5E5]"
-                  />
+                  {/* Search Filter */}
+                  <div className="p-4 bg-[#101C40] border-b-2 border-[#D4AF37]/20">
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full max-w-md border border-[#D4AF37]/30 rounded-xl p-3 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] bg-[#1A2859] text-[#E5E5E5]"
+                    />
+                  </div>
                 </div>
 
                 {/* Categories & Products */}
@@ -696,6 +718,25 @@ export default function HomePage() {
                 </div>
               </form>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Popup Modal */}
+      {showSuccessPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full flex flex-col items-center text-center shadow-2xl transform scale-100 animate-in zoom-in-95 duration-300">
+            <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-4xl mb-6 shadow-inner">
+              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <h2 className="text-2xl font-black text-gray-800 mb-2">Order Confirmed!</h2>
+            <p className="text-gray-500 text-sm mb-8 font-medium">Thank you for shopping with Rupika Crackers. Your order has been placed successfully and we will contact you shortly.</p>
+            <button
+              onClick={() => setShowSuccessPopup(false)}
+              className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all outline-none focus:ring-4 focus:ring-green-500/30"
+            >
+              Continue Shopping
+            </button>
           </div>
         </div>
       )}
