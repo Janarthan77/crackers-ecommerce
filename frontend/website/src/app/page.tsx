@@ -150,15 +150,35 @@ export default function HomePage() {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
+    const orderId = orderData.order_id || `ORDER_${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // Border
+    // Outer Border
     doc.setLineWidth(0.5);
-    doc.setDrawColor(220, 38, 38);
+    doc.setDrawColor(0, 0, 0);
     doc.rect(5, 5, pageWidth - 10, pageHeight - 10);
 
-    const orderId = orderData.order_id || `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+    // Header 1: Enquiry No, Estimate, Date
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Order No : ${orderId}`, 8, 10);
+    doc.text('ESTIMATE / INVOICE', pageWidth / 2, 10, { align: 'center' });
+    doc.text(`Date : ${new Date().toLocaleDateString()}`, pageWidth - 8, 10, { align: 'right' });
 
-    // Leftside set company logo
+    // Line separator
+    doc.setLineWidth(0.2);
+    doc.line(5, 12, pageWidth - 5, 12);
+
+    // Header 2: Contact and Email
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Mobile : +91 9994090969, 99430 98749`, 8, 16);
+    doc.text(`E-mail : rrvcrackers@gmail.com`, pageWidth - 8, 16, { align: 'right' });
+
+    // Line separator
+    doc.line(5, 18, pageWidth - 5, 18);
+
+    // Left side: Company Logo and Details
     try {
       const logoImg = new Image();
       logoImg.src = '/brand_logo.png';
@@ -166,66 +186,65 @@ export default function HomePage() {
         logoImg.onload = resolve;
         logoImg.onerror = reject;
       });
-      doc.addImage(logoImg, 'PNG', 14, 10, 30, 15);
+      doc.addImage(logoImg, 'PNG', 8, 20, 24, 12);
     } catch (e) {
-      doc.setFontSize(20);
-      doc.setTextColor(220, 38, 38);
-      doc.text('RRV CRACKERS', 14, 22);
+      // Ignore if logo fails to load
     }
-
-    // Rightside set address detail
-    doc.setFontSize(10);
-    doc.setTextColor(50);
-    const companyText = "RRV CRACKERS\nSivakasi, Tamil Nadu - 626123\nPh: 9994090969, 99430\nEmail: rrvcrackers@gmail.com";
-    doc.text(companyText, pageWidth - 14, 15, { align: 'right' });
-
-    doc.setLineWidth(0.2);
-    doc.setDrawColor(200, 200, 200);
-    doc.line(14, 35, pageWidth - 14, 35);
-
+    
     doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
     doc.setTextColor(220, 38, 38);
-    doc.text('Invoice / Order Details', 14, 45);
+    doc.text('RRV Crackers', 35, 25);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.text('Sivakasi, Tamil Nadu - 626123', 35, 30);
 
+    // Right side: Customer Details
     doc.setFontSize(10);
-    doc.setTextColor(100);
-    doc.text(`Order ID: ${orderId}`, 14, 52);
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 58);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Customer Details', pageWidth - 8, 23, { align: 'right' });
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`${orderData.name}`, pageWidth - 8, 28, { align: 'right' });
+    doc.text(`${orderData.mobile}`, pageWidth - 8, 32, { align: 'right' });
+    const splitAddress = doc.splitTextToSize(`${orderData.address}, ${orderData.city}`, 70);
+    doc.text(splitAddress, pageWidth - 8, 36, { align: 'right' });
 
-    doc.text(`Customer Name: ${orderData.name}`, pageWidth - 14, 52, { align: 'right' });
-    doc.text(`Mobile: ${orderData.mobile}`, pageWidth - 14, 58, { align: 'right' });
-    const splitAddress = doc.splitTextToSize(`Address: ${orderData.address}, ${orderData.city}`, 80);
-    doc.text(splitAddress, pageWidth - 14, 64, { align: 'right' });
+    // Line separator before table
+    doc.line(5, 42, pageWidth - 5, 42);
 
-    // S.No and Order ID columns in table
-    const tableColumn = ["S.No", "Order ID", "Item", "Qty", "Original Price", "Discounted Price", "Total"];
+    // Table
+    const tableColumn = ["S.No", "Product Name", "Qty", "Original Rate", "Discounted Rate", "Amount (Rs)"];
     const tableRows = orderData.items.map((item: any, index: number) => [
       index + 1,
-      orderId,
       item.name,
       item.quantity,
-      `Rs. ${item.originalPrice.toFixed(2)}`,
-      `Rs. ${item.price.toFixed(2)}`,
-      `Rs. ${(item.price * item.quantity).toFixed(2)}`
+      item.originalPrice.toFixed(2),
+      item.price.toFixed(2),
+      (item.price * item.quantity).toFixed(2)
     ]);
 
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
-      startY: 75,
+      startY: 42,
       theme: 'grid',
-      headStyles: { fillColor: [220, 38, 38] }
+      headStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0], fontStyle: 'bold', lineColor: [0, 0, 0], lineWidth: 0.2 },
+      bodyStyles: { textColor: [0, 0, 0], lineColor: [0, 0, 0], lineWidth: 0.2 },
+      styles: { cellPadding: 2, fontSize: 9 },
+      margin: { left: 5, right: 5 }
     });
 
-    const finalY = (doc as any).lastAutoTable?.finalY || 75;
-    doc.setFontSize(12);
-    doc.setTextColor(0);
-    doc.text(`Net Total: Rs. ${orderData.netTotal.toFixed(2)}`, 14, finalY + 10);
-    doc.text(`Total Savings: Rs. ${orderData.discountTotal.toFixed(2)}`, 14, finalY + 18);
+    const finalY = (doc as any).lastAutoTable?.finalY || 42;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Net Total: Rs. ${orderData.netTotal.toFixed(2)}`, pageWidth - 8, finalY + 8, { align: 'right' });
+    doc.text(`Total Savings: Rs. ${orderData.discountTotal.toFixed(2)}`, pageWidth - 8, finalY + 14, { align: 'right' });
 
-    doc.setFontSize(14);
+    doc.setFontSize(12);
     doc.setTextColor(220, 38, 38);
-    doc.text(`Overall Total: Rs. ${orderData.overallTotal.toFixed(2)}`, 14, finalY + 28);
+    doc.text(`Overall Total: Rs. ${orderData.overallTotal.toFixed(2)}`, pageWidth - 8, finalY + 22, { align: 'right' });
 
     doc.save(`Order_${orderId}.pdf`);
   };

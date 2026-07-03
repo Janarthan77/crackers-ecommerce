@@ -31,7 +31,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
           }}
         >
           <div className="flex items-center gap-2 md:gap-4">
-            <button 
+            <button
               className="md:hidden p-2 rounded-lg hover:bg-orange-50 transition-colors"
               onClick={() => setIsSidebarOpen(true)}
             >
@@ -47,7 +47,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
 
           <div className="flex items-center gap-3">
             {/* Notification bell */}
-            <button
+            {/* <button
               className="w-9 h-9 rounded-xl flex items-center justify-center relative transition-all hover:scale-105"
               style={{ background: '#FFF3E0', border: '1px solid rgba(255,107,0,0.2)' }}
             >
@@ -56,7 +56,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
                 className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full"
                 style={{ background: '#E8192C' }}
               />
-            </button>
+            </button> */}
             {/* Avatar */}
             <div className="flex items-center gap-2 cursor-pointer group">
               <div

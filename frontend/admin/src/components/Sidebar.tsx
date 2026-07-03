@@ -50,7 +50,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           <img
             src="https://pub-c9de055708fa4822887d1db91f66e351.r2.dev/brand_logo.png"
             alt="RRV Crackers Logo"
-            className="w-10 h-10 object-contain flex-shrink-0 select-none"
+            className="w-auto h-14 object-contain flex-shrink-0 select-none"
           />
           <div className="flex flex-col leading-tight">
             <span

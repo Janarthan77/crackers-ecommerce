@@ -112,7 +112,7 @@ export async function POST(request: Request) {
             .maybeSingle();
 
         const nextId = (maxOrderData?.id || 0) + 1;
-        const uniqueOrderId = `ORD-${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 100)}`;
+        const uniqueOrderId = `ORD-${nextId}`;
 
         const newOrderData = {
             id: nextId,
