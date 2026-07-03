@@ -146,22 +146,62 @@ export default function HomePage() {
   const totalOriginalPrice = products.reduce((sum, p) => sum + (p.price * (quantities[p.id] || 0)), 0);
   const overallTotal = products.reduce((sum, p) => sum + (getSellingPrice(p) * (quantities[p.id] || 0)), 0);
 
-  const generatePDF = (orderData: any) => {
+  const generatePDF = async (orderData: any) => {
     const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
 
-    doc.setFontSize(20);
+    // Border
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(220, 38, 38);
+    doc.rect(5, 5, pageWidth - 10, pageHeight - 10);
+
+    const orderId = orderData.order_id || `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    // Leftside set company logo
+    try {
+      const logoImg = new Image();
+      logoImg.src = '/brand_logo.png';
+      await new Promise((resolve, reject) => {
+        logoImg.onload = resolve;
+        logoImg.onerror = reject;
+      });
+      doc.addImage(logoImg, 'PNG', 14, 10, 30, 15);
+    } catch (e) {
+      doc.setFontSize(20);
+      doc.setTextColor(220, 38, 38);
+      doc.text('RRV CRACKERS', 14, 22);
+    }
+
+    // Rightside set address detail
+    doc.setFontSize(10);
+    doc.setTextColor(50);
+    const companyText = "RRV CRACKERS\nSivakasi, Tamil Nadu - 626123\nPh: 9994090969, 99430\nEmail: rrvcrackers@gmail.com";
+    doc.text(companyText, pageWidth - 14, 15, { align: 'right' });
+
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(200, 200, 200);
+    doc.line(14, 35, pageWidth - 14, 35);
+
+    doc.setFontSize(14);
     doc.setTextColor(220, 38, 38);
-    doc.text('Invoice / Order Details', 14, 22);
+    doc.text('Invoice / Order Details', 14, 45);
 
     doc.setFontSize(10);
     doc.setTextColor(100);
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 30);
-    doc.text(`Customer Name: ${orderData.name}`, 14, 36);
-    doc.text(`Mobile: ${orderData.mobile}`, 14, 42);
-    doc.text(`Address: ${orderData.address}, ${orderData.city}`, 14, 48);
+    doc.text(`Order ID: ${orderId}`, 14, 52);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 58);
 
-    const tableColumn = ["Item", "Qty", "Original Price", "Discounted Price", "Total"];
-    const tableRows = orderData.items.map((item: any) => [
+    doc.text(`Customer Name: ${orderData.name}`, pageWidth - 14, 52, { align: 'right' });
+    doc.text(`Mobile: ${orderData.mobile}`, pageWidth - 14, 58, { align: 'right' });
+    const splitAddress = doc.splitTextToSize(`Address: ${orderData.address}, ${orderData.city}`, 80);
+    doc.text(splitAddress, pageWidth - 14, 64, { align: 'right' });
+
+    // S.No and Order ID columns in table
+    const tableColumn = ["S.No", "Order ID", "Item", "Qty", "Original Price", "Discounted Price", "Total"];
+    const tableRows = orderData.items.map((item: any, index: number) => [
+      index + 1,
+      orderId,
       item.name,
       item.quantity,
       `Rs. ${item.originalPrice.toFixed(2)}`,
@@ -172,12 +212,12 @@ export default function HomePage() {
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
-      startY: 55,
+      startY: 75,
       theme: 'grid',
       headStyles: { fillColor: [220, 38, 38] }
     });
 
-    const finalY = (doc as any).lastAutoTable?.finalY || 55;
+    const finalY = (doc as any).lastAutoTable?.finalY || 75;
     doc.setFontSize(12);
     doc.setTextColor(0);
     doc.text(`Net Total: Rs. ${orderData.netTotal.toFixed(2)}`, 14, finalY + 10);
@@ -187,7 +227,7 @@ export default function HomePage() {
     doc.setTextColor(220, 38, 38);
     doc.text(`Overall Total: Rs. ${orderData.overallTotal.toFixed(2)}`, 14, finalY + 28);
 
-    doc.save(`Order_${orderData.mobile}.pdf`);
+    doc.save(`Order_${orderId}.pdf`);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -212,9 +252,10 @@ export default function HomePage() {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData),
       });
       if (res.ok) {
+        const createdOrder = await res.json();
         toast.success('Order placed successfully! We will contact you soon.');
         setShowSuccessPopup(true);
-        generatePDF(orderData);
+        await generatePDF({ ...orderData, order_id: createdOrder.order_id });
         setQuantities({});
         localStorage.removeItem('cart_quantities');
         setCustomer({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
@@ -257,9 +298,10 @@ export default function HomePage() {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData),
       });
       if (res.ok) {
+        const createdOrder = await res.json();
         toast.success('Combo Offer claimed successfully! We will contact you soon.');
         setShowSuccessPopup(true);
-        generatePDF(orderData);
+        await generatePDF({ ...orderData, order_id: createdOrder.order_id });
         setComboCustomer({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
         setSelectedComboOffer(null);
       } else {
@@ -373,7 +415,7 @@ export default function HomePage() {
       )}
 
       {/* ═══════ QUICK ORDER SECTION ═══════ */}
-      <section id="quick-order" className="py-16 px-2 md:px-6 bg-[#E5E4D1]">
+      <section id="quick-order" className="py-16 px-2 md:px-6 bg-[#fffbeb]">
         <div className="max-w-7xl mx-auto w-full">
           <div className="text-center mb-12">
             <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 inline-block">Wholesale Rates</span>

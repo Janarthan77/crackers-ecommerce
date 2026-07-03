@@ -10,10 +10,22 @@ async function sendTelegramNotification(orderData: any, orderId: number) {
         return;
     }
 
+    let itemsTable = '';
+    if (orderData.items && orderData.items.length > 0) {
+        itemsTable = `\n<pre>\nItem              Qty  Total\n----------------------------\n`;
+        orderData.items.forEach((item: any) => {
+            const name = (item.name || '').substring(0, 16).padEnd(17, ' ');
+            const qty = (item.quantity || 1).toString().padStart(3, ' ');
+            const total = ((item.price || 0) * (item.quantity || 1)).toString().padStart(5, ' ');
+            itemsTable += `${name}${qty}  ₹${total}\n`;
+        });
+        itemsTable += `----------------------------</pre>\n━━━━━━━━━━━━━━━━━━`;
+    }
+
     const message = `
 🛍️ <b>NEW ORDER RECEIVED!</b> 🛍️
 ━━━━━━━━━━━━━━━━━━
-🆔 <b>Order ID</b>: #${orderId}
+🆔 <b>Order ID</b>: ${orderData.order_id || '#' + orderId}
 👤 <b>Customer</b>: ${orderData.name}
 📱 <b>Mobile</b>: ${orderData.mobile}
 📍 <b>Location</b>: ${orderData.city}, ${orderData.state}
@@ -22,7 +34,7 @@ async function sendTelegramNotification(orderData: any, orderId: number) {
 📉 <b>Discount</b>: -₹${orderData.discount_total}
 💳 <b>Net Payable</b>: ₹${orderData.overall_total}
 ━━━━━━━━━━━━━━━━━━
-📦 <b>Total Items</b>: ${orderData.items ? orderData.items.length : 0}
+📦 <b>Total Items</b>: ${orderData.items ? orderData.items.length : 0}${itemsTable}
 `.trim();
 
     try {
@@ -65,6 +77,7 @@ export async function GET() {
         // Format to match old structure
         const formattedOrders = orders.map((o: any) => ({
             id: o.id,
+            order_id: o.order_id,
             name: o.name,
             mobile: o.mobile,
             state: o.state,
@@ -99,9 +112,11 @@ export async function POST(request: Request) {
             .maybeSingle();
 
         const nextId = (maxOrderData?.id || 0) + 1;
+        const uniqueOrderId = `ORD-${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 100)}`;
 
         const newOrderData = {
             id: nextId,
+            order_id: uniqueOrderId,
             name: body.name,
             mobile: body.mobile,
             state: body.state,
@@ -123,7 +138,8 @@ export async function POST(request: Request) {
         if (error) throw error;
 
         // Send a Telegram notification in the background
-        sendTelegramNotification(newOrderData, newOrder.id).catch(console.error);
+        // Note: In serverless environments like Vercel, we must await it so the function doesn't exit before it finishes.
+        await sendTelegramNotification(newOrderData, newOrder.id);
 
         return NextResponse.json(newOrder, { status: 201 });
     } catch (e: any) {

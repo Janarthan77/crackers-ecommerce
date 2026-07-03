@@ -16,6 +16,7 @@ interface OrderItem {
 
 interface Order {
   id: number;
+  order_id?: string;
   name: string;
   mobile: string;
   state: string;
@@ -51,36 +52,69 @@ export default function OrdersPage() {
     setIsModalOpen(false);
   };
 
-  const generateInvoicePDF = (order: Order) => {
+  const generateInvoicePDF = async (order: Order) => {
     const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
 
-    // Header
-    doc.setFontSize(22);
-    doc.setTextColor(234, 88, 12); // Orange
-    doc.text('Rupika Crackers', 14, 20);
+    // Border
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(234, 88, 12);
+    doc.rect(5, 5, pageWidth - 10, pageHeight - 10);
+
+    const orderIdToUse = order.order_id || `ORD-${order.id}`;
+
+    // Leftside set company logo
+    try {
+      const logoImg = new Image();
+      logoImg.src = '/brand_logo.png';
+      await new Promise((resolve, reject) => {
+        logoImg.onload = resolve;
+        logoImg.onerror = reject;
+      });
+      doc.addImage(logoImg, 'PNG', 14, 10, 30, 15);
+    } catch (e) {
+      doc.setFontSize(22);
+      doc.setTextColor(234, 88, 12);
+      doc.text('Rupika Crackers', 14, 20);
+    }
+
+    // Rightside set address detail
+    doc.setFontSize(10);
+    doc.setTextColor(50);
+    const companyText = "Rupika Crackers\nSivakasi, Tamil Nadu\nPh: +91 9629055163";
+    doc.text(companyText, pageWidth - 14, 15, { align: 'right' });
+
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(200, 200, 200);
+    doc.line(14, 35, pageWidth - 14, 35);
+
+    doc.setFontSize(14);
+    doc.setTextColor(234, 88, 12);
+    doc.text('Invoice / Bill of Supply', 14, 45);
 
     doc.setFontSize(10);
     doc.setTextColor(100);
-    doc.text('Invoice / Bill of Supply', 14, 28);
-    doc.text(`Order ID: #${order.id}`, 14, 34);
-    doc.text(`Date: ${order.createdAt}`, 14, 40);
+    doc.text(`Order ID: ${orderIdToUse}`, 14, 52);
+    doc.text(`Date: ${order.createdAt}`, 14, 58);
 
-    // Customer Details
     doc.setFontSize(12);
     doc.setTextColor(0);
-    doc.text('Bill To:', 14, 55);
+    doc.text('Bill To:', pageWidth - 14, 45, { align: 'right' });
     doc.setFontSize(10);
-    doc.text(`Name: ${order.name}`, 14, 62);
-    doc.text(`Mobile: ${order.mobile}`, 14, 68);
-    doc.text(`Address: ${order.city}, ${order.state}`, 14, 74);
+    doc.text(`Name: ${order.name}`, pageWidth - 14, 52, { align: 'right' });
+    doc.text(`Mobile: ${order.mobile}`, pageWidth - 14, 58, { align: 'right' });
+    doc.text(`Address: ${order.city}, ${order.state}`, pageWidth - 14, 64, { align: 'right' });
 
     // Items Table
-    const tableColumn = ["Item", "Unit Price", "Qty", "Total"];
+    const tableColumn = ["S.No", "Order ID", "Item", "Unit Price", "Qty", "Total"];
     const tableRows: any[] = [];
 
     if (order.items && order.items.length > 0) {
-      order.items.forEach(item => {
+      order.items.forEach((item, index) => {
         const itemData = [
+          index + 1,
+          orderIdToUse,
           item.name,
           `Rs. ${item.price}`,
           item.quantity.toString(),
@@ -93,12 +127,12 @@ export default function OrdersPage() {
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
-      startY: 85,
+      startY: 75,
       theme: 'grid',
       headStyles: { fillColor: [234, 88, 12] }
     });
 
-    const finalY = (doc as any).lastAutoTable?.finalY || 85;
+    const finalY = (doc as any).lastAutoTable?.finalY || 75;
 
     // Totals
     doc.setFontSize(10);
@@ -108,7 +142,7 @@ export default function OrdersPage() {
     doc.setFont('', 'bold');
     doc.text(`Net Payable: Rs. ${order.overallTotal}`, 140, finalY + 24);
 
-    doc.save(`Invoice_Order_${order.id}.pdf`);
+    doc.save(`Invoice_${orderIdToUse}.pdf`);
   };
 
   const fetchOrders = async () => {
@@ -271,7 +305,7 @@ export default function OrdersPage() {
                               onChange={() => handleSelectItem(order.id)}
                             />
                           </td>
-                          <td className="p-4 text-sm font-medium text-gray-600">#{order.id}</td>
+                          <td className="p-4 text-sm font-medium text-gray-600">{order.order_id || `#${order.id}`}</td>
                           <td className="p-4 text-sm text-gray-600">{order.createdAt}</td>
                           <td className="p-4">
                             <div className="flex flex-col">
@@ -349,7 +383,7 @@ export default function OrdersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 sm:p-6 animate-fade-in">
           <div className="bg-white rounded-2xl w-full max-w-5xl max-h-[95vh] shadow-2xl flex flex-col overflow-hidden animate-fade-up">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
-              <h2 className="text-2xl font-black text-gray-800">Order Details #{selectedOrderView.id}</h2>
+              <h2 className="text-2xl font-black text-gray-800">Order Details {selectedOrderView.order_id || `#${selectedOrderView.id}`}</h2>
               <button onClick={closeOrderModal} className="text-gray-400 hover:text-red-500 bg-gray-100 hover:bg-red-50 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
                 ✕
               </button>

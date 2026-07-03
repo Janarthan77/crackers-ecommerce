@@ -49,11 +49,11 @@ export default function LoginPage() {
           <img
             src="https://pub-c9de055708fa4822887d1db91f66e351.r2.dev/brand_logo.png"
             alt="Rupika Crackers Logo"
-            className="w-16 h-16 object-contain mb-4 select-none"
+            className="w-auto h-24 object-contain mb-4 select-none"
           />
           <h1 className="page-title !mb-1 text-center">Welcome Back</h1>
           <p className="text-sm text-center" style={{ color: 'var(--text-m)' }}>
-            Sign in to Rupika Crackers Admin Panel
+            Sign in to RRV Crackers Admin Panel
           </p>
         </div>
 
