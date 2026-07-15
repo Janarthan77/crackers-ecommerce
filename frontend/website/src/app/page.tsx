@@ -1,12 +1,13 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import React, { useEffect, useState, useRef } from 'react';
 import toast from 'react-hot-toast';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import FireworksCanvas from '@/components/FireworksCanvas';
+import dynamic from 'next/dynamic';
 import { FaStar } from 'react-icons/fa';
+
+const FireworksCanvas = dynamic(() => import('@/components/FireworksCanvas'), { ssr: false });
 
 const FEATURES = [
   { icon: '🚚', title: '2-Day Delivery', desc: 'Fast, secure delivery to your door' },
@@ -147,6 +148,8 @@ export default function HomePage() {
   const overallTotal = products.reduce((sum, p) => sum + (getSellingPrice(p) * (quantities[p.id] || 0)), 0);
 
   const generatePDF = async (orderData: any) => {
+    const { default: jsPDF } = await import('jspdf');
+    const { default: autoTable } = await import('jspdf-autotable');
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
@@ -180,7 +183,7 @@ export default function HomePage() {
 
     // Left side: Company Logo and Details
     try {
-      const logoImg = new Image();
+      const logoImg = new window.Image();
       logoImg.src = '/brand_logo.png';
       await new Promise((resolve, reject) => {
         logoImg.onload = resolve;
@@ -395,8 +398,8 @@ export default function HomePage() {
 
                 {/* Image */}
                 {offer.image_url && (
-                  <div className="w-40 h-40 md:w-48 md:h-48 mt-6 rounded-2xl overflow-hidden shadow-2xl border-4 border-[#101C40] ring-2 ring-[#D4AF37]/20 group-hover:scale-105 transition-transform duration-700">
-                    <img src={offer.image_url} alt={offer.title} className="w-full h-full object-cover" />
+                  <div className="w-40 h-40 md:w-48 md:h-48 mt-6 relative rounded-2xl overflow-hidden shadow-2xl border-4 border-[#101C40] ring-2 ring-[#D4AF37]/20 group-hover:scale-105 transition-transform duration-700">
+                    <Image src={offer.image_url} alt={offer.title} fill className="object-cover" />
                   </div>
                 )}
 
@@ -498,11 +501,11 @@ export default function HomePage() {
                                 <tr key={product.id} className={`border-b border-[#D4AF37]/10 last:border-0 hover:bg-[#D4AF37]/10 transition-colors duration-300 ${rowBg}`}>
                                   <td className="w-16 p-2 border-r border-[#D4AF37]/10">
                                     <div
-                                      className="w-10 h-10 mx-auto flex items-center justify-center text-xl bg-[#101C40] border border-[#D4AF37]/20 shadow-sm rounded overflow-hidden cursor-pointer hover:border-[#D4AF37] hover:shadow-md transition-all"
+                                      className="w-10 h-10 mx-auto relative flex items-center justify-center text-xl bg-[#101C40] border border-[#D4AF37]/20 shadow-sm rounded overflow-hidden cursor-pointer hover:border-[#D4AF37] hover:shadow-md transition-all"
                                       onClick={() => product.image && setPreviewImage(product.image.startsWith('http') ? product.image : `/images/${product.image}`)}
                                     >
                                       {product.image ? (
-                                        <img src={product.image.startsWith('http') ? product.image : `/images/${product.image}`} alt={product.name} className="w-full h-full object-cover" />
+                                        <Image src={product.image.startsWith('http') ? product.image : `/images/${product.image}`} alt={product.name} fill className="object-cover" />
                                       ) : (
                                         '🎇'
                                       )}
@@ -666,7 +669,7 @@ export default function HomePage() {
                 <div key={blog.id} className="bg-[#1A2859] rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-[#D4AF37]/20 flex flex-col group cursor-pointer">
                   <div className="h-48 bg-[#0A1128] relative overflow-hidden">
                     {blog.image_url ? (
-                      <img src={blog.image_url} alt={blog.title} className="w-full h-full object-cover transition-transform hover:scale-105 duration-500" />
+                      <Image src={blog.image_url} alt={blog.title} fill className="object-cover transition-transform hover:scale-105 duration-500" />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-[#1A2859] to-[#101C40] flex items-center justify-center text-4xl">📝</div>
                     )}
@@ -696,14 +699,14 @@ export default function HomePage() {
       {/* Image Preview Modal */}
       {previewImage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4" onClick={() => setPreviewImage(null)}>
-          <div className="relative max-w-3xl w-full flex items-center justify-center animate-fade-up">
+          <div className="relative max-w-3xl w-full h-[80vh] flex items-center justify-center animate-fade-up">
             <button
-              className="absolute -top-12 right-0 text-white hover:text-orange-400 text-3xl font-black bg-black/20 w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+              className="absolute -top-12 right-0 text-white hover:text-orange-400 text-3xl font-black bg-black/20 w-10 h-10 rounded-full flex items-center justify-center transition-colors z-10"
               onClick={(e) => { e.stopPropagation(); setPreviewImage(null); }}
             >
               &times;
             </button>
-            <img src={previewImage} alt="Product Preview" className="max-h-[80vh] max-w-full rounded-xl shadow-2xl object-contain border-4 border-white/10" />
+            <Image src={previewImage} alt="Product Preview" fill className="rounded-xl shadow-2xl object-contain border-4 border-white/10" />
           </div>
         </div>
       )}
@@ -727,7 +730,7 @@ export default function HomePage() {
 
               <div className="bg-gradient-to-r from-[#1A2859] to-[#101C40] rounded-2xl p-5 mb-8 flex flex-col md:flex-row items-center gap-5 border border-[#D4AF37]/20 shadow-inner">
                 {selectedComboOffer.image_url && (
-                  <img src={selectedComboOffer.image_url} alt={selectedComboOffer.title} className="w-24 h-24 object-cover rounded-xl shadow-md border-2 border-[#D4AF37]/30" />
+                  <Image src={selectedComboOffer.image_url} alt={selectedComboOffer.title} width={96} height={96} className="object-cover rounded-xl shadow-md border-2 border-[#D4AF37]/30" />
                 )}
                 <div className="text-center md:text-left flex-1">
                   <h3 className="font-black text-xl text-[#E5E5E5] leading-tight mb-1">{selectedComboOffer.title}</h3>

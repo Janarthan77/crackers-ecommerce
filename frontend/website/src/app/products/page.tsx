@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import LikeButton from '@/components/LikeButton';
@@ -138,10 +138,11 @@ export default function ProductsPage() {
                     Sale
                   </span>
                   {product.image ? (
-                    <img
+                    <Image
                       src={product.image.startsWith('http') ? product.image : `/images/${product.image}`}
                       alt={product.name}
-                      className="w-auto h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   ) : (
                     <div className="text-6xl transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6">

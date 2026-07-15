@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FaFacebook, FaInstagram, FaYoutube, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock, FaHome, FaInfoCircle, FaBoxOpen, FaBookOpen, FaAddressBook } from 'react-icons/fa';
 import FireworksCanvas from '@/components/FireworksCanvas';
 
@@ -57,9 +58,11 @@ export default function Footer() {
         {/* Brand */}
         <div className="md:col-span-2">
           <Link href="/" className="flex items-center gap-3 mb-4 cursor-pointer w-fit">
-            <img
+            <Image
               src="https://pub-c9de055708fa4822887d1db91f66e351.r2.dev/brand_logo.png"
               alt="RRV Crackers Logo"
+              width={180}
+              height={56}
               className="w-auto h-14 object-contain select-none"
             />
           </Link>

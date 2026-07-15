@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState<any[]>([]);
@@ -44,7 +45,7 @@ export default function BlogsPage() {
                 <article key={blog.id} className="bg-[#1A2859] rounded-3xl overflow-hidden shadow-lg hover:shadow-[0_15px_35px_rgba(212,175,55,0.15)] transition-all duration-500 border border-[#D4AF37]/20 flex flex-col group hover:-translate-y-2 cursor-pointer" onClick={() => setSelectedBlog(blog)}>
                   <div className="h-64 bg-[#0A1128] relative overflow-hidden border-b border-[#D4AF37]/10">
                     {blog.image_url ? (
-                        <img src={blog.image_url} alt={blog.title} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" />
+                        <Image src={blog.image_url} alt={blog.title} fill className="object-cover transition-transform group-hover:scale-110 duration-700" />
                     ) : (
                         <div className="w-full h-full bg-gradient-to-br from-[#0A1128] to-[#101C40] flex items-center justify-center text-5xl opacity-50 group-hover:opacity-100 transition-opacity">📝</div>
                     )}
@@ -92,7 +93,7 @@ export default function BlogsPage() {
 
             {selectedBlog.image_url && (
               <div className="w-full h-80 relative border-b border-[#D4AF37]/20">
-                <img src={selectedBlog.image_url} alt={selectedBlog.title} className="w-full h-full object-cover" />
+                <Image src={selectedBlog.image_url} alt={selectedBlog.title} fill className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#101C40] via-transparent to-transparent"></div>
               </div>
             )}

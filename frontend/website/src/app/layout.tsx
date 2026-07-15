@@ -27,12 +27,12 @@ export default function RootLayout({
     <html lang="en" className={`${poppins.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col" style={{ background: "var(--bg-page)" }} suppressHydrationWarning>
         <Script
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           src={`https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX`}
         />
         <Script
           id="google-analytics"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
