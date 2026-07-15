@@ -17,6 +17,24 @@ export const metadata: Metadata = {
   title: "RRV Crackers — Biggest Diwali Sale",
   description: "Buy premium quality RRV Crackers and fireworks at the best prices. Shop sparklers, rockets, flower pots and more — with fast delivery.",
   keywords: ["RRV Crackers", "buy crackers online", "diwali fireworks", "wholesale crackers sivakasi"],
+  metadataBase: new URL('https://www.rrvcrackers.com'),
+  openGraph: {
+    title: "RRV Crackers — Biggest Diwali Sale",
+    description: "Buy premium quality RRV Crackers and fireworks at the best prices.",
+    url: 'https://www.rrvcrackers.com',
+    siteName: 'RRV Crackers',
+    locale: 'en_IN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "RRV Crackers — Biggest Diwali Sale",
+    description: "Buy premium quality RRV Crackers and fireworks at the best prices.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
