@@ -64,7 +64,7 @@ export default function Header() {
             { id: 'ig', icon: <FaInstagram size={12} /> },
             { id: 'yt', icon: <FaYoutube size={12} /> }
           ].map((s) => (
-            <button key={s.id} className="w-6 h-6 rounded-full flex items-center justify-center transition-colors text-[#D4AF37] hover:text-white" style={{ background: 'rgba(212,175,55,0.1)' }}>
+            <button key={s.id} aria-label={`Social media ${s.id}`} className="w-6 h-6 rounded-full flex items-center justify-center transition-colors text-[#D4AF37] hover:text-white" style={{ background: 'rgba(212,175,55,0.1)' }}>
               {s.icon}
             </button>
           ))}
@@ -139,6 +139,7 @@ export default function Header() {
 
           {/* Mobile toggle */}
           <button
+            aria-label="Toggle mobile menu"
             className="md:hidden p-2 rounded-xl transition-colors"
             style={{ background: 'rgba(212,175,55,0.1)' }}
             onClick={() => setMenuOpen(!menuOpen)}

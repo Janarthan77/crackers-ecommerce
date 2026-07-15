@@ -78,6 +78,7 @@ export default function Footer() {
               <button
                 key={s.label}
                 title={s.label}
+                aria-label={s.label}
                 className="w-9 h-9 rounded-full flex items-center justify-center transition-transform hover:scale-110"
                 style={{ background: s.bg }}
               >{s.icon}</button>
@@ -87,7 +88,7 @@ export default function Footer() {
 
         {/* Quick Links */}
         <div>
-          <h4 className="font-bold text-sm tracking-widest uppercase mb-4 text-[#D4AF37]">Navigation</h4>
+          <h2 className="font-bold text-sm tracking-widest uppercase mb-4 text-[#D4AF37]">Navigation</h2>
           <ul className="flex flex-col gap-3">
             {[
               { href: '/', label: 'Home', icon: FaHome },
@@ -116,7 +117,7 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h4 className="font-bold text-sm tracking-widest uppercase mb-4 text-[#D4AF37]">Contact</h4>
+          <h2 className="font-bold text-sm tracking-widest uppercase mb-4 text-[#D4AF37]">Contact</h2>
           <ul className="flex flex-col gap-3">
             {[
               { icon: <FaMapMarkerAlt />, text: settings.address },

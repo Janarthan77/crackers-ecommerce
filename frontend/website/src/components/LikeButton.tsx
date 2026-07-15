@@ -43,7 +43,7 @@ export default function LikeButton() {
           <span className="text-red-500 text-lg z-10 relative drop-shadow-[0_0_8px_rgba(255,0,0,0.6)]">❤️</span>
         </div>
       ) : (
-        <span className="text-gray-400 text-lg opacity-70 hover:opacity-100 transition-opacity">🤍</span>
+        <span className="text-gray-300 text-lg opacity-70 hover:opacity-100 transition-opacity">🤍</span>
       )}
     </button>
   );
