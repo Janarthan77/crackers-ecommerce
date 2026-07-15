@@ -364,7 +364,7 @@ export default function HomeClient({
       {comboOffers.length > 0 && (
         <section className="py-16 px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-[#101C40] via-[#1A2859] to-[#101C40] border-y border-[#D4AF37]/20">
           <div ref={comboScrollRef} className={`max-w-7xl mx-auto flex flex-row gap-8 overflow-x-auto snap-x pb-8 pt-4 hide-scrollbar ${comboOffers.length === 1 ? 'justify-center' : ''}`}>
-            {comboOffers.map((offer) => (
+            {comboOffers.map((offer, index) => (
               <div key={offer.id} className={`min-w-[320px] md:min-w-[420px] ${comboOffers.length === 1 ? 'max-w-md w-full mx-auto' : 'flex-1'} bg-gradient-to-b from-[#1A2859] to-[#0A1128] border border-[#D4AF37]/30 rounded-3xl p-6 md:p-8 flex flex-col items-center text-center gap-6 snap-center shrink-0 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(212,175,55,0.15)] transition-all duration-500 relative overflow-hidden group`}>
 
                 {/* Top Accent Line */}
@@ -378,7 +378,7 @@ export default function HomeClient({
                 {/* Image */}
                 {offer.image_url && (
                   <div className="w-40 h-40 md:w-48 md:h-48 mt-6 relative rounded-2xl overflow-hidden shadow-2xl border-4 border-[#101C40] ring-2 ring-[#D4AF37]/20 group-hover:scale-105 transition-transform duration-700">
-                    <Image src={offer.image_url} alt={offer.title} fill className="object-cover" />
+                    <Image src={offer.image_url} alt={offer.title} fill className="object-cover" priority={index === 0} />
                   </div>
                 )}
 

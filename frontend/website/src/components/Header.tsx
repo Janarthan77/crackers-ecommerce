@@ -91,6 +91,7 @@ export default function Header() {
               alt="RRV Crackers Logo"
               width={200}
               height={64}
+              priority={true}
               className="w-auto h-16 object-contain transition-transform group-hover:scale-110 select-none"
             />
             {/* <div className="flex flex-col leading-tight">
