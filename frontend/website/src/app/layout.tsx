@@ -31,6 +31,11 @@ export const metadata: Metadata = {
     title: "RRV Crackers — Biggest Diwali Sale",
     description: "Buy premium quality RRV Crackers and fireworks at the best prices.",
   },
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
   robots: {
     index: true,
     follow: true,
