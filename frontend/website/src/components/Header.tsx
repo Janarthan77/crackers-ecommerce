@@ -92,7 +92,8 @@ export default function Header() {
               width={200}
               height={64}
               priority={true}
-              className="w-auto h-16 object-contain transition-transform group-hover:scale-110 select-none"
+              style={{ width: 'auto', height: '4rem' }}
+              className="object-contain transition-transform group-hover:scale-110 select-none"
             />
             {/* <div className="flex flex-col leading-tight">
               <span

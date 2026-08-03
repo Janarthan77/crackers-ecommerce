@@ -63,7 +63,8 @@ export default function Footer() {
               alt="RRV Crackers Logo"
               width={180}
               height={56}
-              className="w-auto h-14 object-contain select-none"
+              style={{ width: 'auto', height: '3.5rem' }}
+              className="object-contain select-none"
             />
           </Link>
           <p className="text-sm leading-relaxed max-w-xs text-white">
