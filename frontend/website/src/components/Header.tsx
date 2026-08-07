@@ -47,7 +47,7 @@ export default function Header() {
         }}
       >
         <marquee behavior="scroll" direction="left" scrollamount="8" className="w-full">
-          ★ RRV Crackers: BIGGEST DIWALI SALE — Upto 40% OFF on All Crackers! ★
+          ★ RRV Crackers: BIGGEST DIWALI SALE — Upto 80% OFF on All Crackers! ★
         </marquee>
       </div>
 

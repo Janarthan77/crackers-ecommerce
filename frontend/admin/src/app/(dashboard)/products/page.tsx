@@ -309,12 +309,17 @@ export default function ProductsPage() {
                     />
                   </td>
                   <td className="p-4">
-                    <div className={`w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden ${prod.isPaused ? 'opacity-50 grayscale' : ''}`}>
-                      {prod.image ? (
-                        <img src={prod.image.startsWith('http') ? prod.image : `/images/${prod.image}`} alt={prod.name} className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display = 'none'} />
-                      ) : (
-                        <span className="text-xs text-gray-400">N/A</span>
-                      )}
+                    <div className={`w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden p-1 ${prod.isPaused ? 'opacity-50 grayscale' : ''}`}>
+                      <img 
+                        src={prod.image ? (prod.image.startsWith('http') ? prod.image : `/images/${prod.image}`) : '/brand_logo.png'} 
+                        alt={prod.name} 
+                        className={`w-full h-full ${prod.image ? 'object-cover' : 'object-contain'}`} 
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = '/brand_logo.png';
+                          e.currentTarget.className = 'w-full h-full object-contain';
+                        }} 
+                      />
                     </div>
                   </td>
                   <td className="p-4 text-sm font-bold" style={{ color: 'var(--text-h)' }}>

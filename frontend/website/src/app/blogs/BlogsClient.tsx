@@ -34,11 +34,16 @@ export default function BlogsClient({ initialBlogs }: BlogsClientProps) {
               {blogs.map((blog) => (
                 <article key={blog.id} className="bg-[#1A2859] rounded-3xl overflow-hidden shadow-lg hover:shadow-[0_15px_35px_rgba(212,175,55,0.15)] transition-all duration-500 border border-[#D4AF37]/20 flex flex-col group hover:-translate-y-2 cursor-pointer" onClick={() => setSelectedBlog(blog)}>
                   <div className="h-64 bg-[#0A1128] relative overflow-hidden border-b border-[#D4AF37]/10">
-                    {blog.image_url ? (
-                        <Image src={blog.image_url} alt={blog.title} fill className="object-cover transition-transform group-hover:scale-110 duration-700" />
-                    ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#0A1128] to-[#101C40] flex items-center justify-center text-5xl opacity-50 group-hover:opacity-100 transition-opacity">📝</div>
-                    )}
+                    <img 
+                      src={blog.image_url || '/brand_logo.png'} 
+                      alt={blog.title} 
+                      className={`w-full h-full ${blog.image_url ? 'object-cover' : 'object-contain p-6'} transition-transform group-hover:scale-110 duration-700`} 
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/brand_logo.png';
+                        e.currentTarget.className = 'w-full h-full object-contain p-6 transition-transform group-hover:scale-110 duration-700';
+                      }}
+                    />
                     <div className="absolute top-4 right-4 bg-[#0A1128]/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-[#D4AF37]/30 text-[#D4AF37] text-xs font-bold tracking-widest uppercase shadow-lg">
                       {new Date(blog.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </div>

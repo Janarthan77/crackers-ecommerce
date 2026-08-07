@@ -11,14 +11,8 @@ const FireworksCanvas = dynamic(() => import('@/components/FireworksCanvas'), { 
 
 const FEATURES = [
   { icon: '🚚', title: '2-Day Delivery', desc: 'Fast, secure delivery to your door' },
-  { icon: '💰', title: 'Wholesale Rates', desc: 'Up to 40% discount on bulk orders' },
+  { icon: '💰', title: 'Wholesale Rates', desc: 'Up to 80% discount on bulk orders' },
   { icon: '🏭', title: 'Sivakasi Direct', desc: 'Sourced from top factories' },
-];
-
-const SLIDER_IMAGES = [
-  `${process.env.NEXT_PUBLIC_CLOUDFLARE_IMAGE_URL}/slider_images/banner_image_1.gif`, // Diwali Diya Festival image
-  `${process.env.NEXT_PUBLIC_CLOUDFLARE_IMAGE_URL}/slider_images/banner_image_2.gif`, // Static image 2 (User liked)
-  `${process.env.NEXT_PUBLIC_CLOUDFLARE_IMAGE_URL}/slider_images/banner_image_3.jpg` // Diwali sparkler celebration
 ];
 
 interface HomeClientProps {
@@ -52,10 +46,56 @@ export default function HomeClient({
 
   // Combo Offer Order State
   const [selectedComboOffer, setSelectedComboOffer] = useState<any>(null);
+  const [selectedComboBanner, setSelectedComboBanner] = useState<{ id: number; title: string; price: number; itemsCount: number } | null>(null);
   const [comboCustomer, setComboCustomer] = useState({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
   const [isComboSubmitting, setIsComboSubmitting] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const comboScrollRef = useRef<HTMLDivElement>(null);
+
+  const parseComboDescription = (descString: string) => {
+    if (!descString) return { text: '', items: [] };
+    try {
+      const json = JSON.parse(descString);
+      if (json && typeof json === 'object') {
+        return {
+          text: json.text || '',
+          items: Array.isArray(json.items) ? json.items : []
+        };
+      }
+    } catch (e) {}
+    return { text: descString, items: [] };
+  };
+
+  const handleSelectComboOffer = (offer: any) => {
+    const parsed = parseComboDescription(offer.description);
+    
+    if (parsed.items && parsed.items.length > 0) {
+      const newQtyMap: Record<number, number> = { ...quantities };
+      parsed.items.forEach((item: any) => {
+        newQtyMap[item.productId] = item.qty;
+      });
+      setQuantities(newQtyMap);
+      
+      setSelectedComboBanner({
+        id: offer.id,
+        title: offer.title,
+        price: offer.discounted_price,
+        itemsCount: parsed.items.length
+      });
+
+      toast.success(`🎉 ${offer.title} loaded into order sheet!`);
+    } else {
+      setSelectedComboOffer(offer);
+      toast.success(`Selected ${offer.title}`);
+    }
+
+    setTimeout(() => {
+      const orderFormEl = document.getElementById('quick-order');
+      if (orderFormEl) {
+        orderFormEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
 
   useEffect(() => {
     if (comboOffers.length >= 3) {
@@ -172,7 +212,7 @@ export default function HomeClient({
     } catch (e) {
       // Ignore if logo fails to load
     }
-    
+
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(220, 38, 38);
@@ -346,7 +386,7 @@ export default function HomeClient({
 
           <p className="text-lg text-gray-200 mb-8 max-w-xl mx-auto drop-shadow-md">
             Light up your celebrations with India&apos;s finest crackers.{' '}
-            <strong className="text-[#D4AF37]">Up to 40% OFF</strong> on all premium products!
+            <strong className="text-[#D4AF37]">Up to 80% OFF</strong> on all premium products!
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up" style={{ animationDelay: '0.2s' }}>
@@ -362,55 +402,129 @@ export default function HomeClient({
 
       {/* ═══════ PROMO BANNER ═══════ */}
       {comboOffers.length > 0 && (
-        <section className="py-16 px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-[#101C40] via-[#1A2859] to-[#101C40] border-y border-[#D4AF37]/20">
+        <section className="py-16 px-4 md:px-8 relative overflow-hidden bg-gradient-to-br from-[#0A1128] via-[#101C40] to-[#0A1128] border-y border-[#D4AF37]/20">
+          <div className="max-w-7xl mx-auto text-center mb-10">
+            <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 inline-block">Exclusive Festival Savings</span>
+            <h2 className="text-3xl md:text-5xl font-black text-[#E5E5E5] font-display">Special Combo <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F9DF9F] via-[#D4AF37] to-[#AA8222]">Packs</span></h2>
+            <p className="text-gray-300 text-sm max-w-xl mx-auto mt-2">Choose your preferred celebration pack below. Clicking a pack auto-loads all included products into your order sheet!</p>
+            <div className="w-20 h-1 bg-gradient-to-r from-[#D4AF37] to-[#AA8222] mx-auto mt-4 rounded-full" />
+          </div>
+
           <div ref={comboScrollRef} className={`max-w-7xl mx-auto flex flex-row gap-8 overflow-x-auto snap-x pb-8 pt-4 hide-scrollbar ${comboOffers.length === 1 ? 'justify-center' : ''}`}>
-            {comboOffers.map((offer, index) => (
-              <div key={offer.id} className={`min-w-[320px] md:min-w-[420px] ${comboOffers.length === 1 ? 'max-w-md w-full mx-auto' : 'flex-1'} bg-gradient-to-b from-[#1A2859] to-[#0A1128] border border-[#D4AF37]/30 rounded-3xl p-6 md:p-8 flex flex-col items-center text-center gap-6 snap-center shrink-0 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(212,175,55,0.15)] transition-all duration-500 relative overflow-hidden group`}>
+            {comboOffers.map((offer, index) => {
+              const cleanTitle = offer.title.replace(/\s*-\s*₹\s*[\d,]+/, '');
+              const discountPercent = offer.original_price > 0 ? Math.round(((offer.original_price - offer.discounted_price) / offer.original_price) * 100) : 0;
+              const savingsAmount = offer.original_price - offer.discounted_price;
+              const parsed = parseComboDescription(offer.description);
+              const isPopular = index === 1 || comboOffers.length === 1;
 
-                {/* Top Accent Line */}
-                <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#D4AF37] to-[#AA8222]" />
+              return (
+                <div 
+                  key={offer.id} 
+                  className={`min-w-[320px] md:min-w-[380px] lg:min-w-[400px] ${comboOffers.length === 1 ? 'max-w-md w-full mx-auto' : 'flex-1'} bg-gradient-to-b from-[#162248] via-[#101C40] to-[#0A1128] border ${isPopular ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/30 shadow-[0_15px_40px_rgba(212,175,55,0.25)]' : 'border-[#D4AF37]/30'} rounded-3xl p-6 md:p-8 flex flex-col items-center text-center snap-center shrink-0 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(212,175,55,0.3)] hover:border-[#D4AF37] transition-all duration-500 relative overflow-hidden group`}
+                >
+                  {/* Top Accent Line */}
+                  <div className={`absolute top-0 left-0 w-full ${isPopular ? 'h-2 bg-gradient-to-r from-[#F9DF9F] via-[#D4AF37] to-[#AA8222]' : 'h-1.5 bg-gradient-to-r from-[#D4AF37] to-[#AA8222]'}`} />
 
-                {/* Badge */}
-                <div className="absolute top-5 left-5 bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-black tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-sm">
-                  Limited Offer
-                </div>
-
-                {/* Image */}
-                {offer.image_url && (
-                  <div className="w-40 h-40 md:w-48 md:h-48 mt-6 relative rounded-2xl overflow-hidden shadow-2xl border-4 border-[#101C40] ring-2 ring-[#D4AF37]/20 group-hover:scale-105 transition-transform duration-700">
-                    <Image src={offer.image_url} alt={offer.title} fill className="object-cover" priority={index === 0} />
-                  </div>
-                )}
-
-                {/* Content */}
-                <div className="flex-1 flex flex-col items-center w-full">
-                  <h2 className="font-display font-black text-2xl md:text-3xl text-[#E5E5E5] mb-4 leading-tight">{offer.title}</h2>
-
-                  <div className="flex items-end justify-center gap-4 mb-6 py-4 border-y border-[#D4AF37]/10 w-full">
-                    <div className="flex flex-col items-end">
-                      <span className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-[-2px]">M.R.P</span>
-                      <span className="line-through text-gray-300 text-xl font-semibold">₹{offer.original_price}</span>
+                  {/* Popular Banner */}
+                  {isPopular && (
+                    <div className="absolute top-0 right-1/2 translate-x-1/2 bg-gradient-to-r from-[#D4AF37] to-[#AA8222] text-[#0A1128] text-[10px] font-black tracking-widest uppercase px-4 py-1 rounded-b-xl shadow-md z-20">
+                      🔥 MOST POPULAR
                     </div>
-                    <div className="w-px h-10 bg-[#D4AF37]/20"></div>
-                    <div className="flex flex-col items-start">
-                      <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-bold mb-[-2px]">Offer Price</span>
-                      <span className="font-black text-[#D4AF37] text-4xl leading-none drop-shadow-md">₹{offer.discounted_price}</span>
-                    </div>
+                  )}
+
+                  {/* Badges Bar */}
+                  <div className="w-full flex items-center justify-between gap-2 mt-2 mb-4">
+                    <span className="bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30 text-[10px] font-black tracking-wider uppercase px-3 py-1 rounded-full backdrop-blur-sm flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+                      Limited Offer
+                    </span>
+                    {discountPercent > 0 && (
+                      <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[11px] font-extrabold tracking-wide px-3 py-1 rounded-full shadow-sm">
+                        {discountPercent}% OFF
+                      </span>
+                    )}
                   </div>
 
-                  <p className="text-sm text-gray-300 leading-relaxed mb-8 line-clamp-4 hover:line-clamp-none transition-all cursor-pointer whitespace-pre-line px-2">
-                    {offer.description}
-                  </p>
+                  {/* Image / Logo Container */}
+                  <div className="w-32 h-32 md:w-36 md:h-36 relative rounded-3xl overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.15)] border-2 border-[#D4AF37]/30 group-hover:border-[#D4AF37] group-hover:scale-105 transition-all duration-500 bg-[#0A1128]/80 p-3 flex items-center justify-center mb-5">
+                    <img
+                      src={offer.image_url || '/brand_logo.png'}
+                      alt={cleanTitle}
+                      className={`w-full h-full ${offer.image_url ? 'object-cover rounded-2xl' : 'object-contain p-1'}`}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/brand_logo.png';
+                        e.currentTarget.className = 'w-full h-full object-contain p-1';
+                      }}
+                    />
+                  </div>
 
-                  {/* <button
-                    onClick={() => setSelectedComboOffer(offer)}
-                    className="mt-auto w-full max-w-[260px] bg-gradient-to-r from-[#D4AF37] to-[#AA8222] hover:from-[#AA8222] hover:to-[#D4AF37] text-[#0A1128] py-3.5 rounded-full font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:scale-105 transition-all active:scale-95"
-                  >
-                    Claim Offer Now
-                  </button> */}
+                  {/* Content Block */}
+                  <div className="flex-1 flex flex-col items-center w-full">
+                    <h3 className="font-display font-black text-2xl md:text-3xl text-white mb-3 leading-tight tracking-tight drop-shadow-sm">
+                      {cleanTitle}
+                    </h3>
+
+                    {/* Price Card */}
+                    <div className="bg-[#0A1128]/80 border border-[#D4AF37]/30 rounded-2xl p-4 w-full flex items-center justify-around gap-2 mb-4 shadow-inner">
+                      <div className="flex flex-col items-center">
+                        <span className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-0.5">M.R.P</span>
+                        <span className="line-through text-gray-400 text-lg font-semibold">₹{offer.original_price}</span>
+                      </div>
+                      <div className="w-px h-10 bg-[#D4AF37]/25" />
+                      <div className="flex flex-col items-center">
+                        <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-extrabold mb-0.5">Offer Price</span>
+                        <span className="font-black text-[#D4AF37] text-3xl md:text-4xl leading-none drop-shadow-md">
+                          ₹{offer.discounted_price}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Savings Tag */}
+                    {savingsAmount > 0 && (
+                      <div className="mb-4 inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 rounded-full text-xs font-bold">
+                        <span>🎁 You Save ₹{savingsAmount.toLocaleString()}</span>
+                      </div>
+                    )}
+
+                    {/* Description Text */}
+                    {parsed.text && (
+                      <p className="text-xs text-gray-300 leading-relaxed mb-4 font-medium px-1">
+                        {parsed.text}
+                      </p>
+                    )}
+
+                    {/* Included Items Box */}
+                    {parsed.items && parsed.items.length > 0 && (
+                      <div className="w-full bg-[#080E21] border border-[#D4AF37]/25 rounded-2xl p-4 my-2 text-left shadow-inner">
+                        <div className="text-[11px] font-black text-[#D4AF37] uppercase tracking-wider mb-2.5 flex items-center justify-between border-b border-[#D4AF37]/15 pb-2">
+                          <span className="flex items-center gap-1.5">📦 Included Products ({parsed.items.length}):</span>
+                          <span className="text-[10px] text-gray-400 font-bold">Auto-fills sheet</span>
+                        </div>
+                        <ul className="text-xs text-gray-200 space-y-1.5 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
+                          {parsed.items.map((item: any, idx: number) => (
+                            <li key={idx} className="flex justify-between items-center py-1 border-b border-[#D4AF37]/10 last:border-0">
+                              <span className="font-semibold text-gray-200 truncate max-w-[210px]">{item.productName}</span>
+                              <span className="bg-[#D4AF37]/20 text-[#D4AF37] font-black px-2 py-0.5 rounded-full text-[10px] border border-[#D4AF37]/30">x{item.qty}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Action Button */}
+                    <button
+                      onClick={() => handleSelectComboOffer(offer)}
+                      className="w-full bg-gradient-to-r from-[#D4AF37] via-[#F9DF9F] to-[#AA8222] hover:from-[#F9DF9F] hover:to-[#D4AF37] text-[#0A1128] py-4 px-6 rounded-2xl font-black text-sm uppercase tracking-wider shadow-[0_8px_25px_rgba(212,175,55,0.35)] hover:shadow-[0_12px_35px_rgba(212,175,55,0.6)] hover:scale-[1.03] active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 mt-5 border border-[#FFF8DC]/40 cursor-pointer"
+                    >
+                      <span>⚡ Select Pack & Order</span>
+                      <span className="text-lg">→</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}
@@ -423,6 +537,34 @@ export default function HomeClient({
             <h2 className="text-4xl font-black text-[#1A2859]">Quick <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#AA8222]">Order</span></h2>
             <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-4 rounded-full" />
           </div>
+
+          {selectedComboBanner && (
+            <div className="mb-8 bg-gradient-to-r from-[#101C40] to-[#1A2859] border-2 border-[#D4AF37] p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl animate-fade-up">
+              <div className="flex items-center gap-4 text-left">
+                <div className="w-12 h-12 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center text-2xl flex-shrink-0">
+                  🎉
+                </div>
+                <div>
+                  <div className="font-black text-[#D4AF37] text-lg sm:text-xl">
+                    Loaded Combo: {selectedComboBanner.title} (₹{selectedComboBanner.price})
+                  </div>
+                  <p className="text-xs text-gray-300 mt-0.5">
+                    {selectedComboBanner.itemsCount} products have been auto-selected in your order sheet below. You can adjust quantities or add extra products before ordering!
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedComboBanner(null);
+                  setQuantities({});
+                  toast.success('Combo selection cleared');
+                }}
+                className="px-4 py-2 bg-[#0A1128] hover:bg-red-950/40 border border-[#D4AF37]/40 text-xs font-bold text-[#D4AF37] hover:text-red-400 rounded-xl transition-all whitespace-nowrap"
+              >
+                ✕ Clear Combo Selection
+              </button>
+            </div>
+          )}
 
           {products.length === 0 ? (
             <div className="text-center py-20 text-gray-400 animate-pulse">Loading wholesale catalog...</div>
@@ -481,14 +623,22 @@ export default function HomeClient({
                                 <tr key={product.id} className={`border-b border-[#D4AF37]/10 last:border-0 hover:bg-[#D4AF37]/10 transition-colors duration-300 ${rowBg}`}>
                                   <td className="w-16 p-2 border-r border-[#D4AF37]/10">
                                     <div
-                                      className="w-10 h-10 mx-auto relative flex items-center justify-center text-xl bg-[#101C40] border border-[#D4AF37]/20 shadow-sm rounded overflow-hidden cursor-pointer hover:border-[#D4AF37] hover:shadow-md transition-all"
-                                      onClick={() => product.image && setPreviewImage(product.image.startsWith('http') ? product.image : `/images/${product.image}`)}
+                                      className="w-10 h-10 mx-auto relative flex items-center justify-center bg-[#101C40] border border-[#D4AF37]/20 shadow-sm rounded overflow-hidden cursor-pointer hover:border-[#D4AF37] hover:shadow-md transition-all p-0.5"
+                                      onClick={() => {
+                                        const imgPath = product.image ? (product.image.startsWith('http') ? product.image : `/images/${product.image}`) : '/brand_logo.png';
+                                        setPreviewImage(imgPath);
+                                      }}
                                     >
-                                      {product.image ? (
-                                        <Image src={product.image.startsWith('http') ? product.image : `/images/${product.image}`} alt={product.name} fill className="object-cover" />
-                                      ) : (
-                                        '🎇'
-                                      )}
+                                      <img
+                                        src={product.image ? (product.image.startsWith('http') ? product.image : `/images/${product.image}`) : '/brand_logo.png'}
+                                        alt={product.name}
+                                        className={`w-full h-full ${product.image ? 'object-cover' : 'object-contain p-0.5'}`}
+                                        onError={(e) => {
+                                          e.currentTarget.onerror = null;
+                                          e.currentTarget.src = '/brand_logo.png';
+                                          e.currentTarget.className = 'w-full h-full object-contain p-0.5';
+                                        }}
+                                      />
                                     </div>
                                   </td>
                                   <td className="p-2 border-r border-[#D4AF37]/10 font-semibold text-left pl-4 text-[#E5E5E5]">{product.name}</td>
@@ -634,26 +784,29 @@ export default function HomeClient({
       )}
 
       {/* ═══════ LATEST BLOGS ═══════ */}
-      <section className="py-16 px-4 md:px-8 bg-[#101C40] border-t border-[#D4AF37]/20">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 inline-block">News & Updates</span>
-            <h2 className="text-4xl font-black text-[#E5E5E5]">Latest <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#AA8222]">Blogs</span></h2>
-            <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-4 rounded-full" />
-          </div>
+      {blogs && blogs.length > 0 && (
+        <section className="py-16 px-4 md:px-8 bg-[#101C40] border-t border-[#D4AF37]/20">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 inline-block">News & Updates</span>
+              <h2 className="text-4xl font-black text-[#E5E5E5]">Latest <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#AA8222]">Blogs</span></h2>
+              <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-4 rounded-full" />
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {blogs.length === 0 ? (
-              <div className="col-span-3 text-center text-gray-400 py-10">Loading latest blogs...</div>
-            ) : (
-              blogs.map((blog) => (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {blogs.map((blog) => (
                 <div key={blog.id} className="bg-[#1A2859] rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-[#D4AF37]/20 flex flex-col group cursor-pointer">
                   <div className="h-48 bg-[#0A1128] relative overflow-hidden">
-                    {blog.image_url ? (
-                      <Image src={blog.image_url} alt={blog.title} fill className="object-cover transition-transform hover:scale-105 duration-500" />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-[#1A2859] to-[#101C40] flex items-center justify-center text-4xl">📝</div>
-                    )}
+                    <img
+                      src={blog.image_url || '/brand_logo.png'}
+                      alt={blog.title}
+                      className={`w-full h-full ${blog.image_url ? 'object-cover' : 'object-contain p-4'} transition-transform hover:scale-105 duration-500`}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/brand_logo.png';
+                        e.currentTarget.className = 'w-full h-full object-contain p-4 transition-transform hover:scale-105 duration-500';
+                      }}
+                    />
                   </div>
                   <div className="p-6 flex-1 flex flex-col">
                     <div className="text-xs text-[#D4AF37] font-bold mb-2">{new Date(blog.created_at).toLocaleDateString('en-IN')} • By {blog.author}</div>
@@ -666,16 +819,16 @@ export default function HomeClient({
                     </Link>
                   </div>
                 </div>
-              ))
-            )}
+              ))}
+            </div>
+            <div className="text-center mt-12">
+              <Link href="/blogs" className="bg-[#0A1128] border-2 border-[#D4AF37] text-[#D4AF37] px-8 py-3 rounded-full font-bold hover:bg-[#D4AF37]/10 transition-colors">
+                View All Posts
+              </Link>
+            </div>
           </div>
-          <div className="text-center mt-12">
-            <Link href="/blogs" className="bg-[#0A1128] border-2 border-[#D4AF37] text-[#D4AF37] px-8 py-3 rounded-full font-bold hover:bg-[#D4AF37]/10 transition-colors">
-              View All Posts
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Image Preview Modal */}
       {previewImage && (
@@ -712,9 +865,18 @@ export default function HomeClient({
               </div>
 
               <div className="bg-gradient-to-r from-[#1A2859] to-[#101C40] rounded-2xl p-5 mb-8 flex flex-col md:flex-row items-center gap-5 border border-[#D4AF37]/20 shadow-inner">
-                {selectedComboOffer.image_url && (
-                  <Image src={selectedComboOffer.image_url} alt={selectedComboOffer.title} width={96} height={96} className="object-cover rounded-xl shadow-md border-2 border-[#D4AF37]/30" />
-                )}
+                <div className="w-24 h-24 relative flex-shrink-0 flex items-center justify-center bg-[#0A1128]/50 rounded-xl overflow-hidden shadow-md border-2 border-[#D4AF37]/30 p-1">
+                  <img
+                    src={selectedComboOffer.image_url || '/brand_logo.png'}
+                    alt={selectedComboOffer.title}
+                    className={`w-full h-full ${selectedComboOffer.image_url ? 'object-cover' : 'object-contain p-1'}`}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/brand_logo.png';
+                      e.currentTarget.className = 'w-full h-full object-contain p-1';
+                    }}
+                  />
+                </div>
                 <div className="text-center md:text-left flex-1">
                   <h3 className="font-black text-xl text-[#E5E5E5] leading-tight mb-1">{selectedComboOffer.title}</h3>
                   <div className="flex items-center justify-center md:justify-start gap-3 mt-2 bg-[#0A1128]/60 inline-flex px-3 py-1.5 rounded-lg border border-[#D4AF37]/30">

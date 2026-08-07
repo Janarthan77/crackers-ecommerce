@@ -123,18 +123,16 @@ export default function ProductsClient({ initialProducts, initialCategories }: P
                   <span className="absolute top-3 right-3 bg-[#D4AF37]/20 text-[#D4AF37] text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-wider z-10 animate-pulse border border-[#D4AF37]/30">
                     Sale
                   </span>
-                  {product.image ? (
-                    <Image
-                      src={product.image.startsWith('http') ? product.image : `/images/${product.image}`}
-                      alt={product.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="text-6xl transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6">
-                      🧨
-                    </div>
-                  )}
+                  <img
+                    src={product.image ? (product.image.startsWith('http') ? product.image : `/images/${product.image}`) : '/brand_logo.png'}
+                    alt={product.name}
+                    className={`w-full h-full ${product.image ? 'object-cover' : 'object-contain p-4'} transition-transform duration-500 group-hover:scale-110`}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/brand_logo.png';
+                      e.currentTarget.className = 'w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-110';
+                    }}
+                  />
                 </div>
                 <div className="p-5 flex flex-col flex-1">
                   <h3 className="font-bold text-[#E5E5E5] mb-3 text-lg leading-tight">{product.name}</h3>
