@@ -117,7 +117,7 @@ export default function ComboOffersPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.original_price || !formData.discounted_price) {
+    if (!formData.title || !formData.discounted_price) {
       return toast.error('Please fill all required fields');
     }
 
@@ -148,7 +148,7 @@ export default function ComboOffersPage() {
         ...(editingOffer ? { id: editingOffer.id } : {}),
         title: formData.title,
         description: finalDescription,
-        original_price: parseFloat(formData.original_price),
+        original_price: formData.original_price ? parseFloat(formData.original_price) : 0,
         discounted_price: parseFloat(formData.discounted_price),
         image_url: finalImageUrl || '',
         is_active: formData.is_active
@@ -239,7 +239,6 @@ export default function ComboOffersPage() {
                 <tr className="bg-gray-50 border-b border-gray-100">
                   <th className="p-4 font-semibold text-sm text-gray-500">Image</th>
                   <th className="p-4 font-semibold text-sm text-gray-500">Title</th>
-                  <th className="p-4 font-semibold text-sm text-gray-500">Original Price</th>
                   <th className="p-4 font-semibold text-sm text-gray-500">Offer Price</th>
                   <th className="p-4 font-semibold text-sm text-gray-500">Included Products</th>
                   <th className="p-4 font-semibold text-sm text-gray-500">Status</th>
@@ -266,7 +265,6 @@ export default function ComboOffersPage() {
                         </div>
                       </td>
                       <td className="p-4 text-sm font-bold text-gray-800">{offer.title}</td>
-                      <td className="p-4 text-sm font-semibold line-through text-gray-400">₹{offer.original_price}</td>
                       <td className="p-4 text-sm font-semibold text-green-600">₹{offer.discounted_price}</td>
                       <td className="p-4 text-sm">
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg text-xs font-semibold">
@@ -292,7 +290,7 @@ export default function ComboOffersPage() {
                 })}
                 {offers.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="p-8 text-center text-gray-400">No combo offers found. Create one!</td>
+                    <td colSpan={6} className="p-8 text-center text-gray-400">No combo offers found. Create one!</td>
                   </tr>
                 )}
               </tbody>
@@ -333,15 +331,9 @@ export default function ComboOffersPage() {
                 <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 min-h-[80px] text-sm" placeholder="Offer details & highlights..." />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-1.5">
-                  <label className="block text-sm font-bold text-gray-700">Original Price / M.R.P (₹) <span className="text-red-500">*</span></label>
-                  <input type="number" required min="0" step="0.01" value={formData.original_price} onChange={(e) => setFormData({ ...formData, original_price: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-semibold text-sm" placeholder="e.g. 5000" />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="block text-sm font-bold text-gray-700">Offer / Discounted Price (₹) <span className="text-red-500">*</span></label>
-                  <input type="number" required min="0" step="0.01" value={formData.discounted_price} onChange={(e) => setFormData({ ...formData, discounted_price: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-semibold text-sm text-green-700" placeholder="e.g. 3000" />
-                </div>
+              <div className="space-y-1.5">
+                <label className="block text-sm font-bold text-gray-700">Offer / Discounted Price (₹) <span className="text-red-500">*</span></label>
+                <input type="number" required min="0" step="0.01" value={formData.discounted_price} onChange={(e) => setFormData({ ...formData, discounted_price: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-semibold text-sm text-green-700" placeholder="e.g. 3000" />
               </div>
 
               {/* Product Mapping Section */}

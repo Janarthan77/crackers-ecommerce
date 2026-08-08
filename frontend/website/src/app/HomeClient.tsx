@@ -413,8 +413,6 @@ export default function HomeClient({
           <div ref={comboScrollRef} className={`max-w-7xl mx-auto flex flex-row gap-8 overflow-x-auto snap-x pb-8 pt-4 hide-scrollbar ${comboOffers.length === 1 ? 'justify-center' : ''}`}>
             {comboOffers.map((offer, index) => {
               const cleanTitle = offer.title.replace(/\s*-\s*₹\s*[\d,]+/, '');
-              const discountPercent = offer.original_price > 0 ? Math.round(((offer.original_price - offer.discounted_price) / offer.original_price) * 100) : 0;
-              const savingsAmount = offer.original_price - offer.discounted_price;
               const parsed = parseComboDescription(offer.description);
               const isPopular = index === 1 || comboOffers.length === 1;
 
@@ -434,16 +432,11 @@ export default function HomeClient({
                   )}
 
                   {/* Badges Bar */}
-                  <div className="w-full flex items-center justify-between gap-2 mt-2 mb-4">
+                  <div className="w-full flex items-center justify-center gap-2 mt-2 mb-4">
                     <span className="bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30 text-[10px] font-black tracking-wider uppercase px-3 py-1 rounded-full backdrop-blur-sm flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
                       Limited Offer
                     </span>
-                    {discountPercent > 0 && (
-                      <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[11px] font-extrabold tracking-wide px-3 py-1 rounded-full shadow-sm">
-                        {discountPercent}% OFF
-                      </span>
-                    )}
                   </div>
 
                   {/* Image / Logo Container */}
@@ -467,12 +460,7 @@ export default function HomeClient({
                     </h3>
 
                     {/* Price Card */}
-                    <div className="bg-[#0A1128]/80 border border-[#D4AF37]/30 rounded-2xl p-4 w-full flex items-center justify-around gap-2 mb-4 shadow-inner">
-                      <div className="flex flex-col items-center">
-                        <span className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-0.5">M.R.P</span>
-                        <span className="line-through text-gray-400 text-lg font-semibold">₹{offer.original_price}</span>
-                      </div>
-                      <div className="w-px h-10 bg-[#D4AF37]/25" />
+                    <div className="bg-[#0A1128]/80 border border-[#D4AF37]/30 rounded-2xl p-4 w-full flex items-center justify-center mb-4 shadow-inner">
                       <div className="flex flex-col items-center">
                         <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-extrabold mb-0.5">Offer Price</span>
                         <span className="font-black text-[#D4AF37] text-3xl md:text-4xl leading-none drop-shadow-md">
@@ -480,13 +468,6 @@ export default function HomeClient({
                         </span>
                       </div>
                     </div>
-
-                    {/* Savings Tag */}
-                    {savingsAmount > 0 && (
-                      <div className="mb-4 inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 rounded-full text-xs font-bold">
-                        <span>🎁 You Save ₹{savingsAmount.toLocaleString()}</span>
-                      </div>
-                    )}
 
                     {/* Description Text */}
                     {parsed.text && (
@@ -594,91 +575,135 @@ export default function HomeClient({
                 </div>
 
                 {/* Categories & Products */}
-                <div className="w-full overflow-x-auto">
-                  <table className="w-full min-w-[500px] border-collapse text-sm text-center text-[#E5E5E5]">
-                    <tbody>
-                      {categories.map((category) => {
-                        const catProducts = products.filter(p =>
-                          String(p.categoryId) === String(category.id) &&
-                          p.name.toLowerCase().includes(searchQuery.toLowerCase())
-                        );
-                        if (catProducts.length === 0) return null;
+                <div className="w-full">
+                  {categories.map((category) => {
+                    const catProducts = products.filter(p =>
+                      String(p.categoryId) === String(category.id) &&
+                      p.name.toLowerCase().includes(searchQuery.toLowerCase())
+                    );
+                    if (catProducts.length === 0) return null;
 
-                        return (
-                          <React.Fragment key={`cat-${category.id}`}>
-                            <tr className="bg-[#101C40] border-b border-[#D4AF37]/20 text-[#D4AF37]">
-                              <td colSpan={5} className="py-2.5 font-bold tracking-widest uppercase text-left pl-6">
-                                {category.name}
-                              </td>
-                            </tr>
+                    return (
+                      <div key={`cat-${category.id}`} className="border-b border-[#D4AF37]/20 last:border-b-0">
+                        {/* Category Header */}
+                        <div className="bg-[#101C40] px-4 py-2.5 font-black tracking-wider uppercase text-left text-xs sm:text-sm md:text-base text-[#D4AF37] border-b border-[#D4AF37]/20 flex items-center justify-between">
+                          <span>{category.name}</span>
+                          <span className="text-[10px] sm:text-xs font-semibold text-gray-400 normal-case">
+                            {catProducts.length} items
+                          </span>
+                        </div>
 
-                            {/* Products in this category */}
-                            {catProducts.map((product, idx) => {
-                              const isEven = idx % 2 === 0;
-                              const rowBg = isEven ? 'bg-[#1A2859]' : 'bg-[#101C40]';
-                              const qty = quantities[product.id] || '';
-                              const rowTotal = (quantities[product.id] || 0) * getSellingPrice(product);
+                        {/* Products List (Responsive for Mobile & Desktop) */}
+                        <div className="divide-y divide-[#D4AF37]/10">
+                          {catProducts.map((product, idx) => {
+                            const isEven = idx % 2 === 0;
+                            const rowBg = isEven ? 'bg-[#1A2859]' : 'bg-[#101C40]';
+                            const qty = quantities[product.id] || '';
+                            const rowTotal = (quantities[product.id] || 0) * getSellingPrice(product);
+                            const imgPath = product.image ? (product.image.startsWith('http') ? product.image : `/images/${product.image}`) : '/brand_logo.png';
 
-                              return (
-                                <tr key={product.id} className={`border-b border-[#D4AF37]/10 last:border-0 hover:bg-[#D4AF37]/10 transition-colors duration-300 ${rowBg}`}>
-                                  <td className="w-16 p-2 border-r border-[#D4AF37]/10">
-                                    <div
-                                      className="w-10 h-10 mx-auto relative flex items-center justify-center bg-[#101C40] border border-[#D4AF37]/20 shadow-sm rounded overflow-hidden cursor-pointer hover:border-[#D4AF37] hover:shadow-md transition-all p-0.5"
-                                      onClick={() => {
-                                        const imgPath = product.image ? (product.image.startsWith('http') ? product.image : `/images/${product.image}`) : '/brand_logo.png';
-                                        setPreviewImage(imgPath);
-                                      }}
+                            return (
+                              <div
+                                key={product.id}
+                                className={`flex items-center gap-2 sm:gap-4 p-2 sm:p-3 hover:bg-[#D4AF37]/10 transition-colors duration-200 ${rowBg}`}
+                              >
+                                {/* 1. Product Image Thumbnail */}
+                                <div
+                                  className="w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0 relative flex items-center justify-center bg-[#0A1128] border border-[#D4AF37]/30 shadow-sm rounded-xl overflow-hidden cursor-pointer hover:border-[#D4AF37] hover:scale-105 transition-all p-0.5"
+                                  onClick={() => setPreviewImage(imgPath)}
+                                  title="Click to view full image"
+                                >
+                                  <img
+                                    src={imgPath}
+                                    alt={product.name}
+                                    className="w-full h-full object-cover rounded-lg"
+                                    onError={(e) => {
+                                      e.currentTarget.onerror = null;
+                                      e.currentTarget.src = '/brand_logo.png';
+                                      e.currentTarget.className = 'w-full h-full object-contain p-0.5';
+                                    }}
+                                  />
+                                </div>
+
+                                {/* 2. Product Name & Price Info */}
+                                <div className="flex-1 min-w-0 pr-1">
+                                  <div className="font-bold text-xs sm:text-sm md:text-base text-[#E5E5E5] leading-snug line-clamp-2">
+                                    {product.name}
+                                  </div>
+                                  <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
+                                    {product.price > getSellingPrice(product) && (
+                                      <span className="line-through text-gray-400 text-[10px] sm:text-xs">
+                                        ₹{product.price}
+                                      </span>
+                                    )}
+                                    <span className="text-xs sm:text-sm font-black text-[#D4AF37]">
+                                      ₹{getSellingPrice(product).toFixed(2)}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* 3. Quantity Controls & Row Total */}
+                                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 sm:gap-4 flex-shrink-0">
+                                  {/* Stepper Input */}
+                                  <div className="flex items-center border border-[#D4AF37]/40 rounded-xl bg-[#0A1128] shadow-inner overflow-hidden">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleQtyChange(product.id, String(Math.max(0, (quantities[product.id] || 0) - 1)))}
+                                      className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37]/20 font-black text-sm sm:text-base active:scale-90 transition-all select-none cursor-pointer"
+                                      aria-label={`Decrease ${product.name}`}
                                     >
-                                      <img
-                                        src={product.image ? (product.image.startsWith('http') ? product.image : `/images/${product.image}`) : '/brand_logo.png'}
-                                        alt={product.name}
-                                        className={`w-full h-full ${product.image ? 'object-cover' : 'object-contain p-0.5'}`}
-                                        onError={(e) => {
-                                          e.currentTarget.onerror = null;
-                                          e.currentTarget.src = '/brand_logo.png';
-                                          e.currentTarget.className = 'w-full h-full object-contain p-0.5';
-                                        }}
-                                      />
-                                    </div>
-                                  </td>
-                                  <td className="p-2 border-r border-[#D4AF37]/10 font-semibold text-left pl-4 text-[#E5E5E5]">{product.name}</td>
-                                  <td className="w-32 p-2 border-r border-[#D4AF37]/10 font-bold">
-                                    <span className="line-through text-gray-400 mr-2 text-xs">₹{product.price}</span>
-                                    <span className="text-[#D4AF37]">₹{getSellingPrice(product).toFixed(2)}</span>
-                                  </td>
-                                  <td className="w-32 p-2 border-r border-[#D4AF37]/10">
+                                      −
+                                    </button>
                                     <input
                                       type="number"
                                       min="0"
                                       aria-label={`Quantity for ${product.name}`}
                                       value={qty}
                                       onChange={(e) => handleQtyChange(product.id, e.target.value)}
-                                      placeholder="Qty"
-                                      className="w-20 p-1.5 text-center border border-[#D4AF37]/30 rounded focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] bg-[#101C40] text-[#E5E5E5]"
+                                      placeholder="0"
+                                      className="w-10 sm:w-16 h-7 sm:h-8 text-center font-black text-xs sm:text-sm bg-transparent text-[#E5E5E5] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                     />
-                                  </td>
-                                  <td className="w-32 p-2 font-black text-[#D4AF37]">
-                                    {rowTotal > 0 ? `₹${rowTotal.toFixed(2)}` : ''}
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </React.Fragment>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleQtyChange(product.id, String((quantities[product.id] || 0) + 1))}
+                                      className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37]/20 font-black text-sm sm:text-base active:scale-90 transition-all select-none cursor-pointer"
+                                      aria-label={`Increase ${product.name}`}
+                                    >
+                                      +
+                                    </button>
+                                  </div>
+
+                                  {/* Line Total */}
+                                  <div className="w-14 sm:w-24 text-right">
+                                    {rowTotal > 0 ? (
+                                      <span className="font-black text-[11px] sm:text-sm text-[#D4AF37] tracking-tight">
+                                        ₹{rowTotal.toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      <span className="hidden sm:inline-block text-xs text-gray-500 font-medium">
+                                        ₹0.00
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Bottom Totals */}
                 <div className="flex flex-col border-t-2 border-[#D4AF37]/20 text-sm md:text-base font-bold text-[#E5E5E5]">
-                  <div className="flex w-full border-b border-[#D4AF37]/10 bg-[#1A2859]">
-                    <div className="flex-1 text-right p-3 border-r border-[#D4AF37]/10">Sub Total :</div>
-                    <div className="w-32 p-3 text-center text-lg text-[#E5E5E5]">₹{overallTotal.toFixed(2)}</div>
+                  <div className="flex w-full border-b border-[#D4AF37]/10 bg-[#1A2859] px-4 py-3 justify-between items-center">
+                    <span className="text-gray-300">Sub Total:</span>
+                    <span className="text-lg text-[#E5E5E5]">₹{overallTotal.toFixed(2)}</span>
                   </div>
-                  <div className="flex w-full border-b-2 border-[#D4AF37]/20 bg-[#101C40]">
-                    <div className="flex-1 text-right p-3 border-r border-[#D4AF37]/20 text-[#D4AF37]">Overall Total :</div>
-                    <div className="w-32 p-3 text-center text-[#D4AF37] font-black text-xl">₹{overallTotal.toFixed(2)}</div>
+                  <div className="flex w-full bg-[#101C40] px-4 py-3.5 justify-between items-center rounded-b-xl">
+                    <span className="text-[#D4AF37] text-base md:text-lg uppercase tracking-wider font-extrabold">Overall Total:</span>
+                    <span className="text-[#D4AF37] font-black text-xl md:text-2xl">₹{overallTotal.toFixed(2)}</span>
                   </div>
                 </div>
 
