@@ -200,7 +200,27 @@ export default function ComboOffersPage() {
       image_url: offer.image_url || '',
       is_active: offer.is_active
     });
-    setComboItems(parsedDesc.items);
+    
+    // Resolve combo items against current products to ensure correct IDs and selling prices
+    const resolvedItems = (parsedDesc.items || []).map((item: any) => {
+      const itemProdName = (item.productName || '').trim().toLowerCase();
+      const matched = products.find(p => p.id === item.productId && (p.name || '').trim().toLowerCase() === itemProdName)
+        || products.find(p => (p.name || '').trim().toLowerCase() === itemProdName)
+        || products.find(p => p.id === item.productId);
+      
+      if (matched) {
+        const sellingPrice = matched.price - (matched.price * (matched.discount || 0) / 100);
+        return {
+          productId: matched.id,
+          productName: matched.name,
+          qty: item.qty || 1,
+          price: sellingPrice
+        };
+      }
+      return item;
+    });
+
+    setComboItems(resolvedItems);
     setImageFile(null);
     setIsModalOpen(true);
   };

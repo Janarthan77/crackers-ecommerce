@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
 import { FaStar } from 'react-icons/fa';
@@ -38,6 +38,15 @@ export default function HomeClient({
   // Quick Order State
   const [products, setProducts] = useState<any[]>(initialProducts);
   const [categories, setCategories] = useState<any[]>(initialCategories);
+
+  // Sequential code (1, 2, 3... N) for each product based on master catalog
+  const productCodeMap = useMemo(() => {
+    const map = new Map<number, number>();
+    products.forEach((p, idx) => {
+      map.set(p.id, idx + 1);
+    });
+    return map;
+  }, [products]);
   const [quantities, setQuantities] = useState<Record<number, number>>({});
   const [customer, setCustomer] = useState({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,31 +79,59 @@ export default function HomeClient({
     const parsed = parseComboDescription(offer.description);
     
     if (parsed.items && parsed.items.length > 0) {
-      const newQtyMap: Record<number, number> = { ...quantities };
+      // Clear previous quantities so ONLY this combo's items are loaded
+      const newQtyMap: Record<number, number> = {};
+      let matchedCount = 0;
+
       parsed.items.forEach((item: any) => {
-        newQtyMap[item.productId] = item.qty;
-      });
-      setQuantities(newQtyMap);
-      
-      setSelectedComboBanner({
-        id: offer.id,
-        title: offer.title,
-        price: offer.discounted_price,
-        itemsCount: parsed.items.length
+        const itemProdName = (item.productName || '').trim().toLowerCase();
+        const matched = products.find((p: any) => 
+          p.id === item.productId && (p.name || '').trim().toLowerCase() === itemProdName
+        ) || products.find((p: any) => 
+          (p.name || '').trim().toLowerCase() === itemProdName
+        ) || products.find((p: any) => 
+          p.id === item.productId
+        );
+
+        if (matched) {
+          newQtyMap[matched.id] = (newQtyMap[matched.id] || 0) + (Number(item.qty) || 1);
+          matchedCount++;
+        }
       });
 
-      toast.success(`🎉 ${offer.title} loaded into order sheet!`);
+      setQuantities(newQtyMap);
+      try {
+        localStorage.setItem('cart_quantities', JSON.stringify(newQtyMap));
+      } catch (e) {
+        console.error('Failed to save cart quantities to local storage', e);
+      }
+      
+      const cleanTitle = offer.title.replace(/\s*-\s*₹\s*[\d,]+/, '');
+      setSelectedComboBanner({
+        id: offer.id,
+        title: cleanTitle,
+        price: offer.discounted_price,
+        itemsCount: matchedCount
+      });
+
+      toast.success(`🎉 ${cleanTitle} loaded into order sheet!`);
     } else {
       setSelectedComboOffer(offer);
       toast.success(`Selected ${offer.title}`);
     }
 
     setTimeout(() => {
-      const orderFormEl = document.getElementById('quick-order');
+      const orderFormEl = document.getElementById('order-form') || document.getElementById('quick-order');
       if (orderFormEl) {
-        orderFormEl.scrollIntoView({ behavior: 'smooth' });
+        orderFormEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => {
+          const nameInput = document.getElementById('customer-name-input') as HTMLInputElement;
+          if (nameInput) {
+            nameInput.focus();
+          }
+        }, 350);
       }
-    }, 100);
+    }, 150);
   };
 
   useEffect(() => {
@@ -298,7 +335,10 @@ export default function HomeClient({
         setShowSuccessPopup(true);
         await generatePDF({ ...orderData, order_id: createdOrder.order_id });
         setQuantities({});
-        localStorage.removeItem('cart_quantities');
+        setSelectedComboBanner(null);
+        try {
+          localStorage.removeItem('cart_quantities');
+        } catch (e) {}
         setCustomer({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
       } else {
         toast.error('Failed to submit order.');
@@ -527,7 +567,7 @@ export default function HomeClient({
                 </div>
                 <div>
                   <div className="font-black text-[#D4AF37] text-lg sm:text-xl">
-                    Loaded Combo: {selectedComboBanner.title} (₹{selectedComboBanner.price})
+                    Loaded Combo: {selectedComboBanner.title} (₹{Number(selectedComboBanner.price).toLocaleString('en-IN')})
                   </div>
                   <p className="text-xs text-gray-300 mt-0.5">
                     {selectedComboBanner.itemsCount} products have been auto-selected in your order sheet below. You can adjust quantities or add extra products before ordering!
@@ -538,9 +578,12 @@ export default function HomeClient({
                 onClick={() => {
                   setSelectedComboBanner(null);
                   setQuantities({});
+                  try {
+                    localStorage.removeItem('cart_quantities');
+                  } catch (e) {}
                   toast.success('Combo selection cleared');
                 }}
-                className="px-4 py-2 bg-[#0A1128] hover:bg-red-950/40 border border-[#D4AF37]/40 text-xs font-bold text-[#D4AF37] hover:text-red-400 rounded-xl transition-all whitespace-nowrap"
+                className="px-4 py-2 bg-[#0A1128] hover:bg-red-950/40 border border-[#D4AF37]/40 text-xs font-bold text-[#D4AF37] hover:text-red-400 rounded-xl transition-all whitespace-nowrap cursor-pointer"
               >
                 ✕ Clear Combo Selection
               </button>
@@ -574,8 +617,132 @@ export default function HomeClient({
                   </div>
                 </div>
 
-                {/* Categories & Products */}
-                <div className="w-full">
+                {/* ═══════ 1. DESKTOP VIEW TABLE (Image 1 Style with Dark & Gold Theme) ═══════ */}
+                <div className="hidden md:block w-full overflow-x-auto bg-[#0A1128]">
+                  <table className="w-full border-collapse text-center text-[#E5E5E5]">
+                    <thead>
+                      <tr className="bg-[#101C40] text-[#D4AF37] font-black uppercase text-xs md:text-sm tracking-wider border-b-2 border-[#D4AF37]/30">
+                        <th className="p-3 border-r border-[#D4AF37]/20 w-16 text-center">Img</th>
+                        <th className="p-3 border-r border-[#D4AF37]/20 w-16 text-center">Code</th>
+                        <th className="p-3 border-r border-[#D4AF37]/20 text-left pl-4">Product</th>
+                        <th className="p-3 border-r border-[#D4AF37]/20 w-44 text-center">Price (₹)</th>
+                        <th className="p-3 border-r border-[#D4AF37]/20 w-28 text-center">Qty</th>
+                        <th className="p-3 w-32 text-center">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {categories.map((category) => {
+                        const catProducts = products.filter(p =>
+                          String(p.categoryId) === String(category.id) &&
+                          p.name.toLowerCase().includes(searchQuery.toLowerCase())
+                        );
+                        if (catProducts.length === 0) return null;
+
+                        return (
+                          <React.Fragment key={`desktop-cat-${category.id}`}>
+                            {/* Category Header Row */}
+                            <tr className="bg-[#0C1530] border-y border-[#D4AF37]/30">
+                              <td colSpan={6} className="py-2.5 px-6 font-black uppercase tracking-wider text-left text-sm md:text-base text-[#D4AF37] border-b border-[#D4AF37]/20">
+                                <div className="flex items-center justify-between">
+                                  <span className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-[#D4AF37] inline-block animate-pulse" />
+                                    {category.name}
+                                  </span>
+                                  <span className="text-xs font-semibold text-gray-400 normal-case">
+                                    {catProducts.length} items
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+
+                            {/* Product Rows */}
+                            {catProducts.map((product, idx) => {
+                              const isEven = idx % 2 === 0;
+                              const rowBg = isEven ? 'bg-[#1A2859]' : 'bg-[#101C40]';
+                              const qty = quantities[product.id] || '';
+                              const rowTotal = (quantities[product.id] || 0) * getSellingPrice(product);
+                              const imgPath = product.image ? (product.image.startsWith('http') ? product.image : `/images/${product.image}`) : '/brand_logo.png';
+                              const code = productCodeMap.get(product.id) || idx + 1;
+
+                              return (
+                                <tr
+                                  key={`desktop-prod-${product.id}`}
+                                  className={`${rowBg} hover:bg-[#D4AF37]/15 transition-colors duration-200 border-b border-[#D4AF37]/10 text-[#E5E5E5]`}
+                                >
+                                  {/* 1. Img */}
+                                  <td className="p-2 border-r border-[#D4AF37]/10 text-center align-middle w-16">
+                                    <div
+                                      className="w-11 h-11 mx-auto relative flex items-center justify-center bg-[#0A1128] border border-[#D4AF37]/30 shadow-sm rounded-xl overflow-hidden cursor-pointer hover:border-[#D4AF37] hover:scale-105 transition-all p-0.5"
+                                      onClick={() => setPreviewImage(imgPath)}
+                                      title="Click to view full image"
+                                    >
+                                      <img
+                                        src={imgPath}
+                                        alt={product.name}
+                                        className="w-full h-full object-cover rounded-lg"
+                                        onError={(e) => {
+                                          e.currentTarget.onerror = null;
+                                          e.currentTarget.src = '/brand_logo.png';
+                                          e.currentTarget.className = 'w-full h-full object-contain p-0.5';
+                                        }}
+                                      />
+                                    </div>
+                                  </td>
+
+                                  {/* 2. Code */}
+                                  <td className="p-2 border-r border-[#D4AF37]/10 text-center align-middle font-black text-gray-300 text-xs md:text-sm w-16">
+                                    {code}
+                                  </td>
+
+                                  {/* 3. Product Name */}
+                                  <td className="p-2.5 pl-4 border-r border-[#D4AF37]/10 text-left align-middle font-bold text-xs sm:text-sm md:text-base text-[#E5E5E5]">
+                                    {product.name}
+                                  </td>
+
+                                  {/* 4. Price (₹) */}
+                                  <td className="p-2 border-r border-[#D4AF37]/10 text-center align-middle whitespace-nowrap w-44">
+                                    <div className="flex items-center justify-center gap-2">
+                                      {product.price > getSellingPrice(product) && (
+                                        <span className="line-through text-gray-400 text-xs sm:text-sm">
+                                          ₹{product.price}
+                                        </span>
+                                      )}
+                                      <span className="text-xs sm:text-sm md:text-base font-black text-[#D4AF37]">
+                                        ₹{getSellingPrice(product).toFixed(2)}
+                                      </span>
+                                    </div>
+                                  </td>
+
+                                  {/* 5. Qty Input */}
+                                  <td className="p-2 border-r border-[#D4AF37]/10 text-center align-middle w-28">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      placeholder="0"
+                                      value={qty}
+                                      onChange={(e) => handleQtyChange(product.id, e.target.value)}
+                                      className="w-20 h-8 mx-auto block text-center font-black text-xs sm:text-sm md:text-base border border-[#D4AF37]/40 rounded-xl bg-[#0A1128] text-[#E5E5E5] focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] shadow-inner [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                    />
+                                  </td>
+
+                                  {/* 6. Total Box */}
+                                  <td className="p-2 text-center align-middle w-32">
+                                    <div className="w-24 h-8 mx-auto flex items-center justify-center font-black text-xs sm:text-sm md:text-base text-[#D4AF37]">
+                                      {rowTotal > 0 ? `₹${rowTotal.toFixed(2)}` : <span className="text-gray-500 font-normal text-xs">₹0.00</span>}
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </React.Fragment>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* ═══════ 2. MOBILE VIEW (Current Card Layout with Steppers) ═══════ */}
+                <div className="block md:hidden w-full">
                   {categories.map((category) => {
                     const catProducts = products.filter(p =>
                       String(p.categoryId) === String(category.id) &&
@@ -584,16 +751,16 @@ export default function HomeClient({
                     if (catProducts.length === 0) return null;
 
                     return (
-                      <div key={`cat-${category.id}`} className="border-b border-[#D4AF37]/20 last:border-b-0">
+                      <div key={`mobile-cat-${category.id}`} className="border-b border-[#D4AF37]/20 last:border-b-0">
                         {/* Category Header */}
-                        <div className="bg-[#101C40] px-4 py-2.5 font-black tracking-wider uppercase text-left text-xs sm:text-sm md:text-base text-[#D4AF37] border-b border-[#D4AF37]/20 flex items-center justify-between">
+                        <div className="bg-[#101C40] px-4 py-2.5 font-black tracking-wider uppercase text-left text-xs sm:text-sm text-[#D4AF37] border-b border-[#D4AF37]/20 flex items-center justify-between">
                           <span>{category.name}</span>
                           <span className="text-[10px] sm:text-xs font-semibold text-gray-400 normal-case">
                             {catProducts.length} items
                           </span>
                         </div>
 
-                        {/* Products List (Responsive for Mobile & Desktop) */}
+                        {/* Products List for Mobile */}
                         <div className="divide-y divide-[#D4AF37]/10">
                           {catProducts.map((product, idx) => {
                             const isEven = idx % 2 === 0;
@@ -604,7 +771,7 @@ export default function HomeClient({
 
                             return (
                               <div
-                                key={product.id}
+                                key={`mobile-prod-${product.id}`}
                                 className={`flex items-center gap-2 sm:gap-4 p-2 sm:p-3 hover:bg-[#D4AF37]/10 transition-colors duration-200 ${rowBg}`}
                               >
                                 {/* 1. Product Image Thumbnail */}
@@ -627,7 +794,7 @@ export default function HomeClient({
 
                                 {/* 2. Product Name & Price Info */}
                                 <div className="flex-1 min-w-0 pr-1">
-                                  <div className="font-bold text-xs sm:text-sm md:text-base text-[#E5E5E5] leading-snug line-clamp-2">
+                                  <div className="font-bold text-xs sm:text-sm text-[#E5E5E5] leading-snug line-clamp-2">
                                     {product.name}
                                   </div>
                                   <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
@@ -710,13 +877,13 @@ export default function HomeClient({
               </div>
 
               {/* Customer Booking Form */}
-              <div className="mt-8 bg-gradient-to-br from-[#101C40] to-[#1A2859] p-6 md:p-10 rounded-2xl shadow-xl border border-[#D4AF37]/20">
+              <div id="order-form" className="mt-8 bg-gradient-to-br from-[#101C40] to-[#1A2859] p-6 md:p-10 rounded-2xl shadow-xl border border-[#D4AF37]/20 scroll-mt-24">
                 <h2 className="text-3xl font-black mb-8 border-b border-[#D4AF37]/20 pb-4 text-center uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#AA8222]">Customer Details</h2>
 
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-sm font-semibold text-[#E5E5E5]">Name (*)</label>
-                    <input required type="text" name="name" value={customer.name} onChange={handleCustomerChange} placeholder="Enter your full name" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#101C40] text-[#E5E5E5]" />
+                    <input id="customer-name-input" required type="text" name="name" value={customer.name} onChange={handleCustomerChange} placeholder="Enter your full name" className="border border-[#D4AF37]/30 p-3 rounded-lg focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all bg-[#101C40] text-[#E5E5E5]" />
                   </div>
                   <div className="flex flex-col gap-1.5 md:col-start-1">
                     <label className="text-sm font-semibold text-[#E5E5E5]">Mobile Number (*)</label>
