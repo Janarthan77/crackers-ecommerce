@@ -11,7 +11,7 @@ export default async function HomePage() {
     fetch(`${API_ENDPOINT}/api/feedback`, { next: { revalidate: 60 } }),
     fetch(`${API_ENDPOINT}/api/products`, { next: { revalidate: 60 } }),
     fetch(`${API_ENDPOINT}/api/categories`, { next: { revalidate: 60 } }),
-    fetch(`${API_ENDPOINT}/api/combo-offers`, { next: { revalidate: 60 } })
+    fetch(`${API_ENDPOINT}/api/combo-offers?admin_id=${process.env.NEXT_PUBLIC_ADMIN_ID || 1}`, { next: { revalidate: 60 } })
   ]).catch(err => {
     console.error("Failed to fetch initial data for home page:", err);
     return [null, null, null, null, null];

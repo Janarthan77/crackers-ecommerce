@@ -29,7 +29,15 @@ export async function POST(request: Request) {
         }
 
         if (isValid) {
-            return NextResponse.json({ success: true, token: 'fake-jwt-token-123', message: 'Login successful' });
+            return NextResponse.json({ 
+                success: true, 
+                token: 'fake-jwt-token-123', 
+                message: 'Login successful',
+                user: {
+                    id: user?.id || 1,
+                    username: user?.username || username
+                }
+            });
         } else {
             console.error("Supabase Error or Invalid Credentials:", error);
             const status = error?.code === '42501' ? 403 : 401;

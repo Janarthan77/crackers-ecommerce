@@ -11,14 +11,14 @@ export default function Contact() {
   const [settings, setSettings] = useState({ phone: 'Loading...', email: 'Loading...', address: 'Loading...' });
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings`)
+    fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings?admin_id=${process.env.NEXT_PUBLIC_ADMIN_ID || 1}`)
       .then(res => res.json())
       .then(data => {
         if (data && !data.error) {
           setSettings({
-            phone: data.phone || '',
-            email: data.email || '',
-            address: data.address || ''
+            phone: data.phone || (process.env.NEXT_PUBLIC_ADMIN_ID === '2' ? '+91 98765 43210' : ''),
+            email: data.email || (process.env.NEXT_PUBLIC_ADMIN_ID === '2' ? 'rjcrackers@gmail.com' : ''),
+            address: data.address || (process.env.NEXT_PUBLIC_ADMIN_ID === '2' ? 'Sivakasi, Tamil Nadu' : '')
           });
         }
       })

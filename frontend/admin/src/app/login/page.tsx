@@ -26,6 +26,10 @@ export default function LoginPage() {
 
       if (res.ok && data.success) {
         Cookies.set('admin-token', data.token, { expires: 1 });
+        if (data.user) {
+          Cookies.set('admin_user', JSON.stringify(data.user), { expires: 1 });
+          localStorage.setItem('admin_user', JSON.stringify(data.user));
+        }
         toast.success('Login successful!');
         router.push('/');
       } else {

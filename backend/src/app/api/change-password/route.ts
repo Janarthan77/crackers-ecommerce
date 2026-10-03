@@ -5,14 +5,18 @@ import { encrypt, decrypt } from '@/lib/crypto';
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { currentPassword, newPassword } = body;
+        const { currentPassword, newPassword, admin_id, username } = body;
         
-        // Fetch the first admin user
-        const { data: users } = await supabase
-            .from('admin_users')
-            .select('*')
-            .limit(1);
+        let query = supabase.from('admin_users').select('*');
+        if (admin_id) {
+            query = query.eq('id', admin_id);
+        } else if (username) {
+            query = query.eq('username', username);
+        } else {
+            query = query.limit(1);
+        }
 
+        const { data: users } = await query;
         const user = users?.[0];
 
         if (!user) {

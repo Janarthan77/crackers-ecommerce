@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Eye, EyeOff } from 'lucide-react';
+import { getAdminUser } from '@/lib/auth';
 
 export default function ChangePasswordPage() {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -23,10 +24,11 @@ export default function ChangePasswordPage() {
     
     setLoading(true);
     try {
+      const user = getAdminUser();
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/change-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ currentPassword, newPassword }),
+        body: JSON.stringify({ currentPassword, newPassword, admin_id: user.id, username: user.username }),
       });
 
       const data = await res.json();

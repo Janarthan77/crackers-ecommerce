@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { getAdminUser } from '@/lib/auth';
 
 interface Stats {
   totalOrders: number;
@@ -17,7 +18,8 @@ export default function AnalyticsPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/stats`);
+        const user = getAdminUser();
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/stats?admin_id=${user.id}`);
         if (!res.ok) throw new Error('Failed to fetch stats');
         const data = await res.json();
         setStats(data);

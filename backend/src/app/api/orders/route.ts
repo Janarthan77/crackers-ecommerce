@@ -22,8 +22,10 @@ async function sendTelegramNotification(orderData: any, orderId: number) {
         itemsTable += `----------------------------</pre>\n━━━━━━━━━━━━━━━━━━`;
     }
 
+    const storeName = orderData.admin_id === 2 ? 'RJ Crackers' : 'RRV Crackers';
     const message = `
 🛍️ <b>NEW ORDER RECEIVED!</b> 🛍️
+🏪 <b>Store</b>: ${storeName}
 ━━━━━━━━━━━━━━━━━━
 🆔 <b>Order ID</b>: ${orderData.order_id || '#' + orderId}
 👤 <b>Customer</b>: ${orderData.name}
@@ -65,19 +67,41 @@ async function sendTelegramNotification(orderData: any, orderId: number) {
     }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
-        const { data: orders, error } = await supabase
-            .from('orders')
-            .select('*')
-            .order('id', { ascending: false });
+        const { searchParams } = new URL(request.url);
+        const adminIdParam = searchParams.get('admin_id');
+
+        let query = supabase.from('orders').select('*').order('id', { ascending: false });
+
+        if (adminIdParam) {
+            const adminId = Number(adminIdParam);
+            if (adminId === 1) {
+                query = query.or('admin_id.eq.1,admin_id.is.null');
+            } else {
+                query = query.eq('admin_id', adminId);
+            }
+        }
+
+        let { data: orders, error } = await query;
+
+        // If error is code 42703 (admin_id column does not exist yet), fallback safely
+        if (error && error.code === '42703') {
+            if (adminIdParam && Number(adminIdParam) !== 1) {
+                return NextResponse.json([]);
+            }
+            const fallback = await supabase.from('orders').select('*').order('id', { ascending: false });
+            orders = fallback.data;
+            error = fallback.error;
+        }
 
         if (error) throw error;
 
         // Format to match old structure
-        const formattedOrders = orders.map((o: any) => ({
+        const formattedOrders = (orders || []).map((o: any) => ({
             id: o.id,
             order_id: o.order_id,
+            admin_id: o.admin_id || 1,
             name: o.name,
             mobile: o.mobile,
             state: o.state,
@@ -102,6 +126,7 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
+        const adminId = Number(body.admin_id) || 1;
 
         // Fetch the max ID currently in the table to fix any sequence synchronization issues
         const { data: maxOrderData } = await supabase
@@ -114,9 +139,10 @@ export async function POST(request: Request) {
         const nextId = (maxOrderData?.id || 0) + 1;
         const uniqueOrderId = `ORD-${nextId}`;
 
-        const newOrderData = {
+        const newOrderData: any = {
             id: nextId,
             order_id: uniqueOrderId,
+            admin_id: adminId,
             name: body.name,
             mobile: body.mobile,
             state: body.state,
@@ -129,16 +155,27 @@ export async function POST(request: Request) {
             items: body.items || []
         };
 
-        const { data: newOrder, error } = await supabase
+        let { data: newOrder, error } = await supabase
             .from('orders')
             .insert([newOrderData])
             .select()
             .single();
 
+        // If admin_id column doesn't exist yet, retry without admin_id
+        if (error && error.code === '42703') {
+            const { admin_id: _, ...withoutAdminId } = newOrderData;
+            const retry = await supabase
+                .from('orders')
+                .insert([withoutAdminId])
+                .select()
+                .single();
+            newOrder = retry.data;
+            error = retry.error;
+        }
+
         if (error) throw error;
 
         // Send a Telegram notification in the background
-        // Note: In serverless environments like Vercel, we must await it so the function doesn't exit before it finishes.
         await sendTelegramNotification(newOrderData, newOrder.id);
 
         return NextResponse.json(newOrder, { status: 201 });

@@ -13,11 +13,11 @@ export default function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings`)
+    fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings?admin_id=${process.env.NEXT_PUBLIC_ADMIN_ID || 1}`)
       .then(res => res.json())
       .then(data => {
         if (data && !data.error) {
-          setSettings({ phone: data.phone || '9994090969, 99430', email: data.email || 'rrvcrackers@gmail.com' });
+          setSettings({ phone: data.phone || (process.env.NEXT_PUBLIC_ADMIN_ID === '2' ? '+91 98765 43210' : '9994090969, 99430'), email: data.email || (process.env.NEXT_PUBLIC_ADMIN_ID === '2' ? 'rjcrackers@gmail.com' : 'rrvcrackers@gmail.com') });
         }
       })
       .catch(console.error);

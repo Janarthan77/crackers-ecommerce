@@ -59,7 +59,17 @@ export default function HomeClient({
   const [comboCustomer, setComboCustomer] = useState({ name: '', mobile: '', email: '', address: '', city: '', state: '' });
   const [isComboSubmitting, setIsComboSubmitting] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [storeSettings, setStoreSettings] = useState<any>(null);
   const comboScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings?admin_id=${process.env.NEXT_PUBLIC_ADMIN_ID || 1}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && !data.error) setStoreSettings(data);
+      })
+      .catch(console.error);
+  }, []);
 
   const parseComboDescription = (descString: string) => {
     if (!descString) return { text: '', items: [] };
@@ -228,11 +238,16 @@ export default function HomeClient({
     doc.setLineWidth(0.2);
     doc.line(5, 12, pageWidth - 5, 12);
 
+    const storeName = storeSettings?.store_name || (process.env.NEXT_PUBLIC_ADMIN_ID === '2' ? 'RJ Crackers' : 'RRV Crackers');
+    const storeEmail = storeSettings?.email || (process.env.NEXT_PUBLIC_ADMIN_ID === '2' ? 'rjcrackers@gmail.com' : 'rrvcrackers@gmail.com');
+    const storePhone = storeSettings?.phone || (process.env.NEXT_PUBLIC_ADMIN_ID === '2' ? '+91 98765 43210' : '+91 9994090969, 99430 98749');
+    const storeAddress = storeSettings?.address || 'Sivakasi, Tamil Nadu - 626123';
+
     // Header 2: Contact and Email
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Mobile : +91 9994090969, 99430 98749`, 8, 16);
-    doc.text(`E-mail : rrvcrackers@gmail.com`, pageWidth - 8, 16, { align: 'right' });
+    doc.text(`Mobile : ${storePhone}`, 8, 16);
+    doc.text(`E-mail : ${storeEmail}`, pageWidth - 8, 16, { align: 'right' });
 
     // Line separator
     doc.line(5, 18, pageWidth - 5, 18);
@@ -253,11 +268,11 @@ export default function HomeClient({
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(220, 38, 38);
-    doc.text('RRV Crackers', 35, 25);
+    doc.text(storeName, 35, 25);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
-    doc.text('Sivakasi, Tamil Nadu - 626123', 35, 30);
+    doc.text(storeAddress, 35, 30);
 
     // Right side: Customer Details
     doc.setFontSize(10);
@@ -317,6 +332,7 @@ export default function HomeClient({
     setIsSubmitting(true);
     try {
       const orderData = {
+        admin_id: Number(process.env.NEXT_PUBLIC_ADMIN_ID) || 1,
         name: customer.name, mobile: customer.mobile, email: customer.email,
         address: customer.address, city: customer.city, state: customer.state,
         netTotal: totalOriginalPrice,
@@ -362,6 +378,7 @@ export default function HomeClient({
     setIsComboSubmitting(true);
     try {
       const orderData = {
+        admin_id: selectedComboOffer.admin_id || Number(process.env.NEXT_PUBLIC_ADMIN_ID) || 1,
         name: comboCustomer.name, mobile: comboCustomer.mobile, email: comboCustomer.email,
         address: comboCustomer.address, city: comboCustomer.city, state: comboCustomer.state,
         netTotal: selectedComboOffer.original_price,

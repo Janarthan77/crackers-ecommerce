@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { Eye, FileText, Download } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { getAdminUser, AdminUser } from '@/lib/auth';
 
 interface OrderItem {
   productId: number;
@@ -30,6 +31,8 @@ interface Order {
 }
 
 export default function OrdersPage() {
+  const [currentUser, setCurrentUser] = useState<AdminUser>({ id: 1, username: 'rrvcrackers' });
+  const [storeSettings, setStoreSettings] = useState<any>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -58,6 +61,11 @@ export default function OrdersPage() {
     const pageHeight = doc.internal.pageSize.height;
     const orderIdToUse = order.order_id || `ORDER_${order.id}`;
 
+    const storeName = storeSettings?.store_name || (currentUser.id === 2 ? 'RJ Crackers' : 'RRV Crackers');
+    const storeEmail = storeSettings?.email || (currentUser.id === 2 ? 'rjcrackers@gmail.com' : 'rrvcrackers@gmail.com');
+    const storePhone = storeSettings?.phone || (currentUser.id === 2 ? '+91 98765 43210' : '+91 9994090969, 99430 98749');
+    const storeAddress = storeSettings?.address || 'Sivakasi, Tamil Nadu - 626123';
+
     // Outer Border
     doc.setLineWidth(0.5);
     doc.setDrawColor(0, 0, 0);
@@ -78,8 +86,8 @@ export default function OrdersPage() {
     // Header 2: Contact and Email
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Mobile : +91 9994090969, 99430 98749`, 8, 16);
-    doc.text(`E-mail : rrvcrackers@gmail.com`, pageWidth - 8, 16, { align: 'right' });
+    doc.text(`Mobile : ${storePhone}`, 8, 16);
+    doc.text(`E-mail : ${storeEmail}`, pageWidth - 8, 16, { align: 'right' });
 
     // Line separator
     doc.line(5, 18, pageWidth - 5, 18);
@@ -100,11 +108,11 @@ export default function OrdersPage() {
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(220, 38, 38);
-    doc.text('RRV Crackers', 35, 25);
+    doc.text(storeName, 35, 25);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(0, 0, 0);
-    doc.text('Sivakasi, Tamil Nadu - 626123', 35, 30);
+    doc.text(storeAddress, 35, 30);
 
     // Right side: Customer Details
     doc.setFontSize(10);
@@ -163,7 +171,18 @@ export default function OrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/orders`);
+      const user = getAdminUser();
+      setCurrentUser(user);
+
+      try {
+        const setRes = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/settings?admin_id=${user.id}`);
+        if (setRes.ok) {
+          const setData = await setRes.json();
+          setStoreSettings(setData);
+        }
+      } catch (e) {}
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/orders?admin_id=${user.id}`);
       if (!res.ok) throw new Error('Failed to fetch');
       const data = await res.json();
       setOrders(data);

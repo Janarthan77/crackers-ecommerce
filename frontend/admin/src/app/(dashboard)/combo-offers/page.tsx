@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Edit, Trash2, X, PackageOpen, UploadCloud, Plus, PackageCheck } from 'lucide-react';
+import { getAdminUser } from '@/lib/auth';
 
 interface ComboItem {
   productId: number;
@@ -44,8 +45,9 @@ export default function ComboOffersPage() {
 
   const fetchData = async () => {
     try {
+      const user = getAdminUser();
       const [offersRes, prodsRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/combo-offers`),
+        fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/combo-offers?admin_id=${user.id}`),
         fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/products?admin=true`)
       ]);
       
@@ -144,8 +146,10 @@ export default function ComboOffersPage() {
         items: comboItems
       });
 
+      const user = getAdminUser();
       const payload = {
         ...(editingOffer ? { id: editingOffer.id } : {}),
+        admin_id: user.id,
         title: formData.title,
         description: finalDescription,
         original_price: formData.original_price ? parseFloat(formData.original_price) : 0,

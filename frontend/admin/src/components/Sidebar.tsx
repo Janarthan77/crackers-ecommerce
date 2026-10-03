@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 const menuItems = [
   { name: 'Dashboard', path: '/', icon: '📊', color: '#E8192C' },
@@ -23,6 +25,23 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const [user, setUser] = useState<{ id: number; username: string }>({ id: 1, username: 'rrvcrackers' });
+
+  useEffect(() => {
+    try {
+      const fromCookie = Cookies.get('admin_user');
+      if (fromCookie) {
+        setUser(JSON.parse(fromCookie));
+        return;
+      }
+      const fromStorage = localStorage.getItem('admin_user');
+      if (fromStorage) {
+        setUser(JSON.parse(fromStorage));
+      }
+    } catch (e) {}
+  }, []);
+
+  const storeName = user.username === 'rj_crackers' || user.id === 2 ? 'RJ Crackers' : 'RRV Crackers';
 
   return (
     <>
@@ -49,7 +68,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         >
           <img
             src="https://pub-c9de055708fa4822887d1db91f66e351.r2.dev/brand_logo.png"
-            alt="RRV Crackers Logo"
+            alt="Crackers Logo"
             className="w-auto h-14 object-contain flex-shrink-0 select-none"
           />
           <div className="flex flex-col leading-tight">
@@ -61,7 +80,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
-            >RRV Crackers</span>
+            >{storeName}</span>
             <span className="text-[10px] font-semibold tracking-widest uppercase text-orange-400">Admin Panel</span>
           </div>
         </div>
@@ -72,14 +91,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           style={{ background: 'linear-gradient(135deg, #FFF3E0, #FFE8D0)', border: '1px solid rgba(255,107,0,0.15)' }}
         >
           <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0 uppercase"
             style={{ background: 'linear-gradient(135deg, #E8192C, #FF6B00)' }}
-          >A</div>
+          >{user.username.charAt(0)}</div>
           <div className="flex flex-col leading-tight">
-            <span className="font-bold text-sm" style={{ color: '#1A0A00' }}>Admin</span>
+            <span className="font-bold text-sm" style={{ color: '#1A0A00' }}>{user.username}</span>
             <div className="flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-              <span className="text-[10px]" style={{ color: '#9B7E6A' }}>Online</span>
+              <span className="text-[10px]" style={{ color: '#9B7E6A' }}>Online (ID: {user.id})</span>
             </div>
           </div>
         </div>

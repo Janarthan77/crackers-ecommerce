@@ -1,24 +1,58 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
+        const { searchParams } = new URL(request.url);
+        const adminIdParam = searchParams.get('admin_id');
+
+        let ordersQuery = supabase.from('orders').select('*', { count: 'exact', head: true });
+        let revenueQuery = supabase.from('orders').select('overall_total, created_at');
+
+        if (adminIdParam) {
+            const adminId = Number(adminIdParam);
+            if (adminId === 1) {
+                ordersQuery = ordersQuery.or('admin_id.eq.1,admin_id.is.null');
+                revenueQuery = revenueQuery.or('admin_id.eq.1,admin_id.is.null');
+            } else {
+                ordersQuery = ordersQuery.eq('admin_id', adminId);
+                revenueQuery = revenueQuery.eq('admin_id', adminId);
+            }
+        }
+
         const [ordersRes, productsRes, categoriesRes, revenueRes] = await Promise.all([
-            supabase.from('orders').select('*', { count: 'exact', head: true }),
+            ordersQuery,
             supabase.from('products').select('*', { count: 'exact', head: true }),
             supabase.from('categories').select('*', { count: 'exact', head: true }),
-            supabase.from('orders').select('overall_total, created_at')
+            revenueQuery
         ]);
         
-        if (ordersRes.error) throw ordersRes.error;
+        let ordersCount = ordersRes.count || 0;
+        let orders = revenueRes.data || [];
+
+        // Handle fallback if admin_id column doesn't exist yet
+        if (ordersRes.error && ordersRes.error.code === '42703') {
+            if (adminIdParam && Number(adminIdParam) !== 1) {
+                ordersCount = 0;
+                orders = [];
+            } else {
+                const [fbOrders, fbRev] = await Promise.all([
+                    supabase.from('orders').select('*', { count: 'exact', head: true }),
+                    supabase.from('orders').select('overall_total, created_at')
+                ]);
+                ordersCount = fbOrders.count || 0;
+                orders = fbRev.data || [];
+            }
+        } else {
+            if (ordersRes.error) throw ordersRes.error;
+            if (revenueRes.error) throw revenueRes.error;
+        }
+
         if (productsRes.error) throw productsRes.error;
         if (categoriesRes.error) throw categoriesRes.error;
-        if (revenueRes.error) throw revenueRes.error;
         
-        const { count: ordersCount } = ordersRes;
         const { count: productsCount } = productsRes;
         const { count: categoriesCount } = categoriesRes;
-        const { data: orders } = revenueRes;
         
         let revenue = 0;
         

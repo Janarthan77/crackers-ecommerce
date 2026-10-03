@@ -1,38 +1,37 @@
 import RevenueChart from '@/components/RevenueChart';
+import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Dashboard() {
+  const cookieStore = await cookies();
+  const adminUserCookie = cookieStore.get('admin_user')?.value;
+  let adminUser: { id: number; username: string } = { id: 1, username: 'Admin' };
+  if (adminUserCookie) {
+    try {
+      adminUser = JSON.parse(adminUserCookie);
+    } catch (e) {}
+  }
+  const adminId = adminUser.id || 1;
+
   let statsData: any = {
-    totalOrders: 124,
-    revenue: 452300,
-    totalProducts: 45,
-    totalCategories: 12,
-    monthlyStats: [
-      { name: 'Jan', revenue: 4000, orders: 24 },
-      { name: 'Feb', revenue: 3000, orders: 13 },
-      { name: 'Mar', revenue: 2000, orders: 98 },
-      { name: 'Apr', revenue: 2780, orders: 39 },
-      { name: 'May', revenue: 1890, orders: 48 },
-      { name: 'Jun', revenue: 2390, orders: 38 },
-    ]
+    totalOrders: 0,
+    revenue: 0,
+    totalProducts: 0,
+    totalCategories: 0,
+    monthlyStats: []
   };
 
-  let recentOrders = [
-    { id: 1, name: 'Ganesan', mobile: '9944696046', city: 'Kuduvancheri', overallTotal: 8806, status: 'completed' },
-    { id: 2, name: 'Prabhu', mobile: '9952727788', city: 'Ramnadu', overallTotal: 5064, status: 'completed' },
-    { id: 3, name: 'Sathish', mobile: '9655443328', city: 'Ramnadu', overallTotal: 6605, status: 'completed' },
-    { id: 4, name: 'Karthik', mobile: '9942311555', city: 'Tamilnadu', overallTotal: 9364, status: 'pending' },
-  ];
+  let recentOrders: any[] = [];
 
   try {
-    const statsRes = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/stats`, { cache: 'no-store' });
+    const statsRes = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/stats?admin_id=${adminId}`, { cache: 'no-store' });
     if (statsRes.ok) {
       const data = await statsRes.json();
       if (!data.error) statsData = data;
     }
 
-    const ordersRes = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/orders`, { cache: 'no-store' });
+    const ordersRes = await fetch(`${process.env.NEXT_PUBLIC_API_ENTPOINT}/api/orders?admin_id=${adminId}`, { cache: 'no-store' });
     if (ordersRes.ok) {
       const data = await ordersRes.json();
       if (!data.error && Array.isArray(data)) recentOrders = data.slice(0, 4);
@@ -58,7 +57,7 @@ export default async function Dashboard() {
       >
         <div className="absolute right-6 top-2 text-5xl opacity-20 select-none">🎇</div>
         <div>
-          <h1 className="font-black text-2xl text-white" style={{ fontFamily: "'Playfair Display', serif" }}>Welcome back, Admin! 👋</h1>
+          <h1 className="font-black text-2xl text-white" style={{ fontFamily: "'Playfair Display', serif" }}>Welcome back, {adminUser.username}! 👋</h1>
           <p className="text-white/80 text-sm mt-1">Here&apos;s what&apos;s happening with your store today.</p>
         </div>
         <div className="hidden md:flex flex-col items-end text-white/80 text-xs gap-1">

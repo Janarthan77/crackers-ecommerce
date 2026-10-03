@@ -1,17 +1,22 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
 import { LogOut } from 'lucide-react';
+import { getAdminUser, clearAdminUser, AdminUser } from '@/lib/auth';
 
 export default function DashboardLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [user, setUser] = useState<AdminUser>({ id: 1, username: 'rrvcrackers' });
+
+  useEffect(() => {
+    setUser(getAdminUser());
+  }, []);
 
   const handleLogout = () => {
-    Cookies.remove('admin-token');
+    clearAdminUser();
     toast.success('Logged out successfully');
     router.push('/login');
   };
@@ -46,26 +51,17 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Notification bell */}
-            {/* <button
-              className="w-9 h-9 rounded-xl flex items-center justify-center relative transition-all hover:scale-105"
-              style={{ background: '#FFF3E0', border: '1px solid rgba(255,107,0,0.2)' }}
-            >
-              <span className="text-base">🔔</span>
-              <span
-                className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full"
-                style={{ background: '#E8192C' }}
-              />
-            </button> */}
             {/* Avatar */}
             <div className="flex items-center gap-2 cursor-pointer group">
               <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm transition-transform group-hover:scale-105"
+                className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm transition-transform group-hover:scale-105 uppercase"
                 style={{ background: 'linear-gradient(135deg, #E8192C, #FF6B00)' }}
-              >A</div>
+              >
+                {user.username.charAt(0)}
+              </div>
               <div className="hidden md:flex flex-col leading-tight">
-                <span className="text-sm font-bold" style={{ color: 'var(--text-h)' }}>Admin</span>
-                <span className="text-[10px]" style={{ color: 'var(--text-m)' }}>Administrator</span>
+                <span className="text-sm font-bold" style={{ color: 'var(--text-h)' }}>{user.username}</span>
+                <span className="text-[10px]" style={{ color: 'var(--text-m)' }}>Administrator (ID: {user.id})</span>
               </div>
             </div>
             {/* Logout */}
